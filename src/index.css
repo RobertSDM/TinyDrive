@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+details > summary {
+    list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+    display: none;
+}
+
+@layer base {
+    tr {
+        @apply border-b border-t hover:bg-purple-100/20;
+    }
+
+    td:not(:last-child) {
+        @apply border-r;
+    }
+
+    td {
+        @apply p-2;
+    }
+}
