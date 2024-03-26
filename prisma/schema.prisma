@@ -20,10 +20,10 @@ model Folder {
   parentId String
   parent    Folder?  @relation(fields: [parentId], references: [id], name: "ParentChild")
   childFolders Folder[] @relation("ParentChild")
+  type String @default("FOLDER")
 }
 
 enum FileType {
-  FOLDER
   VIDEO
   TEXT
   PDF
@@ -52,4 +52,5 @@ model FileData {
   textData  String?
   file      File[]
   dataType  DataType @default(BINARY)
+  extension String
 }
