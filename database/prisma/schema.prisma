@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client-py"
 }
 
 datasource db {
@@ -23,34 +23,20 @@ model Folder {
   type String @default("FOLDER")
 }
 
-enum FileType {
-  VIDEO
-  TEXT
-  PDF
-  IMAGE
-}
-
-enum DataType {
-  TEXT
-  BINARY
-}
 
 model File {
   id            String   @id @default(cuid())
-  type          FileType
-  folderId      String
-  folder        Folder?  @relation(fields: [folderId], references: [id])
-  fileContentId Int
-  FileData      FileData @relation(fields: [fileContentId], references: [id])
+  name          String 
+  parentId      String?
+  parent        Folder?  @relation(fields: [parentId], references: [id])
+  fileData      FileData?
 }
 
 model FileData {
-  id        Int      @id @default(autoincrement())
-  // if the data is an executable, image, video, etc...
-  bytesData Bytes?
+  id        String     @id @default(cuid())
+  byteData String
   // If the data is a text
-  textData  String?
-  file      File[]
-  dataType  DataType @default(BINARY)
+  fileId    String  @unique
+  file      File   @relation(fields: [fileId], references: [id])
   extension String
 }

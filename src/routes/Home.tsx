@@ -1,18 +1,22 @@
 import {
   ChangeEvent,
   MutableRefObject,
-  useEffect,
   useRef,
   useState,
 } from "react";
 import { MdFileUpload, MdExpandLess, MdExpandMore } from "react-icons/md";
+import { loadFirst } from "../fileTree/loadTree.ts";
+import saveFile from "../fetcher/saveFile.ts";
 
 enum Extensions {
   text = ".txt",
   folder = "-",
 }
 
+
+
 function Home() {
+  loadFirst()
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [archives, setArchives] = useState([
@@ -30,7 +34,7 @@ function Home() {
   ) as MutableRefObject<HTMLInputElement | null>;
 
   const [foundItems, setFoundItems] = useState([] as typeof archives);
-
+  
   function findArchives(value: string) {
     const found = archives.filter((i) => {
       return i.name.toUpperCase().includes(value.toUpperCase());
@@ -60,8 +64,7 @@ function Home() {
       reader.readAsArrayBuffer(file);
 
       reader.onload = (e) => {
-        console.log(e);
-        console.log(file);
+        saveFile(e.target!.result! ,file.name, file.type)
         read(++readIndex);
       };
     }
