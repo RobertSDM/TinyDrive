@@ -1,26 +1,26 @@
-import { DataType, FileType } from "@prisma/client";
-
 interface IFile {
-    type: FileType;
     name: string;
-    folder?: IFolder;
+    parentId?: string;
+    parent?: IFolder;
     fileData: IFileData;
+    type: "FILE";
 }
 
 interface IFileData {
-    bytesData: Buffer;
-    textData: string;
+    bytesData: string;
+    fileId?: string;
     file: IFile[];
-    dataType: DataType;
     extension: string;
+    byteSize: number;
 }
 
 interface IFolder {
     name: string;
     files: IFile[];
     parent?: IFolder;
+    parentId?: string;
     childFolders: IFolder[];
     type: "FOLDER";
 }
 
-export { IFolder };
+export { IFolder, IFile };
