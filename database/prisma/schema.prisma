@@ -14,29 +14,29 @@ datasource db {
 }
 
 model Folder {
-  id        String @id @default(cuid())
-  name      String
-  files     File[]
-  parentId String
-  parent    Folder?  @relation(fields: [parentId], references: [id], name: "ParentChild")
-  childFolders Folder[] @relation("ParentChild")
-  type String @default("FOLDER")
+  id           String   @id @default(cuid())
+  name         String   @unique
+  files        File[]
+  parentId     String?
+  parent       Folder?  @relation(fields: [parentId], references: [id], name: "FolderChild")
+  childFolders Folder[] @relation("FolderChild")
+  type         String   @default("FOLDER")
 }
 
-
 model File {
-  id            String   @id @default(cuid())
-  name          String 
-  parentId      String?
-  parent        Folder?  @relation(fields: [parentId], references: [id])
-  fileData      FileData?
+  id       String    @id @default(cuid())
+  name     String    @unique
+  parentId String?
+  type     String    @default("FILE")
+  parent   Folder?   @relation(fields: [parentId], references: [id])
+  fileData FileData?
 }
 
 model FileData {
-  id        String     @id @default(cuid())
-  byteData String
-  // If the data is a text
-  fileId    String  @unique
+  id        String @id @default(cuid())
+  byteData  String
+  fileId    String @unique
   file      File   @relation(fields: [fileId], references: [id])
   extension String
+  byteSize  Int
 }
