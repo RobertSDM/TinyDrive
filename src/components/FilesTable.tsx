@@ -1,8 +1,12 @@
 // import { ReactElement } from "react";
 
-import { IFile } from "../types/index.js";
+import { IFile, IFolder } from "../types/index.js";
 
-const FilesTable = ({ files }:{files : IFile[]}) => {
+const isFile = (item: IFile | IFolder) => {
+    return (item as IFile).fileData !== undefined;
+};
+
+const FilesTable = ({ files }: { files: Array<IFile | IFolder> }) => {
     return (
         <table className="mt-5 w-full">
             <thead>
@@ -14,10 +18,14 @@ const FilesTable = ({ files }:{files : IFile[]}) => {
             </thead>
             <tbody>
                 {files.map((f) => (
-                    <tr key={f.name}>
+                    <tr key={f.id}>
                         <td>{f.name}</td>
-                        <td className="flex justify-center">{f.fileData.extension}</td>
-                        <td className="flex justify-center">{f.fileData.byteSize}</td>
+                        <td className="text-center">
+                            {isFile(f) ? (f as IFile).fileData.extension : "-"}
+                        </td>
+                        <td className="text-center">
+                            {isFile(f) ? (f as IFile).fileData.byteSize + "kb" : "-"}
+                        </td>
                     </tr>
                 ))}
             </tbody>

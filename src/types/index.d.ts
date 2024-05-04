@@ -4,9 +4,11 @@ interface IFile {
     parent?: IFolder;
     fileData: IFileData;
     type: "FILE";
+    id: string
 }
 
 interface IFileData {
+    id: string
     bytesData: string;
     fileId?: string;
     file: IFile[];
@@ -15,6 +17,7 @@ interface IFileData {
 }
 
 interface IFolder {
+    id: string
     name: string;
     files: IFile[];
     parent?: IFolder;

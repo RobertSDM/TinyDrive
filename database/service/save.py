@@ -24,6 +24,7 @@ async def save_file (
     _type,
     extension,
     bytesData,
+    byteSize,
     fileDataId: int = None,
     parentId: str = None,
 ):
@@ -36,6 +37,7 @@ async def save_file (
                     "create": {
                         "extension": extension,
                         "byteData": bytesData,
+                        "byteSize": byteSize
                     },
                 },
             },

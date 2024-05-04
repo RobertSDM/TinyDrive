@@ -25,7 +25,7 @@ const handleFile = (
         reader.readAsArrayBuffer(file);
 
         reader.onload = (e) => {
-            saveFile(e.target!.result!, file.name, file.type);
+            saveFile(e.target!.result!, file.name, file.type, e.total);
             read(++readIndex);
         };
     }

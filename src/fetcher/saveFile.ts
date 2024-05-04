@@ -1,4 +1,4 @@
-const saveFile = async (byteData: ArrayBuffer | string, fileName: string, type: string) => {
+const saveFile = async (byteData: ArrayBuffer | string, fileName: string, type: string, byteSize: number) => {
 
     let extension
     let name
@@ -28,6 +28,7 @@ const saveFile = async (byteData: ArrayBuffer | string, fileName: string, type: 
             name,
             type,
             extension,
+            byteSize,
         }),
     });
 

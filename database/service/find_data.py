@@ -2,7 +2,7 @@ from prisma import Prisma
 
 prisma = Prisma()
 
-async def findAllFiles (id: str | None = None):
+async def find_all_files (id: str | None = None):
     await prisma.connect()
     try:
         if (id):
@@ -44,7 +44,7 @@ async def findAllFiles (id: str | None = None):
     finally:
         await prisma.disconnect()
 
-async def findAllFolders (id: str | None = None):
+async def find_all_folders (id: str | None = None):
     await prisma.connect()
     try :
         if (id) :
@@ -87,26 +87,32 @@ async def find_by_file_id(id):
     finally:
         await prisma.disconnect()
 
-async def getFirstLoad () :
+async def get_files_with_no_parent() :
     await prisma.connect()
     
-    try :
+    try:
         files = await prisma.file.find_many(
             where = {
-                "NOT": {
-                    "parent",
-                },
+                "parent": None
             },
-        );
-        folders = await prisma.folder.find_many(
-            where = {
-                "NOT": {
-                    "parent",
-                },
-            },
+            include= {
+                "fileData": True
+            }
         );
 
-        elements = [files, folders];
+        folders = await prisma.folder.find_many(
+            where = {
+                "parent": None
+            }
+        );
+        
+        files = [file.model_dump() for file in files]
+        folders = [folder.model_dump() for folder in folders]
+
+        elements = []
+        elements.extend(files)
+        elements.extend(folders)
+
         return elements;
     except Exception as e:
         print(e);
