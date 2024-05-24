@@ -1,9 +1,11 @@
 from prisma import Prisma
+from .decorator import time_spent
 
 prisma = Prisma()
 
 async def find_all_files (id: str | None = None):
-    await prisma.connect()
+    if(not prisma.is_connected()):
+        await prisma.connect()
     try:
         if (id):
             files = await prisma.file.find_unique(
@@ -41,11 +43,11 @@ async def find_all_files (id: str | None = None):
     except Exception as e :
         print(e)
         return False
-    finally:
-        await prisma.disconnect()
+
 
 async def find_all_folders (id: str | None = None):
-    await prisma.connect()
+    if(not prisma.is_connected()):
+        await prisma.connect()
     try :
         if (id) :
             folders = await prisma.folder.find_unique(
@@ -60,11 +62,11 @@ async def find_all_folders (id: str | None = None):
     except Exception  as e :
         print(e);
         return False;
-    finally:
-        await prisma.disconnect()
+
 
 async def find_by_file_id(id):
-    await prisma.connect()
+    if(not prisma.is_connected()):
+        await prisma.connect()
 
     try:
         file = await prisma.file.find_unique(
@@ -81,14 +83,16 @@ async def find_by_file_id(id):
 
 
         return {"name": file.name, "byteData": file_data.byteData, "extension": file_data.extension}
+    
     except Exception as e:
         print(e)
         return False
-    finally:
-        await prisma.disconnect()
 
-async def get_files_with_no_parent() :
-    await prisma.connect()
+
+@time_spent
+async def get_files_with_no_parent():
+    if(not prisma.is_connected()):
+        await prisma.connect()
     
     try:
         files = await prisma.file.find_many(
@@ -114,9 +118,9 @@ async def get_files_with_no_parent() :
         elements.extend(folders)
 
         return elements;
+    except RuntimeError as e:
+        print("Erro otário")
     except Exception as e:
-        print(e);
+        print(e.with_traceback());
         return False;
-    finally:
-        await prisma.disconnect()
      
