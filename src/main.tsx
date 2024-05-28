@@ -1,9 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import Home from "./view/Home.tsx";
+import Home from "./pages/Home.tsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./index.css";
-import Files from "./view/Files.tsx";
+import Files from "./pages/Files.tsx";
+import { TitleProvider } from "./context/titleContext.tsx";
 
 const router = createBrowserRouter([
     {
@@ -12,14 +13,16 @@ const router = createBrowserRouter([
     },
     {
         path: "/folder/:id",
-        element: <Files/>
-    }
+        element: <Files />,
+    },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
-        <main className="w-[100%] h-[100dvh]">
-            <RouterProvider router={router} />
-        </main>
+        <TitleProvider>
+            <main className="w-[100%] h-[100dvh]">
+                <RouterProvider router={router} />
+            </main>
+        </TitleProvider>
     </React.StrictMode>
 );

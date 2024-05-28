@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { MdExpandLess, MdExpandMore, MdFileUpload } from "react-icons/md";
-import { handleSelection } from "../control/fileManagement.ts";
+import { createSelectionInput } from "../control/fileReader.ts";
 
 const ButtonGetFileOrFolder = () => {
     const [isUploadOpen, setIsUploadOpen] = useState(false);
 
-    
     return (
         <div
             className={`inline relative ${
@@ -37,14 +36,14 @@ const ButtonGetFileOrFolder = () => {
                 }`}
             >
                 <button
-                    onClick={() => handleSelection(true)}
+                    onClick={() => createSelectionInput(true)}
                     className="hover:bg-purple-500 px-2 py-1 hover:text-white cursor-pointer w-full"
                 >
                     Arquivos
                 </button>
                 <hr className="w-4/5 mx-auto" />
                 <button
-                    onClick={() => handleSelection(false)}
+                    onClick={() => createSelectionInput(false)}
                     className="hover:bg-purple-500 px-2 py-1 hover:text-white cursor-pointer w-full"
                 >
                     Pastas
@@ -52,6 +51,6 @@ const ButtonGetFileOrFolder = () => {
             </div>
         </div>
     );
-}
+};
 
 export default ButtonGetFileOrFolder;

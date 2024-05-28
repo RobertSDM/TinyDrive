@@ -8,10 +8,11 @@ interface IFile {
 }
 
 interface IFileData {
-    id: string
+    id: string;
     bytesData: string;
     fileId?: string;
     file: IFile[];
+    byteSize_formatted: string;
     extension: string;
     byteSize: number;
 }

@@ -19,12 +19,27 @@ const FilesTable = ({ files }: { files: Array<IFile | IFolder> }) => {
             <tbody>
                 {files.map((f) => (
                     <tr key={f.id}>
-                        <td>{f.name}</td>
+                        <td className="flex justify-between">
+                            <section>{f.name}</section>
+                            <section>
+                                <a
+                                    href={`http://localhost:4500/download/${f.id}`}
+                                    target="_blank"
+                                    download
+                                    className="py-1 px-3 bg-white border border-purple-500 hover:bg-purple-500 hover:text-white"
+                                >
+                                    ↓
+                                </a>
+                            </section>
+                        </td>
+
                         <td className="text-center">
-                            {isFile(f) ? (f as IFile).fileData.extension : "-"}
+                            {isFile(f) ? "." + (f as IFile).fileData.extension : "-"}
                         </td>
                         <td className="text-center">
-                            {isFile(f) ? (f as IFile).fileData.byteSize + "kb" : "-"}
+                            {isFile(f)
+                                ? (f as IFile).fileData.byteSize_formatted
+                                : "-"}
                         </td>
                     </tr>
                 ))}

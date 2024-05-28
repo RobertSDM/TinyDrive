@@ -3,10 +3,10 @@ import time
 
 def time_spent(func):
     @wraps(func)
-    async def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         start = time.time()
 
-        result = await func(*args, **kwargs)
+        result = func(*args, **kwargs)
 
         end = time.time()
 

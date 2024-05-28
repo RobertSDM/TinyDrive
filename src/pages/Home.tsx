@@ -1,28 +1,23 @@
+import { useContext, useEffect, useState } from "react";
 import FilesTable from "../components/FilesTable.tsx";
-import {getAllFilesByFolderId} from "../fetcher/getAllFiles.ts";
-import { useEffect, useState } from "react";
-import { IFile } from "../types/index.js";
-import { useParams } from "react-router-dom";
+import { getAllRootFiles } from "../connection/getAllFiles.ts";
+import type { IFile, IFolder } from "../types/index.js";
 import ButtonGetFileOrFolder from "../components/ButtonGetFileOrFolder.tsx";
+import { TitleContext } from "../context/titleContext.tsx";
 
-const Files = () => {
-    const [files, setFiles] = useState<IFile[]>([]);
-    const [title] = useState("Tiny Drive");
-    const { id } = useParams();
+function Home() {
+    const [files, setFiles] = useState<Array<IFile & IFolder>>([]);
+    const { updateTitle } = useContext(TitleContext);
 
     useEffect(() => {
-        document.title = title;
+        updateTitle("Tiny Drive", document);
 
-        async function getFiles() {
-            await getAllFilesByFolderId(id!).then((res) => {
-                if (res) {
-                    setFiles(res);
-                }
-            });
-        }
-
-        getFiles();
-    }, [files, title, id]);
+        getAllRootFiles().then((res) => {
+            if (res) {
+                setFiles(res);
+            }
+        });
+    }, []);
 
     return (
         <>
@@ -35,18 +30,18 @@ const Files = () => {
                 </div> */}
             </header>
 
-            <main className="mt-10 md:max-w-5xl xl:max-w-7xl mx-auto">
+            <main className="mt-10 max-w-xl px-10 md:px-5 xl:px-0 md:max-w-5xl xl:max-w-7xl mx-auto">
                 <nav className="border-t border-b border-black/10 py-1">
                     <ButtonGetFileOrFolder />
                 </nav>
 
-                <section className="mt-5 md:max-w-5xl xl:max-w-7xl ">
+                <section className="mt-5 mx-auto max-w-xl md:max-w-5xl xl:max-w-7xl ">
                     <div className="text-xl text-black/50">/</div>
                     <FilesTable files={files} />
                 </section>
             </main>
         </>
     );
-};
+}
 
-export default Files;
+export default Home;

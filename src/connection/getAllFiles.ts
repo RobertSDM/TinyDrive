@@ -20,7 +20,7 @@ const getAllFilesByFolderId = async (
 
 const getAllRootFiles = async (): Promise<false | Array<IFile & IFolder>> => {
     try {
-        const res = await fetch(`http://localhost:4500/get_root_files`);
+        const res = await fetch(`http://127.0.0.1:4500/get_root_files`);
         const resData = await res.json();
 
         if (res.ok) {
