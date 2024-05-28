@@ -5,7 +5,7 @@ const getAllFilesByFolderId = async (
     id: string | "/"
 ): Promise<false | IFile[]> => {
     try {
-        const res = await fetch(`${BACKEND_URL}/get_children/${id}`);
+        const res = await fetch(`${BACKEND_URL}get_children/${id}`);
         const resData = await res.json();
 
         if (res.ok) {
@@ -21,7 +21,7 @@ const getAllFilesByFolderId = async (
 
 const getAllRootFiles = async (): Promise<false | Array<IFile & IFolder>> => {
     try {
-        const res = await fetch(`${BACKEND_URL}/get_root_files`);
+        const res = await fetch(`${BACKEND_URL}get_root_files`);
         const resData = await res.json();
 
         if (res.ok) {
