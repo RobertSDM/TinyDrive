@@ -1,9 +1,10 @@
-from sqlalchemy.orm import joinedload
-from sqlalchemy import select
+from sqlalchemy.orm import joinedload, Session
+from sqlalchemy import select, and_
 from service.decorator.time_spend import time_spent
 from service.logging_config import logger
 from ..models.FileModel import File, FileData
 from ..models.FolderModel import Folder
+import time
 
 @time_spent
 def find_all_files (db):
@@ -50,8 +51,8 @@ def save_file (
 
     return file
 
-@time_spent
-def files_with_no_parent(db) -> list:
+def files_with_no_parent(db: Session) -> list:
+
     fileData_subq = (select(
         FileData.byteSize,
         FileData.byteSize_formatted,
@@ -59,7 +60,7 @@ def files_with_no_parent(db) -> list:
         FileData.file_id
     ).select_from(FileData)
     .subquery())
-    
+
     file_join_fileData = (select(
         File
     )
@@ -67,6 +68,13 @@ def files_with_no_parent(db) -> list:
     .where(File.folder == None)
     .order_by(File.name))
 
-    files = db.execute(file_join_fileData).scalars().all()
+    start = time.time()
 
-    return files     
+    files = db.execute(file_join_fileData)
+
+    logger.info(f"Depois do Execute {time.time() - start}")
+
+    for i in files:
+        logger.info(i)
+
+    return {}

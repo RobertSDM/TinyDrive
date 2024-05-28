@@ -7,7 +7,7 @@ import uuid
 class Folder(Base):
     __tablename__ = "folder"
 
-    id = sa.Column(sa.String, primary_key=True, name="folder_id", default=uuid.uuid4)
+    id = sa.Column(sa.String, primary_key=True, name="folder_id", default=uuid.uuid4, index=True)
     name = sa.Column(sa.String, nullable=False)
     _type = sa.Column(sa.String, default="FOLDER")
 

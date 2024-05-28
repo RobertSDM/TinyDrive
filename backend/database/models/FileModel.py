@@ -7,7 +7,7 @@ import uuid
 class File(Base):
     __tablename__ = "file"
 
-    id  = sa.Column(sa.String, primary_key=True, name="file_id", default=uuid.uuid4)
+    id  = sa.Column(sa.String, primary_key=True, name="file_id", default=uuid.uuid4, index=True)
     name = sa.Column(sa.String)
     _type = sa.Column(sa.String, default="FILE")
     fullname = sa.Column(sa.String)
@@ -31,7 +31,7 @@ class File(Base):
 class FileData(Base):
     __tablename__ = "fileData"
 
-    id = sa.Column(sa.String, primary_key=True, name="fileData_id", default=uuid.uuid4)
+    id = sa.Column(sa.String, primary_key=True, name="fileData_id", default=uuid.uuid4, index=True)
     byteData: Mapped[sa.String] = mapped_column(sa.String, nullable=False, deferred=True)
     extension = sa.Column(sa.String, nullable=False)
     byteSize = sa.Column(sa.Integer, nullable=False)
