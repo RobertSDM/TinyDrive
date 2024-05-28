@@ -1,3 +1,4 @@
+import { BACKEND_URL } from './../utils/index.js';
 
 
 const saveFile = async (
@@ -9,7 +10,7 @@ const saveFile = async (
 ) => {
     
 
-    const res = await fetch("http://localhost:4500/save/file", {
+    const res = await fetch(`${BACKEND_URL}/save/file`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

@@ -1,10 +1,11 @@
 import { IFile, IFolder } from "../types/index.js"
+import {BACKEND_URL} from "../utils/index.js"
 
 const getAllFilesByFolderId = async (
     id: string | "/"
 ): Promise<false | IFile[]> => {
     try {
-        const res = await fetch(`http://localhost:4500/get_children/${id}`);
+        const res = await fetch(`${BACKEND_URL}/get_children/${id}`);
         const resData = await res.json();
 
         if (res.ok) {
@@ -20,7 +21,7 @@ const getAllFilesByFolderId = async (
 
 const getAllRootFiles = async (): Promise<false | Array<IFile & IFolder>> => {
     try {
-        const res = await fetch(`http://127.0.0.1:4500/get_root_files`);
+        const res = await fetch(`${BACKEND_URL}/get_root_files`);
         const resData = await res.json();
 
         if (res.ok) {
