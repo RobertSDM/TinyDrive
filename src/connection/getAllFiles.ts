@@ -21,7 +21,9 @@ const getAllFilesByFolderId = async (
 
 const getAllRootFiles = async (): Promise<false | Array<IFile & IFolder>> => {
     try {
-        const res = await beAPI.get("/get_root_files")
+        const res = await beAPI.get("/get_root_files", {
+            withCredentials: false
+        })
 
         if(res.status === 200){
             return res.data as Array<IFile & IFolder>
