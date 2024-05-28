@@ -12,6 +12,7 @@ const saveFile = async (
 
     const res = await fetch(`${BACKEND_URL}/save/file`, {
         method: "POST",
+        mode:"no-cors",
         headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "http:localhost:5173",
