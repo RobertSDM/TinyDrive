@@ -1,20 +1,18 @@
 import { IFile, IFolder } from "../types/index.js";
-import { BACKEND_URL } from "../utils/index.js";
+import { beAPI } from "../utils/index.ts";
+
 
 const getAllFilesByFolderId = async (
     id: string | "/"
 ): Promise<false | IFile[]> => {
     try {
-        const res = await fetch(`${BACKEND_URL}/get_children/${id}`, {
-            mode: "no-cors",
-        });
-        const resData = await res.json();
+        const res = await beAPI.get(`/get_content/${id}`)
 
-        if (res.ok) {
-            return resData as IFile[];
+        if(res.status === 200){
+            return res.data as IFile[]
         }
 
-        return false;
+        return [] as IFile[];
     } catch (err) {
         console.log(err);
         return false;
@@ -23,16 +21,13 @@ const getAllFilesByFolderId = async (
 
 const getAllRootFiles = async (): Promise<false | Array<IFile & IFolder>> => {
     try {
-        const res = await fetch(`${BACKEND_URL}/get_root_files`, {
-            mode: "no-cors",
-        });
-        const resData = await res.json();
+        const res = await beAPI.get("/get_root_files")
 
-        if (res.ok) {
-            return resData as Array<IFile & IFolder>;
+        if(res.status === 200){
+            return res.data as Array<IFile & IFolder>
         }
 
-        return false;
+        return [] as Array<IFile & IFolder>;
     } catch (err) {
         console.log(err);
         return false;

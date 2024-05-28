@@ -1,37 +1,27 @@
-import { BACKEND_URL } from './../utils/index.js';
+import { beAPI } from './../utils/index.js';
 
 
 const saveFile = async (
-    convertetByteData: ArrayBuffer | string,
+    byteData: ArrayBuffer | string,
     name: string,
     extension: string,
     type: string,
     byteSize: number
 ) => {
-    
-
-    const res = await fetch(`${BACKEND_URL}/save/file`, {
-        method: "POST",
-        mode:"no-cors",
-        headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "http:localhost:5173",
-        },
-        body: JSON.stringify({
-            byteData: convertetByteData,
-            name,
-            type,
-            extension,
-            byteSize,
-        }),
-    });
-
-    if (res.ok) {
-        console.log("Salvou bem");
-        return true;
+    const body = {
+        byteData,
+        name,
+        type,
+        extension,
+        byteSize
     }
 
-    console.log("Deu ruim");
+    const res = await beAPI.post("/save/file", body)
+
+    if(res.status === 200){
+        return res.data
+    }
+
     return false;
 };
 
