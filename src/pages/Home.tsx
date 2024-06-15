@@ -1,20 +1,22 @@
 import { useContext, useEffect, useState } from "react";
-import FilesTable from "../components/FilesTable.tsx";
+import ContentTable from "../components/ContentTable.tsx";
 import { getAllRootFiles } from "../connection/getAllFiles.ts";
 import type { IFile, IFolder } from "../types/index.js";
 import ButtonGetFileOrFolder from "../components/ButtonGetFileOrFolder.tsx";
 import { TitleContext } from "../context/titleContext.tsx";
+import { Link } from "react-router-dom";
 
 function Home() {
-    const [files, setFiles] = useState<Array<IFile & IFolder>>([]);
+    const [content, setContent] = useState<Array<IFile & IFolder>>([]);
     const { updateTitle } = useContext(TitleContext);
 
+    updateTitle("Tiny Drive", document);
+    
     useEffect(() => {
-        updateTitle("Tiny Drive", document);
-
+        // Get the root files and folders
         getAllRootFiles().then((res) => {
             if (res) {
-                setFiles(res);
+                setContent(res);
             }
         });
     }, []);
@@ -22,9 +24,12 @@ function Home() {
     return (
         <>
             <header className="flex border px-8 py-4 items-center ">
-                <h1 className="text-2xl font-bold text-purple-500">
+                <Link
+                    to={"/"}
+                    className="text-2xl font-bold cursor-pointer text-purple-500"
+                >
                     Tiny Drive
-                </h1>
+                </Link>
                 {/* <div className="mx-auto border-black/40 border rounded-sm items-center cursor-pointer relative w-2/4">
                     <SearchInput />
                 </div> */}
@@ -37,7 +42,7 @@ function Home() {
 
                 <section className="mt-5 mx-auto max-w-xl md:max-w-5xl xl:max-w-7xl ">
                     <div className="text-xl text-black/50">/</div>
-                    <FilesTable files={files} />
+                    <ContentTable files={content} />
                 </section>
             </main>
         </>

@@ -1,28 +1,28 @@
-import FilesTable from "../components/FilesTable.tsx";
+import FilesTable from "../components/ContentTable.tsx";
 import { getAllFilesByFolderId } from "../connection/getAllFiles.ts";
 import { useEffect, useState } from "react";
 import { IFile } from "../types/index.js";
 import { useParams } from "react-router-dom";
 import ButtonGetFileOrFolder from "../components/ButtonGetFileOrFolder.tsx";
 
-const Files = () => {
-    const [files, setFiles] = useState<IFile[]>([]);
+const Folder = () => {
+    const [content, setContent] = useState<IFile[]>([]);
     const [title] = useState("Tiny Drive");
     const { id } = useParams();
 
     useEffect(() => {
         document.title = title;
 
-        async function getFiles() {
+        async function getContent() {
             await getAllFilesByFolderId(id!).then((res) => {
                 if (res) {
-                    setFiles(res);
+                    setContent(res);
                 }
             });
         }
 
-        getFiles();
-    }, [files, title, id]);
+        getContent();
+    }, [content, title, id]);
 
     return (
         <>
@@ -42,11 +42,11 @@ const Files = () => {
 
                 <section className="mt-5 md:max-w-5xl xl:max-w-7xl ">
                     <div className="text-xl text-black/50">/</div>
-                    <FilesTable files={files} />
+                    <FilesTable files={content} />
                 </section>
             </main>
         </>
     );
 };
 
-export default Files;
+export default Folder;

@@ -6,7 +6,7 @@ const isFile = (item: IFile | IFolder) => {
     return (item as IFile).fileData !== undefined;
 };
 
-const FilesTable = ({ files }: { files: Array<IFile | IFolder> }) => {
+const ContentTable = ({ files }: { files: Array<IFile | IFolder> }) => {
     return (
         <table className="mt-5 w-full">
             <thead>
@@ -48,4 +48,4 @@ const FilesTable = ({ files }: { files: Array<IFile | IFolder> }) => {
     );
 };
 
-export default FilesTable;
+export default ContentTable;
