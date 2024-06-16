@@ -1,24 +1,24 @@
 import { useContext, useEffect, useState } from "react";
 import ContentTable from "../components/ContentTable.tsx";
-import { getAllRootFiles } from "../connection/getAllFiles.ts";
 import type { IFile, IFolder } from "../types/index.js";
 import ButtonGetFileOrFolder from "../components/ButtonGetFileOrFolder.tsx";
-import { TitleContext } from "../context/titleContext.tsx";
+import { TitleContext } from "../control/context/titleContext.tsx";
 import { Link } from "react-router-dom";
+import { TreeContext } from "../control/context/TreeContext.tsx";
 
 function Home() {
-    const [content, setContent] = useState<Array<IFile & IFolder>>([]);
+    const [content, setContent] = useState<Array<IFile | IFolder>>([]);
     const { updateTitle } = useContext(TitleContext);
+    const { tray } = useContext(TreeContext);
 
-    updateTitle("Tiny Drive", document);
-    
     useEffect(() => {
+        updateTitle("Tiny Drive", document);
         // Get the root files and folders
-        getAllRootFiles().then((res) => {
-            if (res) {
-                setContent(res);
-            }
-        });
+        // getAllRootFiles().then((res) => {
+        //     if (res) {
+        //         setContent(res);
+        //     }
+        // });
     }, []);
 
     return (
@@ -41,7 +41,22 @@ function Home() {
                 </nav>
 
                 <section className="mt-5 mx-auto max-w-xl md:max-w-5xl xl:max-w-7xl ">
-                    <div className="text-xl text-black/50">/</div>
+                    <div className="text-xl text-black/50">
+                        {tray.map((item, index) => {
+                            return (
+                                <Link
+                                    className={`${
+                                        item.link != "" &&
+                                        "hover:bg-purple-200 hover:p-1 hover:rounded-md"
+                                    }`}
+                                    key={index}
+                                    to={item.link}
+                                >
+                                    {item.name}
+                                </Link>
+                            );
+                        })}
+                    </div>
                     <ContentTable files={content} />
                 </section>
             </main>

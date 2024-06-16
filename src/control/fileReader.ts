@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
 import saveFile from "../connection/saveFile.ts";
-import { convertArrayBufferToBase64 } from "./convertables.ts";
+import { convertArrayBufferToBase64 } from "./dataConvert.ts";
 
 const handleFolder = (event: ChangeEvent<HTMLInputElement>) => {
     // const reader = new FileReader();

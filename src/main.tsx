@@ -4,7 +4,8 @@ import Home from "./pages/Home.tsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./index.css";
 import Files from "./pages/Files.tsx";
-import { TitleProvider } from "./context/titleContext.tsx";
+import { TitleProvider } from "./control/context/titleContext.tsx";
+import { TreeProvider } from "./control/context/TreeContext.tsx";
 
 const router = createBrowserRouter([
     {
@@ -21,7 +22,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <TitleProvider>
             <main className="w-[100%] h-[100dvh]">
-                <RouterProvider router={router} />
+                <TreeProvider>
+                    <RouterProvider router={router} />
+                </TreeProvider>
             </main>
         </TitleProvider>
     </React.StrictMode>
