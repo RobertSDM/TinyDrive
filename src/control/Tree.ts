@@ -5,14 +5,14 @@ export interface ITray {
 
 export class FileNode {
     private name: string;
-    private parentId: string = "";
-    private parent: FolderNode | null = null;
+    private parentId: string | null;
+    private parent: FolderNode | null;
     private type = "FILE" as const;
     private id: string;
 
     constructor(
         name: string,
-        parentId: string,
+        parentId: string | null,
         parent: FolderNode | null,
         id: string
     ) {
@@ -32,7 +32,7 @@ export class FileNode {
     }
 
     // Getter and Setter for parentId
-    public getParentId(): string {
+    public getParentId(): string | null {
         return this.parentId;
     }
 
@@ -65,14 +65,14 @@ export class FolderNode {
     private files: Set<FileNode> = new Set();
     private folders: Set<FolderNode> = new Set();
     private parent: FolderNode | null = null;
-    private parentId: string;
+    private parentId: string | null;
     private type = "FOLDER" as const;
     private id: string;
 
     constructor(
         name: string,
         parent: FolderNode | null,
-        parentId: string,
+        parentId: string | null,
         id: string
     ) {
         this.name = name;
@@ -107,7 +107,7 @@ export class FolderNode {
     }
 
     // Getter and Setter for parentId
-    public getParentId(): string {
+    public getParentId(): string | null {
         return this.parentId;
     }
 
@@ -147,19 +147,21 @@ export class Tree {
 
     constructor() {
         this.root = new FolderNode("/", null, "", "");
-        this.folderNodes.add(this.root);
+        // this.folderNodes.add(this.root);
     }
 
     public createFileNode(
         name: string,
         parent: FolderNode | null,
-        parentId: string,
+        parentId: string | null,
         id: string
     ): void {
         const node = new FileNode(name, parentId, parent, id);
 
         if (parent != null) {
             parent.addFile(node);
+        }else{
+            this.root.addFile(node)
         }
 
         this.fileNodes.add(node);
@@ -168,7 +170,7 @@ export class Tree {
     public createFolderNode(
         name: string,
         parent: FolderNode | null,
-        parentId: string,
+        parentId: string | null,
         id: string
     ): void {
         const node = new FolderNode(name, parent, parentId, id);
@@ -199,6 +201,17 @@ export class Tree {
         });
 
         return tray;
+    }
+
+    public viewTree(node: FolderNode, deep = 0){
+        
+        if (node.getFiles().size == 0) return;
+
+        for (const n of node.getFiles().values()) {
+
+            console.log(" ".repeat(deep) + n.getName());
+        }
+        
     }
 
     // Getter

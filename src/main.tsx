@@ -19,7 +19,7 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-    <React.StrictMode>
+    // <React.StrictMode>
         <TitleProvider>
             <main className="w-[100%] h-[100dvh]">
                 <TreeProvider>
@@ -27,5 +27,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                 </TreeProvider>
             </main>
         </TitleProvider>
-    </React.StrictMode>
+    // </React.StrictMode>
 );

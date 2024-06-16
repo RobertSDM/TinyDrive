@@ -1,12 +1,13 @@
 // import { ReactElement } from "react";
 
-import { IFile, IFolder } from "../types/index.js";
+import { FileNode, FolderNode } from "../control/Tree.ts";
+// import { IFile, IFolder } from "../types/index.js";
 
-const isFile = (item: IFile | IFolder) => {
-    return (item as IFile).fileData !== undefined;
+const isFile = (item: FileNode | FolderNode) => {
+    return item instanceof FileNode;
 };
 
-const ContentTable = ({ files }: { files: Array<IFile | IFolder> }) => {
+const ContentTable = ({ files }: { files: Array<FileNode | FolderNode> }) => {
     return (
         <table className="mt-5 w-full">
             <thead>
@@ -18,12 +19,12 @@ const ContentTable = ({ files }: { files: Array<IFile | IFolder> }) => {
             </thead>
             <tbody>
                 {files.map((f) => (
-                    <tr key={f.id}>
+                    <tr key={f.getId()}>
                         <td className="flex justify-between">
-                            <section>{f.name}</section>
+                            <section>{f.getName()}</section>
                             <section>
                                 <a
-                                    href={`http://localhost:4500/download/${f.id}`}
+                                    href={`http://localhost:4500/download/${f.getId()}`}
                                     target="_blank"
                                     download
                                     className="py-1 px-3 bg-white border border-purple-500 hover:bg-purple-500 hover:text-white"
@@ -34,12 +35,11 @@ const ContentTable = ({ files }: { files: Array<IFile | IFolder> }) => {
                         </td>
 
                         <td className="text-center">
-                            {isFile(f) ? "." + (f as IFile).fileData.extension : "-"}
+                            {isFile(f) ? "." + "txt" : "-"}
                         </td>
                         <td className="text-center">
                             {isFile(f)
-                                ? (f as IFile).fileData.byteSize_formatted
-                                : "-"}
+                                ? "10kb" : "-"}
                         </td>
                     </tr>
                 ))}
