@@ -19,19 +19,36 @@ const getAllFilesByFolderId = async (
     }
 };
 
-const getAllRootFiles = async (): Promise<false | Array<IFile | IFolder>> => {
+const getAllRootFiles = async (): Promise<false | Array<IFile[] | IFolder[]>> => {
     try {
         const res = await beAPI.get("/get_root_files")
 
         if(res.status === 200){
-            return res.data as Array<IFile & IFolder>
+            return res.data as Array<IFile[] | IFolder[]>
         }
 
-        return [] as Array<IFile & IFolder>;
+        return [] as Array<IFile[] | IFolder[]>;
     } catch (err) {
         console.log(err);
         return false;
     }
 };
 
-export { getAllFilesByFolderId, getAllRootFiles };
+const getByFolder = async (id: string): Promise<
+    false | Array<IFile[] | IFolder[]>
+> => {
+    try {
+        const res = await beAPI.get(`/from/folder/${id}`);
+
+        if (res.status === 200) {
+            return res.data as Array<IFile[] | IFolder[]>;
+        }
+
+        return [] as Array<IFile[] | IFolder[]>;
+    } catch (err) {
+        console.log(err);
+        return false;
+    }
+};
+
+export { getAllFilesByFolderId, getAllRootFiles, getByFolder };

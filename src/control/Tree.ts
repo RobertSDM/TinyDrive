@@ -10,16 +10,29 @@ export class FileNode {
     private type = "FILE" as const;
     private id: string;
 
+    // private byteSize_formatted: string;
+    private prefix: string;
+    private extension: string;
+    private byteSize: number;
+
     constructor(
         name: string,
         parentId: string | null,
         parent: FolderNode | null,
-        id: string
+        id: string,
+        prefix: string,
+        // byteSize_formatted: string,
+        extension: string,
+        byteSize: number
     ) {
         this.name = name;
         this.parentId = parentId;
         this.parent = parent;
         this.id = id;
+        this.prefix = prefix;
+        // this.byteSize_formatted = byteSize_formatted
+        this.byteSize = byteSize;
+        this.extension = extension;
     }
 
     // Getter and Setter for name
@@ -30,6 +43,42 @@ export class FileNode {
     public setName(name: string): void {
         this.name = name;
     }
+
+    // Getter and Setter for name
+    public getPrefix(): string {
+        return this.prefix;
+    }
+
+    public setPrefix(prefix: string): void {
+        this.prefix = prefix;
+    }
+
+    // Getter and Setter for name
+    public getByteSize(): number {
+        return this.byteSize;
+    }
+
+    public setByteSize(byteSize: number): void {
+        this.byteSize = byteSize;
+    }
+
+    // Getter and Setter for name
+    public getExtension(): string {
+        return this.extension;
+    }
+
+    public setExtension(extension: string): void {
+        this.extension = extension;
+    }
+
+    // Getter and Setter for name
+    // public getByteSizeFormatted(): string {
+    //     return this.byteSize_formatted;
+    // }
+
+    // public setByteSizeFormatted(byteSize_formatted: string): void {
+    //     this.byteSize_formatted = byteSize_formatted;
+    // }
 
     // Getter and Setter for parentId
     public getParentId(): string | null {
@@ -129,6 +178,11 @@ export class FolderNode {
         return this.files;
     }
 
+    // Getter for folders
+    public getFolders(): Set<FolderNode> {
+        return this.folders;
+    }
+
     // Getter for type
     public getType(): "FOLDER" {
         return this.type;
@@ -144,27 +198,33 @@ export class Tree {
     private root: FolderNode;
     private fileNodes: Set<FileNode> = new Set();
     private folderNodes: Set<FolderNode> = new Set();
+    private nodes: Set<FolderNode | FileNode> = new Set();
 
     constructor() {
         this.root = new FolderNode("/", null, "", "");
-        // this.folderNodes.add(this.root);
     }
 
     public createFileNode(
         name: string,
         parent: FolderNode | null,
         parentId: string | null,
-        id: string
+        id: string,
+        prefix: string,
+        // byteSize_formatted: string,
+        extension: string,
+        byteSize: number
     ): void {
-        const node = new FileNode(name, parentId, parent, id);
+        const node = new FileNode(name, parentId, parent, id, prefix, extension, byteSize);
 
         if (parent != null) {
             parent.addFile(node);
-        }else{
-            this.root.addFile(node)
+        } else {
+            node.setParent(this.root);
+            this.root.addFile(node);
         }
 
         this.fileNodes.add(node);
+        this.nodes.add(node);
     }
 
     public createFolderNode(
@@ -177,41 +237,49 @@ export class Tree {
 
         if (parent != null) {
             parent.addFolder(node);
+        } else {
+            node.setParent(this.root);
+            this.root.addFolder(node);
         }
 
         this.folderNodes.add(node);
+        this.nodes.add(node);
     }
 
     // Algoritmhs
     public static getTray(node: FolderNode | null): ITray[] {
         const tray = [] as ITray[];
 
+        tray.push({
+            name: "/",
+            link: `http://localhost:5173/`,
+        });
+
         while (node!.getParent() != null) {
-            tray.push({ name: "/", link: "" });
+            if (tray.length > 1) {
+                tray.push({ name: "/", link: "" });
+            }
             tray.push({
                 name: node!.getName(),
-                link: `http://localhost:5173/${node?.getId()}`,
+                link: `http://localhost:5173/folder/${node?.getId()}`,
             });
             node = node!.getParent();
         }
 
-        tray.push({
-            name: node!.getName(),
-            link: `http://localhost:5173${node?.getName()}`,
-        });
-
         return tray;
     }
 
-    public viewTree(node: FolderNode, deep = 0){
-        
+    public viewTree(node: FolderNode = this.root, deep = 0) {
         if (node.getFiles().size == 0) return;
 
-        for (const n of node.getFiles().values()) {
-
-            console.log(" ".repeat(deep) + n.getName());
+        for (const n of this.nodes.values()) {
+            if (n instanceof FolderNode) {
+                console.log(" ".repeat(deep * 4) + n.getName());
+                this.viewTree(n, ++deep);
+            } else {
+                console.log(" ".repeat(deep * 4) + n.getName());
+            }
         }
-        
     }
 
     // Getter

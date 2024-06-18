@@ -3,8 +3,12 @@ interface IFile {
     parentId?: string;
     parent?: IFolder;
     fileData: IFileData;
-    type: "FILE";
-    id: string
+    _type: "FILE";
+    id: string;
+    prefix: string;
+    // byteSize_formatted: string;
+    extension: string;
+    byteSize: number;
 }
 
 interface IFileData {
@@ -12,19 +16,16 @@ interface IFileData {
     bytesData: string;
     fileId?: string;
     file: IFile[];
-    byteSize_formatted: string;
-    extension: string;
-    byteSize: number;
 }
 
 interface IFolder {
-    id: string
+    id: string;
     name: string;
     files: IFile[];
     parent?: IFolder;
     parentId?: string;
     childFolders: IFolder[];
-    type: "FOLDER";
+    _type: "FOLDER";
 }
 
 export { IFolder, IFile };

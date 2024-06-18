@@ -3,15 +3,15 @@ import { beAPI } from './../utils/index.js';
 
 const saveFile = async (
     byteData: ArrayBuffer | string,
+    folderId: string | null,
     name: string,
     extension: string,
-    type: string,
     byteSize: number
 ) => {
     const body = {
         byteData,
+        folderId,
         name,
-        type,
         extension,
         byteSize
     }

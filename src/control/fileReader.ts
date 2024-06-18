@@ -1,13 +1,46 @@
 import { ChangeEvent } from "react";
 import saveFile from "../connection/saveFile.ts";
 import { convertArrayBufferToBase64 } from "./dataConvert.ts";
+import saveFolder from "../connection/saveFolder.ts";
 
-const handleFolder = (event: ChangeEvent<HTMLInputElement>) => {
-    // const reader = new FileReader();
+const handleFolder = async (event: ChangeEvent<HTMLInputElement>) => {
+    const reader = new FileReader();
+    const folderName = event.target.files![0].webkitRelativePath.split("/")[0];
+    
+    const folderId = await saveFolder(folderName);
 
-    for (const i of event.target.files!) {
-        console.log(i);
+    let readIndex = 0;
+
+    const fileList = event.target.files!;
+
+    function readFile() {
+        if (readIndex >= fileList.length) {
+            return;
+        }
+
+        const file = fileList[readIndex];
+
+        reader.readAsArrayBuffer(file);
+
+        reader.onload = (e) => {
+            const extractedContent = file.name.split(".");
+
+            const name = extractedContent[0];
+            const extension = extractedContent[extractedContent.length - 1];
+
+            const base64 = convertArrayBufferToBase64(
+                e.target!.result! as ArrayBuffer
+            );
+
+            saveFile(base64, folderId, name, extension, e.total);
+            readIndex++;
+            readFile();
+        };
     }
+
+    // using recursion because the loop should run
+    // when the file is readed
+    readFile();
 };
 
 const handleFile = (event: ChangeEvent<HTMLInputElement>) => {
@@ -33,13 +66,13 @@ const handleFile = (event: ChangeEvent<HTMLInputElement>) => {
                 e.target!.result! as ArrayBuffer
             );
 
-            saveFile(base64, name, extension, file.type, e.total);
+            saveFile(base64, null, name, extension, e.total);
             readIndex++;
             readFile();
         };
     }
 
-    // using recursion because the loop should run 
+    // using recursion because the loop should run
     // when the file is readed
     readFile();
 };

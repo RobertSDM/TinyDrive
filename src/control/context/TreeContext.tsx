@@ -3,7 +3,7 @@ import { FolderNode, ITray, Tree } from "../Tree.ts";
 
 interface ITreeContext {
     currentNode: FolderNode;
-    updateCurrentNode: (node: FolderNode) => void;
+    updateCurrentNode: (node: FolderNode) => FolderNode;
     tree: Tree;
     tray: ITray[];
 }
@@ -11,13 +11,16 @@ interface ITreeContext {
 export const TreeContext = createContext({} as ITreeContext);
 
 export const TreeProvider = ({ children }: { children: ReactElement }) => {
-    const tree = new Tree();
-    const [currentNode, setCurrentNode] = useState<FolderNode>(tree.getRoot());
-    let tray = Tree.getTray(currentNode);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [tree] = useState<Tree>(new Tree());
 
-    function updateCurrentNode(node: FolderNode){
-        setCurrentNode(node)
-        tray = Tree.getTray(node)
+    let currentNode = tree!.getRoot();
+    const [tray, setTray] = useState<ITray[]>(Tree.getTray(currentNode));
+
+    function updateCurrentNode(node: FolderNode): FolderNode{
+        currentNode = node
+        setTray(Tree.getTray(node))
+        return currentNode
     }
 
     return (
