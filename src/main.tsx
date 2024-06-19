@@ -6,6 +6,8 @@ import "./index.css";
 import Files from "./pages/Files.tsx";
 import { TitleProvider } from "./control/context/titleContext.tsx";
 import { TreeProvider } from "./control/context/TreeContext.tsx";
+import { NotificationProvider } from "./control/context/NotificationSystem.tsx";
+import Notifications from "./components/Notifications.tsx";
 
 const router = createBrowserRouter([
     {
@@ -20,12 +22,15 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     // <React.StrictMode>
-        <TitleProvider>
+    <TitleProvider>
+        <NotificationProvider>
             <main className="w-[100%] h-[100dvh]">
+                <Notifications />
                 <TreeProvider>
                     <RouterProvider router={router} />
                 </TreeProvider>
             </main>
-        </TitleProvider>
+        </NotificationProvider>
+    </TitleProvider>
     // </React.StrictMode>
 );

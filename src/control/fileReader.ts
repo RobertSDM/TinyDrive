@@ -2,12 +2,20 @@ import { ChangeEvent } from "react";
 import saveFile from "../connection/saveFile.ts";
 import { convertArrayBufferToBase64 } from "./dataConvert.ts";
 import saveFolder from "../connection/saveFolder.ts";
+import { FolderNode } from "./Tree.ts";
+import { INotification } from "../types/types.js";
 
-const handleFolder = async (event: ChangeEvent<HTMLInputElement>) => {
+const handleFolder = async (
+    event: ChangeEvent<HTMLInputElement>,
+    node: FolderNode,
+enqueue: (notification: INotification) => void
+) => {
     const reader = new FileReader();
     const folderName = event.target.files![0].webkitRelativePath.split("/")[0];
-    
-    const folderId = await saveFolder(folderName);
+
+    const parentId = node.getParent()?.getId() ?? null;
+
+    const folderId = await saveFolder(folderName, parentId, enqueue);
 
     let readIndex = 0;
 
@@ -32,7 +40,7 @@ const handleFolder = async (event: ChangeEvent<HTMLInputElement>) => {
                 e.target!.result! as ArrayBuffer
             );
 
-            saveFile(base64, folderId, name, extension, e.total);
+            saveFile(enqueue, base64, folderId, name, extension, e.total);
             readIndex++;
             readFile();
         };
@@ -43,7 +51,10 @@ const handleFolder = async (event: ChangeEvent<HTMLInputElement>) => {
     readFile();
 };
 
-const handleFile = (event: ChangeEvent<HTMLInputElement>) => {
+const handleFile = (
+    event: ChangeEvent<HTMLInputElement>,
+enqueue: (notification: INotification) => void
+) => {
     const reader = new FileReader();
     const fileList = event.target.files!;
     let readIndex = 0;
@@ -66,7 +77,7 @@ const handleFile = (event: ChangeEvent<HTMLInputElement>) => {
                 e.target!.result! as ArrayBuffer
             );
 
-            saveFile(base64, null, name, extension, e.total);
+            saveFile(enqueue, base64, null, name, extension, e.total);
             readIndex++;
             readFile();
         };
@@ -77,7 +88,11 @@ const handleFile = (event: ChangeEvent<HTMLInputElement>) => {
     readFile();
 };
 
-const createSelectionInput = (isFileInput: boolean) => {
+const createSelectionInput = (
+    isFileInput: boolean,
+    node: FolderNode,
+enqueue: (notification: INotification) => void
+) => {
     const input = document.createElement("input");
 
     // configuring the input element
@@ -88,9 +103,13 @@ const createSelectionInput = (isFileInput: boolean) => {
 
     input.addEventListener("change", (e: Event) => {
         if (isFileInput) {
-            handleFile(e as unknown as ChangeEvent<HTMLInputElement>);
+            handleFile(e as unknown as ChangeEvent<HTMLInputElement>, enqueue);
         } else {
-            handleFolder(e as unknown as ChangeEvent<HTMLInputElement>);
+            handleFolder(
+                e as unknown as ChangeEvent<HTMLInputElement>,
+                node,
+                enqueue
+            );
         }
     });
 
@@ -100,9 +119,13 @@ const createSelectionInput = (isFileInput: boolean) => {
     input.parentElement?.removeChild(input);
     input.removeEventListener("change", (e: Event) => {
         if (isFileInput) {
-            handleFile(e as unknown as ChangeEvent<HTMLInputElement>);
+            handleFile(e as unknown as ChangeEvent<HTMLInputElement>, enqueue);
         } else {
-            handleFolder(e as unknown as ChangeEvent<HTMLInputElement>);
+            handleFolder(
+                e as unknown as ChangeEvent<HTMLInputElement>,
+                node,
+                enqueue
+            );
         }
     });
 };

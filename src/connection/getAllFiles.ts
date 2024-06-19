@@ -1,15 +1,15 @@
-import { IFile, IFolder } from "../types/index.js";
+import { NotificationLevels } from "../types/index.ts";
+import type { IFile, IFolder, INotification } from "../types/types.d.ts";
 import { beAPI } from "../utils/index.ts";
-
 
 const getAllFilesByFolderId = async (
     id: string | "/"
 ): Promise<false | IFile[]> => {
     try {
-        const res = await beAPI.get(`/get_content/${id}`)
+        const res = await beAPI.get(`/get_content/${id}`);
 
-        if(res.status === 200){
-            return res.data as IFile[]
+        if (res.status === 200) {
+            return res.data as IFile[];
         }
 
         return [] as IFile[];
@@ -19,24 +19,33 @@ const getAllFilesByFolderId = async (
     }
 };
 
-const getAllRootFiles = async (): Promise<false | Array<IFile[] | IFolder[]>> => {
+const getAllRootFiles = async (
+    enqueue: (notification: INotification) => void
+): Promise<false | Array<IFile[] | IFolder[]>> => {
     try {
-        const res = await beAPI.get("/get_root_files")
+        const res = await beAPI.get("/get_root_files");
 
-        if(res.status === 200){
-            return res.data as Array<IFile[] | IFolder[]>
+        if (res.status === 200) {
+            return res.data as Array<IFile[] | IFolder[]>;
         }
 
         return [] as Array<IFile[] | IFolder[]>;
     } catch (err) {
-        console.log(err);
+        enqueue({
+            level: NotificationLevels.ERROR,
+            title: "Erro ao carregar conteudo",
+            msg: "Ocorreu um erro ao carregar o conteudo, por favor tente mais tarde",
+            time: 4000,
+        });
+
         return false;
     }
 };
 
-const getByFolder = async (id: string): Promise<
-    false | Array<IFile[] | IFolder[]>
-> => {
+const getByFolder = async (
+    id: string,
+    enqueue: (notification: INotification) => void
+): Promise<false | Array<IFile[] | IFolder[]>> => {
     try {
         const res = await beAPI.get(`/from/folder/${id}`);
 
@@ -46,7 +55,13 @@ const getByFolder = async (id: string): Promise<
 
         return [] as Array<IFile[] | IFolder[]>;
     } catch (err) {
-        console.log(err);
+        enqueue({
+            level: NotificationLevels.ERROR,
+            title: "Erro ao carregar conteudo",
+            msg: "Ocorreu um erro ao carregar o conteudo, por favor tente mais tarde",
+            time: 4000,
+        });
+
         return false;
     }
 };

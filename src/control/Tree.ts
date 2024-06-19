@@ -1,7 +1,4 @@
-export interface ITray {
-    name: string;
-    link: string;
-}
+import type { ITray } from "../types/types.d.ts";
 
 export class FileNode {
     private name: string;
@@ -113,6 +110,7 @@ export class FolderNode {
     private name: string;
     private files: Set<FileNode> = new Set();
     private folders: Set<FolderNode> = new Set();
+    private tray: ITray[];
     private parent: FolderNode | null = null;
     private parentId: string | null;
     private type = "FOLDER" as const;
@@ -122,12 +120,41 @@ export class FolderNode {
         name: string,
         parent: FolderNode | null,
         parentId: string | null,
-        id: string
+        id: string,
+        tray: string | null
     ) {
         this.name = name;
         this.parent = parent;
         this.parentId = parentId;
         this.id = id;
+        this.tray = this.createTray(tray);
+    }
+
+    private createTray(strTray: string | null): ITray[] {
+        const tray: ITray[] = [];
+        tray.push({
+            name: "/",
+            link: `http://localhost:5173/`,
+        });
+        if (!strTray) {
+            return tray;
+        }
+        const parts = strTray.split("/");
+
+        for (const part of parts) {
+            if (parts.length > 1) {
+                tray.push({ name: "/", link: "" });
+            }
+
+            const [name, id] = part.split("-");
+
+            tray.push({
+                name: name,
+                link: `http://localhost:5173/folder/${id}`,
+            });
+        }
+
+        return tray;
     }
 
     public addFile(file: FileNode): void {
@@ -183,6 +210,11 @@ export class FolderNode {
         return this.folders;
     }
 
+    // Getter
+    public getTray(): ITray[] {
+        return this.tray;
+    }
+
     // Getter for type
     public getType(): "FOLDER" {
         return this.type;
@@ -201,7 +233,7 @@ export class Tree {
     private nodes: Set<FolderNode | FileNode> = new Set();
 
     constructor() {
-        this.root = new FolderNode("/", null, "", "");
+        this.root = new FolderNode("/", null, "", "", null);
     }
 
     public createFileNode(
@@ -214,7 +246,20 @@ export class Tree {
         extension: string,
         byteSize: number
     ): void {
-        const node = new FileNode(name, parentId, parent, id, prefix, extension, byteSize);
+        for (const i of this.fileNodes.values()) {
+            if (i.getId() == id) {
+                return;
+            }
+        }
+        const node = new FileNode(
+            name,
+            parentId,
+            parent,
+            id,
+            prefix,
+            extension,
+            byteSize
+        );
 
         if (parent != null) {
             parent.addFile(node);
@@ -231,10 +276,16 @@ export class Tree {
         name: string,
         parent: FolderNode | null,
         parentId: string | null,
-        id: string
+        id: string,
+        tray: string
     ): void {
-        const node = new FolderNode(name, parent, parentId, id);
+        for (const i of this.folderNodes.values()) {
+            if (i.getId() == id) {
+                return;
+            }
+        }
 
+        const node = new FolderNode(name, parent, parentId, id, tray);
         if (parent != null) {
             parent.addFolder(node);
         } else {
@@ -247,27 +298,6 @@ export class Tree {
     }
 
     // Algoritmhs
-    public static getTray(node: FolderNode | null): ITray[] {
-        const tray = [] as ITray[];
-
-        tray.push({
-            name: "/",
-            link: `http://localhost:5173/`,
-        });
-
-        while (node!.getParent() != null) {
-            if (tray.length > 1) {
-                tray.push({ name: "/", link: "" });
-            }
-            tray.push({
-                name: node!.getName(),
-                link: `http://localhost:5173/folder/${node?.getId()}`,
-            });
-            node = node!.getParent();
-        }
-
-        return tray;
-    }
 
     public viewTree(node: FolderNode = this.root, deep = 0) {
         if (node.getFiles().size == 0) return;

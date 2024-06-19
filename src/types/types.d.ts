@@ -1,4 +1,6 @@
-interface IFile {
+import { NotificationLevels } from "./index.ts";
+
+export interface IFile {
     name: string;
     parentId?: string;
     parent?: IFolder;
@@ -18,7 +20,7 @@ interface IFileData {
     file: IFile[];
 }
 
-interface IFolder {
+export interface IFolder {
     id: string;
     name: string;
     files: IFile[];
@@ -26,6 +28,18 @@ interface IFolder {
     parentId?: string;
     childFolders: IFolder[];
     _type: "FOLDER";
+    tray: string;
 }
 
-export { IFolder, IFile };
+export interface ITray {
+    name: string;
+    link: string;
+}
+
+export interface INotification {
+    level: NotificationLevels;
+    id?: number;
+    title: string;
+    msg: string;
+    time: number;
+}

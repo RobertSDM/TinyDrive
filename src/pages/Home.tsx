@@ -7,11 +7,13 @@ import { TreeContext } from "../control/context/TreeContext.tsx";
 import { getAllRootFiles } from "../connection/getAllFiles.ts";
 import { FileNode, FolderNode } from "../control/Tree.ts";
 import { apiResponseToTreeNodes } from "../control/dataConvert.ts";
+import { NotificationContext } from "../control/context/NotificationSystem.tsx";
 
 function Home() {
     const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
     const { updateTitle } = useContext(TitleContext);
     const { tray, tree, updateCurrentNode } = useContext(TreeContext);
+    const {enqueue} = useContext(NotificationContext)
 
     useEffect(() => {
         updateTitle("Tiny Drive", document);
@@ -20,8 +22,9 @@ function Home() {
 
         // if (!JSON.parse(localStorage.getItem("home") || "false")) {
             // Get the root files and folders
-            getAllRootFiles().then((res) => {
+            getAllRootFiles(enqueue).then((res) => {
                 if (res) {
+                    console.log(res);
                     apiResponseToTreeNodes(res, tree);
 
                     setContent([
