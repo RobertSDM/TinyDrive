@@ -15,11 +15,11 @@ export const TreeProvider = ({ children }: { children: ReactElement }) => {
     const [tree] = useState<Tree>(new Tree());
 
     let currentNode = tree!.getRoot();
-    const [tray, setTray] = useState<ITray[]>(Tree.getTray(currentNode));
+    const [tray, setTray] = useState<ITray[]>(currentNode.getTray());
 
     function updateCurrentNode(node: FolderNode): FolderNode{
         currentNode = node
-        setTray(Tree.getTray(node))
+        setTray(node.getTray())
         return currentNode
     }
 

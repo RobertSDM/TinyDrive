@@ -26,6 +26,7 @@ interface IFolder {
     parentId?: string;
     childFolders: IFolder[];
     _type: "FOLDER";
+    tray: string;
 }
 
 export { IFolder, IFile };

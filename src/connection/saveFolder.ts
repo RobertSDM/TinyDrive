@@ -1,15 +1,12 @@
 import { beAPI } from "./../utils/index.js";
 
-const saveFolder = async (
-    name: string,
-) => {
+const saveFolder = async (name: string, parentId: string | null = null) => {
     const body = {
         name,
+        parentId,
     };
 
     const res = await beAPI.post("/save/folder", body);
-
-    console.log(res)
 
     if (res.status === 200) {
         return res.data.id;

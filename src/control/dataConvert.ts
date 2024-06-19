@@ -34,7 +34,8 @@ export const apiResponseToTreeNodes = (
             item.name,
             folder,
             folder && folder?.getId(),
-            item.id
+            item.id,
+            item.tray
         );
     });
 };

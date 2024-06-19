@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { MdExpandLess, MdExpandMore, MdFileUpload } from "react-icons/md";
 import { createSelectionInput } from "../control/fileReader.ts";
+import { TreeContext } from "../control/context/TreeContext.tsx";
 
 const ButtonGetFileOrFolder = () => {
     const [isUploadOpen, setIsUploadOpen] = useState(false);
+    const { tree } = useContext(TreeContext);
 
     return (
         <div
@@ -36,14 +38,14 @@ const ButtonGetFileOrFolder = () => {
                 }`}
             >
                 <button
-                    onClick={() => createSelectionInput(true)}
+                    onClick={() => createSelectionInput(true, tree.getRoot())}
                     className="hover:bg-purple-500 px-2 py-1 hover:text-white cursor-pointer w-full"
                 >
                     Arquivos
                 </button>
                 <hr className="w-4/5 mx-auto" />
                 <button
-                    onClick={() => createSelectionInput(false)}
+                    onClick={() => createSelectionInput(false, tree.getRoot())}
                     className="hover:bg-purple-500 px-2 py-1 hover:text-white cursor-pointer w-full"
                 >
                     Pastas
