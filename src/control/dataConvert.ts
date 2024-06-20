@@ -1,4 +1,4 @@
-import { IFile, IFolder } from "../types/index.js";
+import type { IFile, IFolder } from "../types/types.d.ts";
 import { FolderNode, Tree } from "./Tree.ts";
 
 export const convertArrayBufferToBase64 = (byteData: ArrayBuffer): string => {

@@ -74,7 +74,7 @@ const ContentTable = ({ files }: { files: Array<FileNode | FolderNode> }) => {
                 </>
             ) : (
                 <tbody>
-                    <tr className="border-0">
+                    <tr className="border-0 hover:bg-transparent">
                         <td className="mx-auto flex justify-center text-black/30 font-semibold">
                             Nenhum arquivo salvo
                         </td>

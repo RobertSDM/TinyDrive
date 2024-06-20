@@ -1,7 +1,4 @@
-export interface ITray {
-    name: string;
-    link: string;
-}
+import type { ITray } from "../types/types.d.ts";
 
 export class FileNode {
     private name: string;
@@ -124,7 +121,7 @@ export class FolderNode {
         parent: FolderNode | null,
         parentId: string | null,
         id: string,
-        tray: string
+        tray: string | null
     ) {
         this.name = name;
         this.parent = parent;
@@ -133,14 +130,16 @@ export class FolderNode {
         this.tray = this.createTray(tray);
     }
 
-    private createTray(strTray: string): ITray[] {
+    private createTray(strTray: string | null): ITray[] {
         const tray: ITray[] = [];
-        const parts = strTray.split("/");
-
         tray.push({
             name: "/",
             link: `http://localhost:5173/`,
         });
+        if (!strTray) {
+            return tray;
+        }
+        const parts = strTray.split("/");
 
         for (const part of parts) {
             if (parts.length > 1) {
@@ -211,7 +210,7 @@ export class FolderNode {
         return this.folders;
     }
 
-    // Getter 
+    // Getter
     public getTray(): ITray[] {
         return this.tray;
     }
@@ -234,7 +233,7 @@ export class Tree {
     private nodes: Set<FolderNode | FileNode> = new Set();
 
     constructor() {
-        this.root = new FolderNode("/", null, "", "", "");
+        this.root = new FolderNode("/", null, "", "", null);
     }
 
     public createFileNode(
@@ -247,6 +246,11 @@ export class Tree {
         extension: string,
         byteSize: number
     ): void {
+        for (const i of this.fileNodes.values()) {
+            if (i.getId() == id) {
+                return;
+            }
+        }
         const node = new FileNode(
             name,
             parentId,
@@ -275,8 +279,13 @@ export class Tree {
         id: string,
         tray: string
     ): void {
-        const node = new FolderNode(name, parent, parentId, id, tray);
+        for (const i of this.folderNodes.values()) {
+            if (i.getId() == id) {
+                return;
+            }
+        }
 
+        const node = new FolderNode(name, parent, parentId, id, tray);
         if (parent != null) {
             parent.addFolder(node);
         } else {
@@ -302,8 +311,6 @@ export class Tree {
             }
         }
     }
-
-
 
     // Getter
     public getFileNodes(): Set<FileNode> {

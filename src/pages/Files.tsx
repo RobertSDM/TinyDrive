@@ -7,6 +7,7 @@ import { apiResponseToTreeNodes } from "../control/dataConvert.ts";
 import { TreeContext } from "../control/context/TreeContext.tsx";
 import ContentTable from "../components/ContentTable.tsx";
 import { FileNode, FolderNode } from "../control/Tree.ts";
+import { NotificationContext } from "../control/context/NotificationSystem.tsx";
 
 const Folder = () => {
     const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
@@ -14,6 +15,7 @@ const Folder = () => {
         useContext(TreeContext);
     const { updateTitle } = useContext(TitleContext);
     const { id } = useParams();
+    const { enqueue } = useContext(NotificationContext);
 
     
     useEffect(() => {
@@ -26,9 +28,8 @@ const Folder = () => {
             }
         });
         
-        getByFolder(id!).then((res) => {
+        getByFolder(id!, enqueue).then((res) => {
             if (res) {
-                
                 apiResponseToTreeNodes(res, tree, updatedNode!);
 
                 setContent([

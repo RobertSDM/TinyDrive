@@ -1,5 +1,6 @@
 import { ReactElement, createContext, useState } from "react";
-import { FolderNode, ITray, Tree } from "../Tree.ts";
+import { FolderNode,  Tree } from "../Tree.ts";
+import type { ITray } from "../../types/types.d.ts";
 
 interface ITreeContext {
     currentNode: FolderNode;
@@ -15,6 +16,7 @@ export const TreeProvider = ({ children }: { children: ReactElement }) => {
     const [tree] = useState<Tree>(new Tree());
 
     let currentNode = tree!.getRoot();
+    console.log(currentNode.getTray());
     const [tray, setTray] = useState<ITray[]>(currentNode.getTray());
 
     function updateCurrentNode(node: FolderNode): FolderNode{
