@@ -1,4 +1,5 @@
 import type { ITray } from "../types/types.d.ts";
+import { VITE_URL } from "../utils/index.ts";
 
 export class FileNode {
     private name: string;
@@ -134,7 +135,7 @@ export class FolderNode {
         const tray: ITray[] = [];
         tray.push({
             name: "/",
-            link: `http://localhost:5173/`,
+            link: `${VITE_URL}/`,
         });
         if (!strTray) {
             return tray;
@@ -150,7 +151,7 @@ export class FolderNode {
 
             tray.push({
                 name: name,
-                link: `http://localhost:5173/folder/${id}`,
+                link: `${VITE_URL}/folder/${id}`,
             });
         }
 
