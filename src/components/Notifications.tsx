@@ -12,7 +12,7 @@ const InfoNotification = ({
 }) => {
     const [perc, setPerc] = useState<number>(100);
     const [time, setTime]= useState<number>(notification.time);
-    const _subamount = 500;
+    const _subamount = 1;
 
     useEffect(() => {
         if (perc >= 0) {

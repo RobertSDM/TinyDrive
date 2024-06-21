@@ -2,6 +2,7 @@
 
 import { Link } from "react-router-dom";
 import { FileNode, FolderNode } from "../control/Tree.ts";
+import { VITE_URL } from "../utils/index.ts";
 // import { IFile, IFolder } from "../types/index.js";
 
 const isFile = (item: FileNode | FolderNode) => {
@@ -27,7 +28,7 @@ const ContentTable = ({ files }: { files: Array<FileNode | FolderNode> }) => {
                                     <section>
                                         {f instanceof FolderNode ? (
                                             <Link
-                                                to={`http://localhost:5173/folder/${f.getId()}`}
+                                                to={`${VITE_URL}/folder/${f.getId()}`}
                                             >
                                                 {f.getName()}
                                             </Link>
@@ -38,7 +39,7 @@ const ContentTable = ({ files }: { files: Array<FileNode | FolderNode> }) => {
                                     {f instanceof FileNode && (
                                         <section>
                                             <Link
-                                                to={`http://localhost:4500/download/${f.getId()}`}
+                                                to={`${VITE_URL}/download/${f.getId()}`}
                                                 target="_blank"
                                                 download
                                                 className="py-1 px-3 bg-white border  border-purple-500 hover:bg-purple-500 hover:text-white rounded-full"
