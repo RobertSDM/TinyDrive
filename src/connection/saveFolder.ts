@@ -19,7 +19,7 @@ const saveFolder = async (
             level: NotificationLevels.INFO,
             msg: `"${res.data.name}" salvo com sucesso`,
             title: "Salvamento",
-            time: 200,
+            time: 2000,
         });
 
         return res.data.id;

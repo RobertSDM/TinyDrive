@@ -67,7 +67,7 @@ const ErrorNotification = ({
 }) => {
     const [perc, setPerc] = useState<number>(100);
     const [time, setTime] = useState<number>(notification.time);
-    const _subamount = 1;
+    const _subamount = 100;
 
     useEffect(() => {
         if (perc >= 0) {

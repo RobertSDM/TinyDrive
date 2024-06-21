@@ -2,7 +2,7 @@
 
 import { Link } from "react-router-dom";
 import { FileNode, FolderNode } from "../control/Tree.ts";
-import { VITE_URL } from "../utils/index.ts";
+import { BACKEND_URL, VITE_URL } from "../utils/index.ts";
 // import { IFile, IFolder } from "../types/index.js";
 
 const isFile = (item: FileNode | FolderNode) => {
@@ -39,7 +39,7 @@ const ContentTable = ({ files }: { files: Array<FileNode | FolderNode> }) => {
                                     {f instanceof FileNode && (
                                         <section>
                                             <Link
-                                                to={`${VITE_URL}/download/${f.getId()}`}
+                                                to={`${BACKEND_URL}/download/${f.getId()}`}
                                                 target="_blank"
                                                 download
                                                 className="py-1 px-3 bg-white border  border-purple-500 hover:bg-purple-500 hover:text-white rounded-full"
