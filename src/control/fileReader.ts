@@ -10,45 +10,71 @@ const handleFolder = async (
     node: FolderNode,
     enqueue: (notification: INotification) => void
 ) => {
-    const reader = new FileReader();
-    const folderName = event.target.files![0].webkitRelativePath.split("/")[0];
-
-    const parentId = node.getParent()?.getId() ?? null;
-
-    const folderId = await saveFolder(folderName, parentId, enqueue);
-
+    let folderId: string | null = null;
+    // const parentId = node.getParent()?.getId() ?? null;
     let readIndex = 0;
+    const memo = {} as {
+        [key: string]: string;
+    };
+    const files = event.target.files!;
 
-    const fileList = event.target.files!;
-
-    function readFile() {
-        if (readIndex >= fileList.length) {
-            return;
+    async function readFolder(
+        path: string[],
+        file: File,
+        parentId: string | null,
+        cut = 0
+    ) {
+        if (path.length > 2) {
+            return readFolder(path.slice(cut + 1), file, parentId, cut + 1);
         }
 
-        const file = fileList[readIndex];
+        const folderName = path[0];
+        if (memo[folderName] === undefined) {
+            folderId = await saveFolder(folderName, parentId, enqueue);
+            memo[folderName] = folderId!;
+        }
+        console.log("Pasta salva : " + folderName);
 
-        reader.readAsArrayBuffer(file);
+        const e: ProgressEvent<FileReader> = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsArrayBuffer(file);
+            reader.onload = (e: ProgressEvent<FileReader>) => {
+                resolve(e);
+            };
+            reader.onerror = (e) => {
+                console.log(e);
+            };
+        });
 
-        reader.onload = (e) => {
-            const extractedContent = file.name.split(".");
+        const extractedContent = file.name.split(".");
+        const name = extractedContent[0];
+        let extension;
+        if (extractedContent.length > 1) {
+            extension = extractedContent[extractedContent.length - 1];
+        } else {
+            extension = "";
+        }
 
-            const name = extractedContent[0];
-            const extension = extractedContent[extractedContent.length - 1];
+        const base64 = convertArrayBufferToBase64(
+            e.target!.result as ArrayBuffer
+        );
 
-            const base64 = convertArrayBufferToBase64(
-                e.target!.result! as ArrayBuffer
-            );
+        console.log("Arquivo salvo : " + name);
+        saveFile(enqueue, base64, folderId, name, extension, e.total);
 
-            saveFile(enqueue, base64, folderId, name, extension, e.total);
-            readIndex++;
-            readFile();
-        };
+        return;
     }
 
-    // using recursion because the loop should run
-    // when the file is readed
-    readFile();
+    if (event.target.files) {
+        while (readIndex < files.length) {
+            await readFolder(
+                files[readIndex].webkitRelativePath.split("/"),
+                files[readIndex],
+                folderId
+            );
+            readIndex++;
+        }
+    }
 };
 
 const handleFile = (
@@ -59,11 +85,7 @@ const handleFile = (
     const fileList = event.target.files!;
     let readIndex = 0;
 
-    function readFile() {
-        if (readIndex >= fileList.length) {
-            return;
-        }
-
+    while (readIndex < fileList.length) {
         const file = fileList[readIndex];
         reader.readAsArrayBuffer(file);
 
@@ -71,7 +93,12 @@ const handleFile = (
             const extractedContent = file.name.split(".");
 
             const name = extractedContent[0];
-            const extension = extractedContent[extractedContent.length - 1];
+            let extension;
+            if (extractedContent.length > 1) {
+                extension = extractedContent[extractedContent.length - 1];
+            } else {
+                extension = "";
+            }
 
             const base64 = convertArrayBufferToBase64(
                 e.target!.result! as ArrayBuffer
@@ -79,13 +106,8 @@ const handleFile = (
 
             saveFile(enqueue, base64, null, name, extension, e.total);
             readIndex++;
-            readFile();
         };
     }
-
-    // using recursion because the loop should run
-    // when the file is readed
-    readFile();
 };
 
 const createSelectionInput = (

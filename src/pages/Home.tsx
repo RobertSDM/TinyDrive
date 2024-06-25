@@ -13,29 +13,25 @@ function Home() {
     const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
     const { updateTitle } = useContext(TitleContext);
     const { tray, tree, updateCurrentNode } = useContext(TreeContext);
-    const {enqueue} = useContext(NotificationContext)
+    const { enqueue } = useContext(NotificationContext);
 
     useEffect(() => {
         updateTitle("Tiny Drive", document);
 
         const updatedNode = updateCurrentNode(tree.getRoot());
 
-        // if (!JSON.parse(localStorage.getItem("home") || "false")) {
-            // Get the root files and folders
-            getAllRootFiles(enqueue).then((res) => {
-                if (res) {
-                    console.log(res);
-                    apiResponseToTreeNodes(res, tree);
+        // Get the root files and folders
+        getAllRootFiles(enqueue).then((res) => {
+            if (res) {
+                apiResponseToTreeNodes(res, tree, tree.getRoot());
 
-                    setContent([
-                        ...updatedNode.getFiles(),
-                        ...updatedNode.getFolders(),
-                    ]);
-
-                    // localStorage.setItem("home", JSON.stringify(true));
-                }
-            });
-        // }
+                setContent([
+                    ...updatedNode.getFiles(),
+                    ...updatedNode.getFolders(),
+                ]);
+                tree.viewTree();
+            }
+        });
     }, []);
 
     return (

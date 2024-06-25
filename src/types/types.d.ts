@@ -8,6 +8,7 @@ export interface IFile {
     _type: "FILE";
     id: string;
     prefix: string;
+    folder?: IFolder;
     // byteSize_formatted: string;
     extension: string;
     byteSize: number;
@@ -24,8 +25,8 @@ export interface IFolder {
     id: string;
     name: string;
     files: IFile[];
-    parent?: IFolder;
-    parentId?: string;
+    folder?: IFolder;
+    folderC_id?: string;
     childFolders: IFolder[];
     _type: "FOLDER";
     tray: string;

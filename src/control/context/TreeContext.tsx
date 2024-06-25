@@ -16,7 +16,6 @@ export const TreeProvider = ({ children }: { children: ReactElement }) => {
     const [tree] = useState<Tree>(new Tree());
 
     let currentNode = tree!.getRoot();
-    console.log(currentNode.getTray());
     const [tray, setTray] = useState<ITray[]>(currentNode.getTray());
 
     function updateCurrentNode(node: FolderNode): FolderNode{

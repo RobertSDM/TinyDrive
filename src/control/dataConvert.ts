@@ -11,31 +11,57 @@ export const convertArrayBufferToBase64 = (byteData: ArrayBuffer): string => {
 };
 
 export const apiResponseToTreeNodes = (
-    res: Array<IFile[] | IFolder[]>,
+    res: { files: IFile[]; folders: IFolder[] },
     tree: Tree,
-    folder: FolderNode | null = null
+    folder: FolderNode
 ) => {
-    res[0].forEach((item) => {
-        item = item as IFile;
-        tree.createFileNode(
+    res["folders"].forEach((item) => {
+        item = item as IFolder;
+
+        console.log(item);
+
+        const folderNode = tree.createFolderNode(
             item.name,
             folder,
             folder && folder.getId(),
             item.id,
+            item.tray
+        );
+
+        if (
+            folder.getId() === tree.getRoot().getId() &&
+            folderNode.getParentId() === null
+        ) {
+            tree.getRoot().addFolder(folderNode);
+            folderNode.setParent(tree.getRoot());   
+        }
+
+        Object.values(tree.getFolderNodes()).forEach((node) => {
+            // Is father?
+            if (node.getId() === folderNode.getParentId()) {
+                folderNode.setParent(node);
+                node.addFolder(folderNode);
+            }
+            // Is child?
+            else if (node.getParentId() === folderNode.getId()) {
+                node.getParent()?.removeFolder(folderNode);
+                node.setParent(folderNode);
+                folderNode.addFolder(node);
+            }
+        });
+    });
+
+    res["files"].forEach((item) => {
+        item = item as IFile;
+
+        tree.createFileNode(
+            item.name,
+            folder,
+            folder.getId(),
+            item.id,
             item.prefix,
             item.extension,
             item.byteSize
-        );
-    });
-
-    res[1].forEach((item) => {
-        item = item as IFolder;
-        tree.createFolderNode(
-            item.name,
-            folder,
-            folder && folder?.getId(),
-            item.id,
-            item.tray
         );
     });
 };

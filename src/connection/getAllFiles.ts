@@ -21,15 +21,15 @@ const getAllFilesByFolderId = async (
 
 const getAllRootFiles = async (
     enqueue: (notification: INotification) => void
-): Promise<false | Array<IFile[] | IFolder[]>> => {
+): Promise<false | { files: IFile[]; folders: IFolder[] }> => {
     try {
         const res = await beAPI.get("/get_root_files");
 
         if (res.status === 200) {
-            return res.data as Array<IFile[] | IFolder[]>;
+            return res.data;
         }
 
-        return [] as Array<IFile[] | IFolder[]>;
+        return {} as { files: IFile[]; folders: IFolder[] };
     } catch (err) {
         enqueue({
             level: NotificationLevels.ERROR,
@@ -45,15 +45,22 @@ const getAllRootFiles = async (
 const getByFolder = async (
     id: string,
     enqueue: (notification: INotification) => void
-): Promise<false | Array<IFile[] | IFolder[]>> => {
+): Promise<
+    false | { files: IFile[]; folders: IFolder[]; requestedFolder: IFolder }
+> => {
     try {
         const res = await beAPI.get(`/from/folder/${id}`);
 
         if (res.status === 200) {
-            return res.data as Array<IFile[] | IFolder[]>;
+            console.log(res);
+            return res.data;
         }
 
-        return [] as Array<IFile[] | IFolder[]>;
+        return {} as {
+            files: IFile[];
+            folders: IFolder[];
+            requestedFolder: IFolder;
+        };
     } catch (err) {
         enqueue({
             level: NotificationLevels.ERROR,

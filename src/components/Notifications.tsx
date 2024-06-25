@@ -11,7 +11,7 @@ const InfoNotification = ({
     notification: INotification;
 }) => {
     const [perc, setPerc] = useState<number>(100);
-    const [time, setTime]= useState<number>(notification.time);
+    const [time, setTime] = useState<number>(notification.time);
     const _subamount = 1;
 
     useEffect(() => {
@@ -24,6 +24,8 @@ const InfoNotification = ({
                 if (newPerc <= 0) {
                     dequeue();
                     clearInterval(interval);
+                    setPerc(100);
+                    setTime(notification.time);
                     return;
                 }
             }, _subamount);
@@ -40,7 +42,11 @@ const InfoNotification = ({
                 </span>
                 <span
                     className="text-purple-600 text-xl cursor-pointer"
-                    onClick={() => dequeue()}
+                    onClick={() => {
+                        dequeue();
+                        setPerc(100);
+                        setTime(notification.time);
+                    }}
                 >
                     x
                 </span>
@@ -150,7 +156,6 @@ const ErrorNotification = ({
 
 const Notifications = () => {
     const { dequeue, currentOne } = useContext(NotificationContext);
-
 
     return (
         <>

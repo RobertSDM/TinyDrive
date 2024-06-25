@@ -11,34 +11,46 @@ import { NotificationContext } from "../control/context/NotificationSystem.tsx";
 
 const Folder = () => {
     const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
-    const { tray, tree, updateCurrentNode } =
-        useContext(TreeContext);
+    const { tray, tree, updateCurrentNode } = useContext(TreeContext);
     const { updateTitle } = useContext(TitleContext);
     const { id } = useParams();
     const { enqueue } = useContext(NotificationContext);
 
-    
     useEffect(() => {
         updateTitle("Tiny Drive | Files", document);
         let updatedNode: FolderNode;
+        setContent([]);
 
-        tree.getFolderNodes().forEach((node) => {
-            if (node.getId() === id) {
-                updatedNode = updateCurrentNode(node);
-            }
-        });
-        
+        if (tree.getFolderNodes()[id!] !== undefined) {
+            updatedNode = updateCurrentNode(tree.getFolderNodes()[id!]);
+        }
+
         getByFolder(id!, enqueue).then((res) => {
             if (res) {
-                apiResponseToTreeNodes(res, tree, updatedNode!);
+                if (!updatedNode) {
+                    const folderNode = tree.createFolderNode(
+                        res["requestedFolder"].name,
+                        null,
+                        res["requestedFolder"].folderC_id!,
+                        res["requestedFolder"].id,
+                        res["requestedFolder"].tray,
+                        true
+                    );
+
+                    updatedNode = updateCurrentNode(folderNode);
+                }
+
+                apiResponseToTreeNodes(res, tree, updatedNode);
 
                 setContent([
-                    ...updatedNode!.getFiles(),
-                    ...updatedNode!.getFolders(),
+                    ...updatedNode.getFiles(),
+                    ...updatedNode.getFolders(),
                 ]);
+
+                tree.viewTree();
             }
         });
-    }, []);
+    }, [id]);
 
     return (
         <>

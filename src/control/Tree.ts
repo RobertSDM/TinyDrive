@@ -143,11 +143,11 @@ export class FolderNode {
         const parts = strTray.split("/");
 
         for (const part of parts) {
-            if (parts.length > 1) {
+            if (tray.length > 1) {
                 tray.push({ name: "/", link: "" });
             }
 
-            const [name, id] = part.split("-");
+            const [name, id] = part.split(";");
 
             tray.push({
                 name: name,
@@ -162,12 +162,12 @@ export class FolderNode {
         this.files.add(file);
     }
 
-    public removeFile(file: FileNode): void {
-        this.files.delete(file);
-    }
-
     public addFolder(folder: FolderNode): void {
         this.folders.add(folder);
+    }
+
+    public removeFile(file: FileNode): void {
+        this.files.delete(file);
     }
 
     public removeFolder(folder: FolderNode): void {
@@ -229,12 +229,16 @@ export class FolderNode {
 
 export class Tree {
     private root: FolderNode;
-    private fileNodes: Set<FileNode> = new Set();
-    private folderNodes: Set<FolderNode> = new Set();
-    private nodes: Set<FolderNode | FileNode> = new Set();
+    private fileNodes = {} as {
+        [key: string]: FileNode;
+    };
+    private folderNodes = {} as {
+        [key: string]: FolderNode;
+    };
+    private nodes: Set<FileNode | FolderNode> = new Set();
 
     constructor() {
-        this.root = new FolderNode("/", null, "", "", null);
+        this.root = new FolderNode("/", null, null, "", null);
     }
 
     public createFileNode(
@@ -247,11 +251,10 @@ export class Tree {
         extension: string,
         byteSize: number
     ): void {
-        for (const i of this.fileNodes.values()) {
-            if (i.getId() == id) {
-                return;
-            }
+        if (this.fileNodes[id] !== undefined) {
+            return;
         }
+
         const node = new FileNode(
             name,
             parentId,
@@ -269,7 +272,7 @@ export class Tree {
             this.root.addFile(node);
         }
 
-        this.fileNodes.add(node);
+        this.fileNodes[node.getId()] = node;
         this.nodes.add(node);
     }
 
@@ -278,47 +281,60 @@ export class Tree {
         parent: FolderNode | null,
         parentId: string | null,
         id: string,
-        tray: string
-    ): void {
-        for (const i of this.folderNodes.values()) {
-            if (i.getId() == id) {
-                return;
-            }
+        tray: string,
+        dift: boolean = false
+    ): FolderNode {
+        if (this.folderNodes[id] !== undefined) {
+            return this.folderNodes[id];
         }
 
         const node = new FolderNode(name, parent, parentId, id, tray);
-        if (parent != null) {
-            parent.addFolder(node);
-        } else {
-            node.setParent(this.root);
-            this.root.addFolder(node);
+
+        if (!dift) {
+            if (parent != null) {
+                parent.addFolder(node);
+            } else {
+                node.setParent(this.root);
+                this.root.addFolder(node);
+            }
         }
 
-        this.folderNodes.add(node);
+        this.folderNodes[node.getId()] = node;
         this.nodes.add(node);
+        return node;
     }
 
     // Algoritmhs
 
     public viewTree(node: FolderNode = this.root, deep = 0) {
-        if (node.getFiles().size == 0) return;
+        if (node.getFiles().size == 0 && node.getFolders().size === 0) return;
 
-        for (const n of this.nodes.values()) {
+        for (const n of [...node.getFiles(), ...node.getFolders()]) {
             if (n instanceof FolderNode) {
                 console.log(" ".repeat(deep * 4) + n.getName());
-                this.viewTree(n, ++deep);
+                this.viewTree(n, deep + 1);
             } else {
-                console.log(" ".repeat(deep * 4) + n.getName());
+                console.log(
+                    " ".repeat(deep * 4) + n.getName() + "." + n.getExtension()
+                );
             }
         }
     }
 
     // Getter
-    public getFileNodes(): Set<FileNode> {
+    public getFileNodes(): {
+        [key: string]: FileNode;
+    } {
         return this.fileNodes;
     }
 
-    public getFolderNodes(): Set<FolderNode> {
+    public getNodes(): Set<FileNode | FolderNode> {
+        return this.nodes;
+    }
+
+    public getFolderNodes(): {
+        [key: string]: FolderNode;
+    } {
         return this.folderNodes;
     }
 

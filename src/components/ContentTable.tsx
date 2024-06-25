@@ -3,6 +3,9 @@
 import { Link } from "react-router-dom";
 import { FileNode, FolderNode } from "../control/Tree.ts";
 import { BACKEND_URL, VITE_URL } from "../utils/index.ts";
+import { deleteFileById } from "../connection/deleteFile.ts";
+import { useContext } from "react";
+import { NotificationContext } from "../control/context/NotificationSystem.tsx";
 // import { IFile, IFolder } from "../types/index.js";
 
 const isFile = (item: FileNode | FolderNode) => {
@@ -10,6 +13,8 @@ const isFile = (item: FileNode | FolderNode) => {
 };
 
 const ContentTable = ({ files }: { files: Array<FileNode | FolderNode> }) => {
+    const { enqueue } = useContext(NotificationContext);
+
     return (
         <table className="mt-5 w-full">
             {files.length > 0 ? (
@@ -37,7 +42,7 @@ const ContentTable = ({ files }: { files: Array<FileNode | FolderNode> }) => {
                                         )}
                                     </section>
                                     {f instanceof FileNode && (
-                                        <section>
+                                        <section className="space-x-3">
                                             <Link
                                                 to={`${BACKEND_URL}/download/${f.getId()}`}
                                                 target="_blank"
@@ -46,6 +51,19 @@ const ContentTable = ({ files }: { files: Array<FileNode | FolderNode> }) => {
                                             >
                                                 ↓
                                             </Link>
+                                            <span
+                                                className="py-1 px-3 bg-white
+                                                cursor-pointer 
+                                                text-red-500 border  border-red-500 hover:bg-red-500 hover:text-white rounded-full"
+                                                onClick={() => {
+                                                    deleteFileById(
+                                                        enqueue,
+                                                        f.getId()
+                                                    );
+                                                }}
+                                            >
+                                                x
+                                            </span>
                                         </section>
                                     )}
                                 </td>
