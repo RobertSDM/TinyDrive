@@ -2,7 +2,7 @@
 
 import { Link } from "react-router-dom";
 import { FileNode, FolderNode } from "../control/Tree.ts";
-import { BACKEND_URL, VITE_URL } from "../utils/index.ts";
+import { BACKEND_URL} from "../utils/index.ts";
 import { deleteFileById } from "../connection/deleteFile.ts";
 import { useContext } from "react";
 import { NotificationContext } from "../control/context/NotificationSystem.tsx";
@@ -33,7 +33,7 @@ const ContentTable = ({ files }: { files: Array<FileNode | FolderNode> }) => {
                                     <section>
                                         {f instanceof FolderNode ? (
                                             <Link
-                                                to={`${VITE_URL}/folder/${f.getId()}`}
+                                                to={`/folder/${f.getId()}`}
                                             >
                                                 {f.getName()}
                                             </Link>
