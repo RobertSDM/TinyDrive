@@ -2,12 +2,11 @@ import { ChangeEvent } from "react";
 import saveFile from "../connection/saveFile.ts";
 import { convertArrayBufferToBase64 } from "./dataConvert.ts";
 import saveFolder from "../connection/saveFolder.ts";
-import { FolderNode } from "./Tree.ts";
 import { INotification } from "../types/types.js";
 
 const handleFolder = async (
     event: ChangeEvent<HTMLInputElement>,
-    node: FolderNode,
+    // node: FolderNode,
     enqueue: (notification: INotification) => void
 ) => {
     let folderId: string | null = null;
@@ -112,7 +111,6 @@ const handleFile = (
 
 const createSelectionInput = (
     isFileInput: boolean,
-    node: FolderNode,
     enqueue: (notification: INotification) => void
 ) => {
     const input = document.createElement("input");
@@ -129,7 +127,6 @@ const createSelectionInput = (
         } else {
             handleFolder(
                 e as unknown as ChangeEvent<HTMLInputElement>,
-                node,
                 enqueue
             );
         }
@@ -145,7 +142,6 @@ const createSelectionInput = (
         } else {
             handleFolder(
                 e as unknown as ChangeEvent<HTMLInputElement>,
-                node,
                 enqueue
             );
         }
