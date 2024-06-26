@@ -12,7 +12,8 @@ import { NotificationContext } from "../control/context/NotificationSystem.tsx";
 function Home() {
     const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
     const { updateTitle } = useContext(TitleContext);
-    const { tray, tree, updateCurrentNode } = useContext(TreeContext);
+    const { tray, tree, updateCurrentNode, currentNode } =
+        useContext(TreeContext);
     const { enqueue } = useContext(NotificationContext);
 
     useEffect(() => {
@@ -67,8 +68,15 @@ function Home() {
                 </nav>
 
                 <section className="mt-5 mx-auto max-w-xl md:max-w-5xl xl:max-w-7xl border-t border-black/10 py-4 space-y-16">
-                    <ButtonGetFileOrFolder />
-                    <ContentTable files={content} />
+                    <ButtonGetFileOrFolder
+                        setContent={setContent}
+                        currentNode={currentNode}
+                    />
+                    <ContentTable
+                        files={content}
+                        setContent={setContent}
+                        currentNode={currentNode}
+                    />
                 </section>
             </main>
         </>

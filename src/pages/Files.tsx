@@ -11,7 +11,8 @@ import { NotificationContext } from "../control/context/NotificationSystem.tsx";
 
 const Folder = () => {
     const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
-    const { tray, tree, updateCurrentNode } = useContext(TreeContext);
+    const { tray, tree, updateCurrentNode, currentNode } =
+        useContext(TreeContext);
     const { updateTitle } = useContext(TitleContext);
     const { id } = useParams();
     const { enqueue } = useContext(NotificationContext);
@@ -40,6 +41,15 @@ const Folder = () => {
                     updatedNode = updateCurrentNode(folderNode);
                 }
 
+                console.log(
+                    `Node with id -> ${id} : ` +
+                        JSON.stringify(tree.getFolderNodes()[id!], null, " ")
+                );
+
+                console.log(
+                    "Updated Node : " + JSON.stringify(updatedNode, null, " ")
+                );
+
                 apiResponseToTreeNodes(res, tree, updatedNode);
 
                 setContent([
@@ -47,6 +57,7 @@ const Folder = () => {
                     ...updatedNode.getFolders(),
                 ]);
 
+                // console.log(currentNode);
                 tree.viewTree();
             }
         });
@@ -85,8 +96,15 @@ const Folder = () => {
                 </nav>
 
                 <section className="mt-5 mx-auto max-w-xl md:max-w-5xl xl:max-w-7xl border-t border-black/10 py-4 space-y-16">
-                    <ButtonGetFileOrFolder />
-                    <ContentTable files={content} />
+                    <ButtonGetFileOrFolder
+                        setContent={setContent}
+                        currentNode={currentNode}
+                    />
+                    <ContentTable
+                        files={content}
+                        setContent={setContent}
+                        currentNode={currentNode}
+                    />
                 </section>
             </main>
         </>

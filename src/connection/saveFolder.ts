@@ -1,12 +1,12 @@
 import { NotificationLevels } from "../types/index.ts";
-import { INotification } from "../types/types.js";
+import { IFolder, INotification } from "../types/types.js";
 import { beAPI } from "./../utils/index.js";
 
 const saveFolder = async (
     name: string,
     parentId: string | null = null,
     enqueue: (notification: INotification) => void
-) => {
+): Promise<IFolder> => {
     const body = {
         name,
         parentId,
@@ -22,10 +22,10 @@ const saveFolder = async (
             time: 2000,
         });
 
-        return res.data.id;
+        return res.data;
     }
 
-    return false;
+    return {} as IFolder;
 };
 
 export default saveFolder;

@@ -241,6 +241,34 @@ export class Tree {
         this.root = new FolderNode("/", null, null, "", null);
     }
 
+    public deleteFileNode(node: FileNode): void {
+        node.getParent()?.removeFile(node);
+        delete this.fileNodes[node.getId()];
+    }
+
+    public deleteFolderNode(node: FolderNode): void {
+        console.log(node);
+        const list = [...node.getFiles(), ...node.getFolders()];
+
+        if (list.length === 0) {
+            node.getParent()?.removeFolder(node);
+            return;
+        }
+
+        list.forEach((item) => {
+            if (item instanceof FolderNode) {
+                if (item.getFolders().size > 0 || item.getFiles().size > 0) {
+                    this.deleteFolderNode(item);
+                }
+                delete this.folderNodes[item.getId()];
+                console.log(this.folderNodes);
+            } else if (item instanceof FileNode) {
+                delete this.fileNodes[item.getId()];
+            }
+        });
+        node.getParent()?.removeFolder(node);
+    }
+
     public createFileNode(
         name: string,
         parent: FolderNode | null,

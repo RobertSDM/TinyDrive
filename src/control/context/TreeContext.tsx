@@ -15,13 +15,13 @@ export const TreeProvider = ({ children }: { children: ReactElement }) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [tree] = useState<Tree>(new Tree());
 
-    let currentNode = tree!.getRoot();
+    const [currentNode, setCurrentNode] = useState<FolderNode>(tree!.getRoot());
     const [tray, setTray] = useState<ITray[]>(currentNode.getTray());
 
     function updateCurrentNode(node: FolderNode): FolderNode{
-        currentNode = node
+        setCurrentNode(node)
         setTray(node.getTray())
-        return currentNode
+        return node
     }
 
     return (

@@ -10,15 +10,13 @@ export const convertArrayBufferToBase64 = (byteData: ArrayBuffer): string => {
     );
 };
 
-export const apiResponseToTreeNodes = (
-    res: { files: IFile[]; folders: IFolder[] },
+export const folderToFolderNode = (
+    folders: IFolder[],
     tree: Tree,
     folder: FolderNode
 ) => {
-    res["folders"].forEach((item) => {
+    folders.forEach((item) => {
         item = item as IFolder;
-
-        console.log(item);
 
         const folderNode = tree.createFolderNode(
             item.name,
@@ -28,13 +26,26 @@ export const apiResponseToTreeNodes = (
             item.tray
         );
 
+        console.log(
+            "Folder Node on dataConverter : " +
+                JSON.stringify(folderNode, null, " ")
+        );
+
+        console.log(
+            "Node on dataConverter : " + JSON.stringify(folder, null, " ")
+        );
+
         if (
             folder.getId() === tree.getRoot().getId() &&
             folderNode.getParentId() === null
         ) {
             tree.getRoot().addFolder(folderNode);
-            folderNode.setParent(tree.getRoot());   
+            folderNode.setParent(tree.getRoot());
         }
+        console.log(
+            "Folder Node on dataConverter : " +
+                JSON.stringify(folderNode, null, " ")
+        );
 
         Object.values(tree.getFolderNodes()).forEach((node) => {
             // Is father?
@@ -50,8 +61,14 @@ export const apiResponseToTreeNodes = (
             }
         });
     });
+};
 
-    res["files"].forEach((item) => {
+export const fileToFileNode = (
+    files: IFile[],
+    tree: Tree,
+    folder: FolderNode
+) => {
+    files.forEach((item) => {
         item = item as IFile;
 
         tree.createFileNode(
@@ -64,4 +81,14 @@ export const apiResponseToTreeNodes = (
             item.byteSize
         );
     });
+};
+
+export const apiResponseToTreeNodes = (
+    res: { files: IFile[]; folders: IFolder[] },
+    tree: Tree,
+    folder: FolderNode
+) => {
+    folderToFolderNode(res["folders"], tree, folder);
+
+    fileToFileNode(res["files"], tree, folder);
 };

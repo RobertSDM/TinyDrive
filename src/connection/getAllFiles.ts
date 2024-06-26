@@ -52,7 +52,6 @@ const getByFolder = async (
         const res = await beAPI.get(`/from/folder/${id}`);
 
         if (res.status === 200) {
-            console.log(res);
             return res.data;
         }
 
