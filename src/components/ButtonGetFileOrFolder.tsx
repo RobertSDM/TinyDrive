@@ -15,6 +15,8 @@ const ButtonGetFileOrFolder = ({
     const [isUploadOpen, setIsUploadOpen] = useState(false);
     const { tree } = useContext(TreeContext);
     const { enqueue } = useContext(NotificationContext);
+    const user = JSON.parse(localStorage.getItem("user-info")!);
+
 
     return (
         <div
@@ -53,7 +55,8 @@ const ButtonGetFileOrFolder = ({
                             enqueue,
                             tree,
                             setContent,
-                            currentNode
+                            currentNode,
+                            user.id
                         )
                     }
                     className="hover:bg-purple-500 px-2 py-1 hover:text-white cursor-pointer w-full"
@@ -68,7 +71,8 @@ const ButtonGetFileOrFolder = ({
                             enqueue,
                             tree,
                             setContent,
-                            currentNode
+                            currentNode,
+                            user.id
                         )
                     }
                     className="hover:bg-purple-500 px-2 py-1 hover:text-white cursor-pointer w-full"

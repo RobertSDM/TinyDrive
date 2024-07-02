@@ -8,21 +8,21 @@ import {
 import saveFolder from "../connection/saveFolder.ts";
 import { IFolder, INotification } from "../types/types.js";
 import { FileNode, FolderNode, Tree } from "./Tree.ts";
+import { NotificationLevels } from "../types/index.ts";
 
 const handleFolder = async (
     event: ChangeEvent<HTMLInputElement>,
     // node: FolderNode,
     enqueue: (notification: INotification) => void,
     tree: Tree,
-
     setContent: React.Dispatch<React.SetStateAction<(FolderNode | FileNode)[]>>,
-    currentNode: FolderNode
+    currentNode: FolderNode,
+    userId: string
 ) => {
     let resFolder: IFolder;
     let currNode: FolderNode | null = null;
     let folderId: string | null = null;
     let tray: string | null = null;
-    // const parentId = node.getParent()?.getId() ?? null;
     let readIndex = 0;
     const memo = {} as {
         [key: string]: string;
@@ -35,8 +35,6 @@ const handleFolder = async (
         parentId: string | null,
         cut = 0
     ) {
-        console.log("#".repeat(8));
-
         if (path.length > 2) {
             return readFolder(path.slice(cut + 1), file, parentId, cut + 1);
         }
@@ -44,7 +42,13 @@ const handleFolder = async (
         const folderName = path[0];
 
         if (memo[folderName] === undefined) {
-            resFolder = await saveFolder(folderName, parentId, enqueue);
+            resFolder = await saveFolder(
+                folderName,
+                parentId,
+                enqueue,
+                userId,
+                false
+            );
             if (tray) {
                 resFolder.tray = `${tray}/${resFolder.name};${resFolder.id}`;
             } else {
@@ -70,16 +74,7 @@ const handleFolder = async (
                 ]);
             }
             memo[folderName] = resFolder.id!;
-            console.log("Pasta salva : " + folderName);
         }
-
-        console.log(
-            "Response from API : " + JSON.stringify(resFolder, null, " ")
-        );
-
-        console.log(
-            "Current folder node : " + JSON.stringify(currNode, null, " ")
-        );
 
         const e: ProgressEvent<FileReader> = await new Promise((resolve) => {
             const reader = new FileReader();
@@ -111,9 +106,10 @@ const handleFolder = async (
             folderId,
             name,
             extension,
-            e.total
+            e.total,
+            userId,
+            false
         );
-        console.log("Arquivo salvo : " + name);
 
         if (
             currNode?.getId() === resFolder.folderC_id ||
@@ -140,6 +136,12 @@ const handleFolder = async (
             );
             readIndex++;
         }
+        enqueue({
+            level: NotificationLevels.INFO,
+            msg: `Pasta salva com sucesso`,
+            title: "Salvamento",
+            time: 2000,
+        });
     }
 };
 
@@ -148,7 +150,8 @@ const handleFile = async (
     enqueue: (notification: INotification) => void,
     tree: Tree,
     setContent: React.Dispatch<React.SetStateAction<(FolderNode | FileNode)[]>>,
-    currentNode: FolderNode
+    currentNode: FolderNode,
+    userId: string
 ) => {
     const fileList = event.target.files!;
     let readIndex = 0;
@@ -180,14 +183,14 @@ const handleFile = async (
             e.target!.result as ArrayBuffer
         );
 
-        console.log("Arquivo salvo : " + name);
         const data = await saveFile(
             enqueue,
             base64,
             null,
             name,
             extension,
-            e.total
+            e.total,
+            userId
         );
 
         fileToFileNode([data], tree, tree.getRoot());
@@ -203,7 +206,8 @@ export const createSelectionInput = (
     enqueue: (notification: INotification) => void,
     tree: Tree,
     setContent: React.Dispatch<React.SetStateAction<(FolderNode | FileNode)[]>>,
-    currentNode: FolderNode
+    currentNode: FolderNode,
+    userId: string
 ) => {
     const input = document.createElement("input");
 
@@ -220,7 +224,8 @@ export const createSelectionInput = (
                 enqueue,
                 tree,
                 setContent,
-                currentNode
+                currentNode,
+                userId
             );
         } else {
             handleFolder(
@@ -228,7 +233,8 @@ export const createSelectionInput = (
                 enqueue,
                 tree,
                 setContent,
-                currentNode
+                currentNode,
+                userId
             );
         }
     });
@@ -244,7 +250,8 @@ export const createSelectionInput = (
                 enqueue,
                 tree,
                 setContent,
-                currentNode
+                currentNode,
+                userId
             );
         } else {
             handleFolder(
@@ -252,7 +259,8 @@ export const createSelectionInput = (
                 enqueue,
                 tree,
                 setContent,
-                currentNode
+                currentNode,
+                userId
             );
         }
     });

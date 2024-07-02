@@ -8,7 +8,6 @@ import { useContext } from "react";
 import { NotificationContext } from "../control/context/NotificationSystem.tsx";
 import { TreeContext } from "../control/context/TreeContext.tsx";
 import deleteFolderById from "../connection/deleteFolder.ts";
-// import { IFile, IFolder } from "../types/index.js";
 
 const isFile = (item: FileNode | FolderNode) => {
     return item instanceof FileNode;
@@ -25,6 +24,7 @@ const ContentTable = ({
 }) => {
     const { enqueue } = useContext(NotificationContext);
     const { tree } = useContext(TreeContext);
+    const user = JSON.parse(localStorage.getItem("user-info")!)
 
     return (
         <table className="mt-5 w-full">
@@ -72,13 +72,15 @@ const ContentTable = ({
                                                     if (f instanceof FileNode) {
                                                         await deleteFileById(
                                                             enqueue,
-                                                            f.getId()
+                                                            f.getId(),
+                                                            user.id
                                                         );
                                                         tree.deleteFileNode(f);
                                                     } else {
                                                         await deleteFolderById(
                                                             enqueue,
-                                                            f.getId()
+                                                            f.getId(),
+                                                            user.id
                                                         );
                                                         tree.deleteFolderNode(
                                                             f

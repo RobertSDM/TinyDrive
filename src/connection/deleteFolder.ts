@@ -4,9 +4,10 @@ import { beAPI } from "../utils/index.ts";
 
 const deleteFolderById = async (
     enqueue: (notification: INotification) => void,
-    id: string
+    id: string,
+    userId: string,
 ) => {
-    const res = await beAPI.delete(`/folder/delete/${id}`);
+    const res = await beAPI.delete(`/folder/delete/${id}/${userId}`);
 
     if (res.status === 200) {
         enqueue({

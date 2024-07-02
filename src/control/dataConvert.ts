@@ -26,15 +26,6 @@ export const folderToFolderNode = (
             item.tray
         );
 
-        console.log(
-            "Folder Node on dataConverter : " +
-                JSON.stringify(folderNode, null, " ")
-        );
-
-        console.log(
-            "Node on dataConverter : " + JSON.stringify(folder, null, " ")
-        );
-
         if (
             folder.getId() === tree.getRoot().getId() &&
             folderNode.getParentId() === null
@@ -42,10 +33,6 @@ export const folderToFolderNode = (
             tree.getRoot().addFolder(folderNode);
             folderNode.setParent(tree.getRoot());
         }
-        console.log(
-            "Folder Node on dataConverter : " +
-                JSON.stringify(folderNode, null, " ")
-        );
 
         Object.values(tree.getFolderNodes()).forEach((node) => {
             // Is father?

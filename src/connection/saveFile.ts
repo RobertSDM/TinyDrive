@@ -8,7 +8,9 @@ const saveFile = async (
     folderId: string | null,
     name: string,
     extension: string,
-    byteSize: number
+    byteSize: number,
+    userId: string,
+    showNotif: boolean = true
 ) => {
     const body = {
         byteData,
@@ -16,18 +18,21 @@ const saveFile = async (
         name,
         extension,
         byteSize,
+        owner_id: userId,
     };
 
-    const res = await beAPI.post("/save/file", body);
+    const res = await beAPI.post("/save/file", body, { withCredentials: true });
 
     if (res.status === 200) {
-        enqueue({
-            level: NotificationLevels.INFO,
-            msg: `"${res.data.name}" salvo com sucesso`,
-            title: "Salvamento",
-            time: 2000,
-        });
-        return res.data;
+        if (showNotif) {
+            enqueue({
+                level: NotificationLevels.INFO,
+                msg: `"${res.data.data.name}" salvo com sucesso`,
+                title: "Salvamento",
+                time: 2000,
+            });
+        }
+        return res.data.data;
     }
 
     return false;

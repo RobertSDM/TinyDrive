@@ -4,10 +4,10 @@ import { beAPI } from "../utils/index.ts";
 
 export const deleteFileById = async (
     enqueue: (notification: INotification) => void,
-    id: string
+    id: string,
+    userId: string
 ) => {
-
-    const res = await beAPI.delete(`/file/delete/${id}`);
+    const res = await beAPI.delete(`/file/delete/${id}/${userId}`);
 
     if (res.status === 200) {
         enqueue({

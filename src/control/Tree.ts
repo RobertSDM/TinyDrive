@@ -247,7 +247,6 @@ export class Tree {
     }
 
     public deleteFolderNode(node: FolderNode): void {
-        console.log(node);
         const list = [...node.getFiles(), ...node.getFolders()];
 
         if (list.length === 0) {
@@ -261,7 +260,6 @@ export class Tree {
                     this.deleteFolderNode(item);
                 }
                 delete this.folderNodes[item.getId()];
-                console.log(this.folderNodes);
             } else if (item instanceof FileNode) {
                 delete this.fileNodes[item.getId()];
             }

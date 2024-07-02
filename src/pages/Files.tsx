@@ -1,24 +1,26 @@
 import { getByFolder } from "../connection/getAllFiles.ts";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ButtonGetFileOrFolder from "../components/ButtonGetFileOrFolder.tsx";
-import { TitleContext } from "../control/context/titleContext.tsx";
 import { apiResponseToTreeNodes } from "../control/dataConvert.ts";
-import { TreeContext } from "../control/context/TreeContext.tsx";
 import ContentTable from "../components/ContentTable.tsx";
 import { FileNode, FolderNode } from "../control/Tree.ts";
-import { NotificationContext } from "../control/context/NotificationSystem.tsx";
+import {
+    useNotificationSystemContext,
+    useTreeContext,
+} from "../control/hooks/useContext.tsx";
+import useTitle from "../control/hooks/useTitle.tsx";
 
 const Folder = () => {
     const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
-    const { tray, tree, updateCurrentNode, currentNode } =
-        useContext(TreeContext);
-    const { updateTitle } = useContext(TitleContext);
+    const { tray, tree, updateCurrentNode, currentNode } = useTreeContext();
+    const setTitle = useTitle();
     const { id } = useParams();
-    const { enqueue } = useContext(NotificationContext);
+    const { enqueue } = useNotificationSystemContext();
+    const user = JSON.parse(localStorage.getItem("user-info")!);
 
     useEffect(() => {
-        updateTitle("Tiny Drive | Files", document);
+        setTitle("Tiny Drive | Files");
         let updatedNode: FolderNode;
         setContent([]);
 
@@ -26,7 +28,7 @@ const Folder = () => {
             updatedNode = updateCurrentNode(tree.getFolderNodes()[id!]);
         }
 
-        getByFolder(id!, enqueue).then((res) => {
+        getByFolder(id!, user.id, enqueue).then((res) => {
             if (res) {
                 if (!updatedNode) {
                     const folderNode = tree.createFolderNode(
@@ -41,15 +43,6 @@ const Folder = () => {
                     updatedNode = updateCurrentNode(folderNode);
                 }
 
-                console.log(
-                    `Node with id -> ${id} : ` +
-                        JSON.stringify(tree.getFolderNodes()[id!], null, " ")
-                );
-
-                console.log(
-                    "Updated Node : " + JSON.stringify(updatedNode, null, " ")
-                );
-
                 apiResponseToTreeNodes(res, tree, updatedNode);
 
                 setContent([
@@ -57,7 +50,6 @@ const Folder = () => {
                     ...updatedNode.getFolders(),
                 ]);
 
-                // console.log(currentNode);
                 tree.viewTree();
             }
         });
