@@ -23,3 +23,13 @@ details > summary::-webkit-details-marker {
         @apply p-2;
     }
 }
+
+@layer base{
+    .error-notifications{
+        @apply bg-red-500 shadow-lg shadow-red-100 absolute top-10 right-10 rounded-md w-96 py-4 px-6
+    }
+
+    .info-notifications {
+        @apply bg-white shadow-lg shadow-purple-200 absolute bottom-10 left-10 rounded-md w-96 py-4 px-6
+    }
+}

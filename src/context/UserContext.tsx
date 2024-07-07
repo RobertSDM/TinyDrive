@@ -1,9 +1,10 @@
-import { ReactElement, createContext, useState } from "react";
+import { ReactElement, createContext, useRef, useState } from "react";
 type user = { id: string; userName: string; email: string };
 
 type context = {
     isLogged: boolean;
-    logUser: (token: string, user: user) => void;
+    token: string;
+    logUser: (user: user, token: string) => void;
     logoutUser: () => void;
     findUserToken: () => string | null;
 };
@@ -12,6 +13,7 @@ export const UserContext = createContext<context>({} as context);
 
 export const UserProvider = ({ children }: { children: ReactElement }) => {
     const [isLogged, setIsLogged] = useState<boolean>(false);
+    const token = useRef<string>("");
 
     function findUserToken() {
         const tokenL = document.cookie.split(";").filter((c) => {
@@ -49,15 +51,12 @@ export const UserProvider = ({ children }: { children: ReactElement }) => {
     }
 
     function logUser(
-        token: string,
-        user: {
-            id: string;
-            userName: string;
-            email: string;
-        }
+        user: { id: string; userName: string; email: string },
+        res_token: string
     ) {
-        save_token(token);
+        save_token(res_token);
         save_user(user);
+        token.current = res_token;
         setIsLogged(true);
     }
 
@@ -71,6 +70,7 @@ export const UserProvider = ({ children }: { children: ReactElement }) => {
         <UserContext.Provider
             value={{
                 isLogged,
+                token: token.current,
                 logUser,
                 logoutUser,
                 findUserToken,

@@ -1,14 +1,14 @@
 import React, { ChangeEvent } from "react";
-import saveFile from "../connection/saveFile.ts";
 import {
     convertArrayBufferToBase64,
     fileToFileNode,
     folderToFolderNode,
 } from "./dataConvert.ts";
-import saveFolder from "../connection/saveFolder.ts";
+import saveFolder from "../connection/folder/saveFolder.ts";
 import { IFolder, INotification } from "../types/types.js";
 import { FileNode, FolderNode, Tree } from "./Tree.ts";
-import { NotificationLevels } from "../types/index.ts";
+import { NotificationLevels } from "../types/enums.ts";
+import saveFile from "../connection/file/saveFile.ts";
 
 const handleFolder = async (
     event: ChangeEvent<HTMLInputElement>,
@@ -17,7 +17,8 @@ const handleFolder = async (
     tree: Tree,
     setContent: React.Dispatch<React.SetStateAction<(FolderNode | FileNode)[]>>,
     currentNode: FolderNode,
-    userId: string
+    userId: string,
+    token: string
 ) => {
     let resFolder: IFolder;
     let currNode: FolderNode | null = null;
@@ -47,7 +48,8 @@ const handleFolder = async (
                 parentId,
                 enqueue,
                 userId,
-                false
+                false,
+                token
             );
             if (tray) {
                 resFolder.tray = `${tray}/${resFolder.name};${resFolder.id}`;
@@ -108,6 +110,7 @@ const handleFolder = async (
             extension,
             e.total,
             userId,
+            token,
             false
         );
 
@@ -140,7 +143,6 @@ const handleFolder = async (
             level: NotificationLevels.INFO,
             msg: `Pasta salva com sucesso`,
             title: "Salvamento",
-            time: 2000,
         });
     }
 };
@@ -151,7 +153,8 @@ const handleFile = async (
     tree: Tree,
     setContent: React.Dispatch<React.SetStateAction<(FolderNode | FileNode)[]>>,
     currentNode: FolderNode,
-    userId: string
+    userId: string,
+    token: string
 ) => {
     const fileList = event.target.files!;
     let readIndex = 0;
@@ -190,7 +193,8 @@ const handleFile = async (
             name,
             extension,
             e.total,
-            userId
+            userId,
+            token
         );
 
         fileToFileNode([data], tree, tree.getRoot());
@@ -207,7 +211,8 @@ export const createSelectionInput = (
     tree: Tree,
     setContent: React.Dispatch<React.SetStateAction<(FolderNode | FileNode)[]>>,
     currentNode: FolderNode,
-    userId: string
+    userId: string,
+    token: string
 ) => {
     const input = document.createElement("input");
 
@@ -225,7 +230,8 @@ export const createSelectionInput = (
                 tree,
                 setContent,
                 currentNode,
-                userId
+                userId,
+                token
             );
         } else {
             handleFolder(
@@ -234,7 +240,8 @@ export const createSelectionInput = (
                 tree,
                 setContent,
                 currentNode,
-                userId
+                userId,
+                token
             );
         }
     });
@@ -251,7 +258,8 @@ export const createSelectionInput = (
                 tree,
                 setContent,
                 currentNode,
-                userId
+                userId,
+                token
             );
         } else {
             handleFolder(
@@ -260,7 +268,8 @@ export const createSelectionInput = (
                 tree,
                 setContent,
                 currentNode,
-                userId
+                userId,
+                token
             );
         }
     });

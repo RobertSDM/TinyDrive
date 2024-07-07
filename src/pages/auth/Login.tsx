@@ -37,7 +37,7 @@ const Login = () => {
 
                         const res = await loginServ(email, pass, enqueue);
                         if (res) {
-                            logUser(res.token, res.user);
+                            logUser(res.data.user, res.token);
                             navigate("/");
                         }
                     }}

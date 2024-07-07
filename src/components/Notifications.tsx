@@ -1,23 +1,18 @@
 import { useContext, useEffect, useState } from "react";
-import { NotificationContext } from "../control/context/NotificationSystem.tsx";
-import { INotification } from "../types/types.js";
-// import { INotification } from "../types/index.js";
+import { NotificationContext } from "../context/NotificationSystem.tsx";
+import { NotificationLevels } from "../types/enums.ts";
 
-const InfoNotification = ({
-    dequeue,
-    notification,
-}: {
-    dequeue: () => void;
-    notification: INotification;
-}) => {
+const Notifications = () => {
+    const { dequeue, currentOne } = useContext(NotificationContext);
+
     const [perc, setPerc] = useState<number>(100);
-    const [time, setTime] = useState<number>(notification.time);
-    const _subamount = 1;
+    const [time, setTime] = useState<number>(4000);
+    const subAmount = 10;
 
     useEffect(() => {
         if (perc >= 0) {
             const interval = setInterval(() => {
-                const newTime = time - _subamount;
+                const newTime = time - subAmount;
                 const newPerc = (newTime * perc) / time;
                 setPerc(newPerc);
                 setTime(newTime);
@@ -25,152 +20,73 @@ const InfoNotification = ({
                     dequeue();
                     clearInterval(interval);
                     setPerc(100);
-                    setTime(notification.time);
+                    setTime(4000);
                     return;
                 }
-            }, _subamount);
+            }, subAmount);
 
             return () => clearInterval(interval);
         }
     }, [perc]);
-
-    return (
-        <div className="bg-white shadow-lg shadow-purple-200 absolute bottom-10 left-10 rounded-md w-96 py-4 px-6">
-            <div className="flex justify-between">
-                <span className="text-purple-600 font-semibold text-lg">
-                    {notification.title}
-                </span>
-                <span
-                    className="text-purple-600 text-xl cursor-pointer"
-                    onClick={() => {
-                        dequeue();
-                        setPerc(100);
-                        setTime(notification.time);
-                    }}
-                >
-                    x
-                </span>
-            </div>
-            <div className="mb-3">
-                <p className="text-purple-600">{notification.msg}</p>
-            </div>
-            <div
-                className="border border-purple-500"
-                style={{
-                    width: `${perc}%`,
-                }}
-            ></div>
-        </div>
-    );
-};
-
-const ErrorNotification = ({
-    dequeue,
-    notification,
-}: {
-    dequeue: () => void;
-    notification: INotification;
-}) => {
-    const [perc, setPerc] = useState<number>(100);
-    const [time, setTime] = useState<number>(notification.time);
-    const _subamount = 100;
-
-    useEffect(() => {
-        if (perc >= 0) {
-            const interval = setInterval(() => {
-                const newTime = time - _subamount;
-                const newPerc = (newTime * perc) / time;
-                setPerc(newPerc);
-                setTime(newTime);
-                if (newPerc <= 0) {
-                    dequeue();
-                    clearInterval(interval);
-                    return;
-                }
-            }, _subamount);
-
-            return () => clearInterval(interval);
-        }
-    }, [perc]);
-
-    return (
-        <div className="bg-red-500 shadow-lg shadow-red-100 absolute top-10 right-10 rounded-md w-96 py-4 px-6">
-            <div className="flex justify-between">
-                <span className="text-white font-semibold text-lg">
-                    {notification.title}
-                </span>
-                <span
-                    className="text-white text-xl cursor-pointer"
-                    onClick={() => dequeue()}
-                >
-                    x
-                </span>
-            </div>
-            <div className="mb-3">
-                <p className="text-white">{notification.msg}</p>
-            </div>
-            <div
-                className="border border-white"
-                style={{
-                    width: `${perc}%`,
-                }}
-            ></div>
-        </div>
-    );
-};
-
-// const DebugNotification = () => {
-//     const [perc, setPerc] = useState<number>(352);
-
-//     useEffect(() => {
-//         if (perc > 0) {
-//             const interval = setInterval(() => {
-//                 setPerc((prev) => prev - 1);
-//             }, 1);
-
-//             return () => clearInterval(interval);
-//         }
-//     }, [perc]);
-
-//     return (
-//         <div className="bg-orange-500 shadow-lg shadow-red-100 absolute top-10 left-10 rounded-md w-96 p-4">
-//             {/* Progress time */}
-//             <div className="flex justify-between">
-//                 <span className="text-white font-semibold text-lg">
-//                     Situação
-//                 </span>
-//                 <span className="text-white text-xl">x</span>
-//             </div>
-//             <div className="mb-3">
-//                 <p className="text-white">Arquivos salvos</p>
-//             </div>
-//             <div
-//                 className="border border-white"
-//                 style={{
-//                     width: `${perc}px`,
-//                 }}
-//             ></div>
-//         </div>
-//     );
-// };
-
-const Notifications = () => {
-    const { dequeue, currentOne } = useContext(NotificationContext);
 
     return (
         <>
-            {currentOne &&
-                (currentOne.level == "info" ? (
-                    <InfoNotification
-                        dequeue={dequeue}
-                        notification={currentOne}
-                    />
-                ) : currentOne.level == "error" ? (
-                    <ErrorNotification
-                        dequeue={dequeue}
-                        notification={currentOne}
-                    />
-                ) : null)}
+            {currentOne && (
+                <div
+                    className={`${
+                        currentOne.level === NotificationLevels.ERROR
+                            ? "error-notifications"
+                            : "info-notifications"
+                    }`}
+                >
+                    <div className="flex justify-between">
+                        <span
+                            className={`${
+                                currentOne.level === NotificationLevels.ERROR
+                                    ? "text-white"
+                                    : "text-purple-500"
+                            } font-semibold text-lg`}
+                        >
+                            {currentOne.title}
+                        </span>
+                        <span
+                            className={`${
+                                currentOne.level === NotificationLevels.ERROR
+                                    ? "text-white"
+                                    : "text-purple-500"
+                            } text-xl cursor-pointer`}
+                            onClick={() => {
+                                dequeue();
+                                setPerc(100);
+                                setTime(4000);
+                            }}
+                        >
+                            x
+                        </span>
+                    </div>
+                    <div className="mb-3">
+                        <p
+                            className={`${
+                                currentOne.level === NotificationLevels.ERROR
+                                    ? "text-white"
+                                    : "text-purple-500"
+                            }`}
+                        >
+                            {currentOne.msg}
+                        </p>
+                    </div>
+                    <div
+                        className={`border ${
+                            currentOne.level === NotificationLevels.ERROR
+                                ? "border-white"
+                                : "border-purple-500"
+                        }`}
+                        style={{
+                            width: `${perc}%`,
+                        }}
+                    ></div>
+                </div>
+            )}
         </>
     );
 };

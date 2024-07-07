@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Notifications from "../../components/Notifications.tsx";
-import { NotificationProvider } from "../../control/context/NotificationSystem.tsx";
+import { NotificationProvider } from "../../context/NotificationSystem.tsx";
 
 const AuthLayout = () => {
     return (

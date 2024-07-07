@@ -1,9 +1,10 @@
 import { useContext, useState } from "react";
 import { MdExpandLess, MdExpandMore, MdFileUpload } from "react-icons/md";
 import { createSelectionInput } from "../control/fileReader.ts";
-import { NotificationContext } from "../control/context/NotificationSystem.tsx";
-import { TreeContext } from "../control/context/TreeContext.tsx";
+import { NotificationContext } from "../context/NotificationSystem.tsx";
+import { TreeContext } from "../context/TreeContext.tsx";
 import { FileNode, FolderNode } from "../control/Tree.ts";
+import { useUserContext } from "../control/hooks/useContext.tsx";
 
 const ButtonGetFileOrFolder = ({
     setContent,
@@ -16,7 +17,7 @@ const ButtonGetFileOrFolder = ({
     const { tree } = useContext(TreeContext);
     const { enqueue } = useContext(NotificationContext);
     const user = JSON.parse(localStorage.getItem("user-info")!);
-
+    const {token} = useUserContext()
 
     return (
         <div
@@ -56,7 +57,8 @@ const ButtonGetFileOrFolder = ({
                             tree,
                             setContent,
                             currentNode,
-                            user.id
+                            user.id,
+                            token
                         )
                     }
                     className="hover:bg-purple-500 px-2 py-1 hover:text-white cursor-pointer w-full"
@@ -72,7 +74,8 @@ const ButtonGetFileOrFolder = ({
                             tree,
                             setContent,
                             currentNode,
-                            user.id
+                            user.id,
+                            token
                         )
                     }
                     className="hover:bg-purple-500 px-2 py-1 hover:text-white cursor-pointer w-full"

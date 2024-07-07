@@ -1,10 +1,15 @@
-import { ReactElement, createContext, useEffect, useState } from "react";
-import type { INotification } from "../../types/types.d.ts";
+import {
+    ReactElement,
+    createContext,
+    useCallback,
+    useEffect,
+    useState,
+} from "react";
+import type { INotification } from "../types/types.js";
 
 type context = {
     enqueue: (notification: INotification) => void;
     dequeue: () => void;
-    notifications: INotification[];
     currentOne: INotification | null;
 };
 
@@ -18,14 +23,18 @@ export const NotificationProvider = ({
     const [notifications, setNotifications] = useState<INotification[]>([]);
     const [currentOne, setCurrentOne] = useState<INotification | null>(null);
 
-    function enqueue(notification: INotification) {
+    const enqueue = useCallback((notification: INotification) => {
         const id = Date.now();
         notification["id"] = id;
         setNotifications((prev) => [...prev, notification]);
-    }
+    }, []);
 
-    function dequeue() {
-        const notification = notifications[0];
+    const getFirst = useCallback(() => {
+        return notifications[0];
+    }, [notifications]);
+
+    const dequeue = useCallback(() => {
+        const notification = getFirst();
         setNotifications((prev) => {
             prev.shift();
             return prev;
@@ -38,7 +47,7 @@ export const NotificationProvider = ({
         }
 
         return notification;
-    }
+    }, [getFirst, notifications]);
 
     useEffect(() => {
         if (!currentOne && notifications.length > 0) {
@@ -46,14 +55,8 @@ export const NotificationProvider = ({
         }
     }, [notifications]);
 
-    function getFirst() {
-        return notifications[0];
-    }
-
     return (
-        <NotificationContext.Provider
-            value={{ enqueue, dequeue, notifications, currentOne }}
-        >
+        <NotificationContext.Provider value={{ enqueue, dequeue, currentOne }}>
             {children}
         </NotificationContext.Provider>
     );

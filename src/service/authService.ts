@@ -1,6 +1,6 @@
 import login from "../connection/auth/login.ts";
 import register from "../connection/auth/register.ts";
-import { NotificationLevels } from "../types/index.ts";
+import { NotificationLevels } from "../types/enums.ts";
 import { INotification } from "../types/types.js";
 
 export const registerServ = async (
@@ -17,7 +17,6 @@ export const registerServ = async (
             level: NotificationLevels.INFO,
             msg: "The pass and confirm pass don't match",
             title: "Pass does't match",
-            time: 2000,
         });
         return false;
     } else if (!emailRegex.test(email)) {
@@ -25,7 +24,6 @@ export const registerServ = async (
             level: NotificationLevels.INFO,
             msg: "The email format is invalid",
             title: "Invalid email",
-            time: 2000,
         });
         return false;
     } else {
@@ -47,7 +45,6 @@ export const loginServ = async (
             level: NotificationLevels.INFO,
             msg: "The email format is invalid",
             title: "Invalid email",
-            time: 2000,
         });
         return false;
     } else {

@@ -1,9 +1,10 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { TreeProvider } from "../../control/context/TreeContext.tsx";
+import { TreeProvider } from "../../context/TreeContext.tsx";
 import Notifications from "../../components/Notifications.tsx";
-import { NotificationProvider } from "../../control/context/NotificationSystem.tsx";
+import { NotificationProvider } from "../../context/NotificationSystem.tsx";
 import { useUserContext } from "../../control/hooks/useContext.tsx";
 import { useEffect } from "react";
+import DefaultHeader from "../../components/DefaultHeader.tsx";
 
 const ContentLayout = () => {
     const { isLogged, logoutUser, logUser, findUserToken } = useUserContext();
@@ -17,7 +18,7 @@ const ContentLayout = () => {
             logoutUser();
             navigate("/login");
         } else {
-            logUser(token!, JSON.parse(user!));
+            logUser(JSON.parse(user!), token!);
         }
     }, [isLogged]);
 
@@ -29,6 +30,7 @@ const ContentLayout = () => {
         <NotificationProvider>
             <section>
                 <Notifications />
+                <DefaultHeader />
                 <TreeProvider>
                     <Outlet />
                 </TreeProvider>

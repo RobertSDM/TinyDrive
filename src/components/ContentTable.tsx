@@ -3,11 +3,12 @@
 import { Link } from "react-router-dom";
 import { FileNode, FolderNode } from "../control/Tree.ts";
 import { BACKEND_URL } from "../utils/index.ts";
-import { deleteFileById } from "../connection/deleteFile.ts";
 import { useContext } from "react";
-import { NotificationContext } from "../control/context/NotificationSystem.tsx";
-import { TreeContext } from "../control/context/TreeContext.tsx";
-import deleteFolderById from "../connection/deleteFolder.ts";
+import { NotificationContext } from "../context/NotificationSystem.tsx";
+import { TreeContext } from "../context/TreeContext.tsx";
+import deleteFolderById from "../connection/folder/deleteFolder.ts";
+import { useUserContext } from "../control/hooks/useContext.tsx";
+import { deleteFileById } from "../connection/file/deleteFile.ts";
 
 const isFile = (item: FileNode | FolderNode) => {
     return item instanceof FileNode;
@@ -24,7 +25,8 @@ const ContentTable = ({
 }) => {
     const { enqueue } = useContext(NotificationContext);
     const { tree } = useContext(TreeContext);
-    const user = JSON.parse(localStorage.getItem("user-info")!)
+    const user = JSON.parse(localStorage.getItem("user-info")!);
+    const { token } = useUserContext();
 
     return (
         <table className="mt-5 w-full">
@@ -43,7 +45,7 @@ const ContentTable = ({
                                 <td className="flex justify-between">
                                     <section>
                                         {f instanceof FolderNode ? (
-                                            <Link to={`/folder/${f.getId()}`}>
+                                            <Link to={`/folder/${f.getId()}/`}>
                                                 {f.getName()}
                                             </Link>
                                         ) : (
@@ -54,7 +56,7 @@ const ContentTable = ({
                                         {f instanceof FileNode && (
                                             <section className="space-x-3">
                                                 <Link
-                                                    to={`${BACKEND_URL}/download/${f.getId()}`}
+                                                    to={`${BACKEND_URL}/file/download/${f.getId()}`}
                                                     target="_blank"
                                                     download
                                                     className="py-1 px-3 bg-white border  border-purple-500 hover:bg-purple-500 hover:text-white rounded-full"
@@ -73,22 +75,21 @@ const ContentTable = ({
                                                         await deleteFileById(
                                                             enqueue,
                                                             f.getId(),
-                                                            user.id
+                                                            user.id,
+                                                            token
                                                         );
                                                         tree.deleteFileNode(f);
                                                     } else {
                                                         await deleteFolderById(
                                                             enqueue,
                                                             f.getId(),
-                                                            user.id
+                                                            user.id,
+                                                            token
                                                         );
                                                         tree.deleteFolderNode(
                                                             f
                                                         );
                                                     }
-                                                    console.log(
-                                                        currentNode.getFolders()
-                                                    );
 
                                                     setContent([
                                                         ...currentNode.getFiles(),

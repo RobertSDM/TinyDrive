@@ -1,4 +1,4 @@
-import { NotificationLevels } from "./index.ts";
+import { NotificationLevels } from "./enums.ts";
 
 export interface IFile {
     name: string;
@@ -42,5 +42,4 @@ export interface INotification {
     id?: number;
     title: string;
     msg: string;
-    time: number;
 }
