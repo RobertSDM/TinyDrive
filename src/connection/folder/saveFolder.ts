@@ -16,7 +16,7 @@ const saveFolder = async (
         owner_id: userId,
     };
 
-    const res = await beAPI.post("/save/folder", body, {
+    const res = await beAPI.post("/folder/save", body, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
