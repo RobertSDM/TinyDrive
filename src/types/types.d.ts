@@ -42,4 +42,5 @@ export interface INotification {
     id?: number;
     title: string;
     msg: string;
+    special?: string;
 }

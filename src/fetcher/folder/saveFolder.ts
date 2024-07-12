@@ -1,21 +1,20 @@
 import { NotificationLevels } from "../../types/enums.ts";
-import { IFolder, INotification } from "../../types/types.js";
 import { beAPI } from "../../utils/index.ts";
+import { IFolder, INotification } from "../../types/types.js";
 
 const saveFolder = async (
     name: string,
     parentId: string | null = null,
-    enqueue: (notification: INotification) => void,
     userId: string,
-    showNotif: boolean = true,
-    token: string
+    token: string,
+    enqueue: (notification: INotification) => void,
+    showNotif: boolean = true
 ): Promise<IFolder> => {
     const body = {
         name,
         parentId,
         owner_id: userId,
     };
-
     const res = await beAPI.post("/folder/save", body, {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -26,11 +25,11 @@ const saveFolder = async (
         if (showNotif) {
             enqueue({
                 level: NotificationLevels.INFO,
-                msg: `"${res.data.data.name}" salvo com sucesso`,
+                msg: `salvo com sucesso`,
                 title: "Salvamento",
+                special: res.data.data.name,
             });
         }
-
         return res.data.data;
     } else {
         if (showNotif) {
@@ -40,9 +39,8 @@ const saveFolder = async (
                 title: "Erro ao salvar arquivo",
             });
         }
+        return {} as IFolder;
     }
-
-    return {} as IFolder;
 };
 
 export default saveFolder;

@@ -2,7 +2,7 @@ import { NotificationLevels } from "../../types/enums.ts";
 import { INotification } from "../../types/types.js";
 import { beAPI } from "../../utils/index.ts";
 
-export const deleteFileById = async (
+const deleteFileById = async (
     enqueue: (notification: INotification) => void,
     id: string,
     userId: string,
@@ -17,11 +17,13 @@ export const deleteFileById = async (
     if (res.status === 200) {
         enqueue({
             level: NotificationLevels.INFO,
-            msg: `"${res.data.name}" deletado com sucesso`,
+            msg: `deletado com sucesso`,
             title: "Deletado",
+            special: res.data.name,
         });
         return res.data;
     }
 
     return false;
 };
+export default deleteFileById;

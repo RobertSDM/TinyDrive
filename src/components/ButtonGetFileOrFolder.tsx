@@ -4,7 +4,7 @@ import { createSelectionInput } from "../control/fileReader.ts";
 import { NotificationContext } from "../context/NotificationSystem.tsx";
 import { TreeContext } from "../context/TreeContext.tsx";
 import { FileNode, FolderNode } from "../control/Tree.ts";
-import { useUserContext } from "../control/hooks/useContext.tsx";
+import { useUserContext } from "../hooks/useContext.tsx";
 
 const ButtonGetFileOrFolder = ({
     setContent,

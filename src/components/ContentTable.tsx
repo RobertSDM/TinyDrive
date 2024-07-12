@@ -1,14 +1,12 @@
-// import { ReactElement } from "react";
-
 import { Link } from "react-router-dom";
 import { FileNode, FolderNode } from "../control/Tree.ts";
 import { BACKEND_URL } from "../utils/index.ts";
 import { useContext } from "react";
 import { NotificationContext } from "../context/NotificationSystem.tsx";
 import { TreeContext } from "../context/TreeContext.tsx";
-import deleteFolderById from "../connection/folder/deleteFolder.ts";
-import { useUserContext } from "../control/hooks/useContext.tsx";
-import { deleteFileById } from "../connection/file/deleteFile.ts";
+import { useUserContext } from "../hooks/useContext.tsx";
+import deleteFolderById from "../fetcher/folder/deleteFolderbyId.ts";
+import deleteFileById from "../fetcher/file/deleteFileById.ts";
 
 const isFile = (item: FileNode | FolderNode) => {
     return item instanceof FileNode;
@@ -18,10 +16,12 @@ const ContentTable = ({
     files,
     setContent,
     currentNode,
+    isLoading,
 }: {
     files: Array<FileNode | FolderNode>;
     setContent: React.Dispatch<React.SetStateAction<(FileNode | FolderNode)[]>>;
     currentNode: FolderNode;
+    isLoading: boolean;
 }) => {
     const { enqueue } = useContext(NotificationContext);
     const { tree } = useContext(TreeContext);
@@ -35,7 +35,7 @@ const ContentTable = ({
                     <thead>
                         <tr>
                             <td className="font-bold w-[60%]">Nome</td>
-                            <td className="font-bold">Tipo</td>
+                            <td className="font-bold">Extension</td>
                             <td className="font-bold">Tamanho</td>
                         </tr>
                     </thead>
@@ -130,7 +130,9 @@ const ContentTable = ({
                 <tbody>
                     <tr className="border-0 hover:bg-transparent">
                         <td className="mx-auto flex justify-center text-black/30 font-semibold">
-                            Nenhum arquivo salvo
+                            {!isLoading
+                                ? "Nenhum arquivo salvo"
+                                : "Carregando..."}
                         </td>
                     </tr>
                 </tbody>

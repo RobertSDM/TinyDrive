@@ -1,16 +1,14 @@
 import { useState } from "react";
 import FormInput from "../../components/FormInput.tsx";
-import { Link, useNavigate } from "react-router-dom";
-import {
-    useNotificationSystemContext,
-    // useUserContext,
-} from "../../control/hooks/useContext.tsx";
-import { registerServ } from "../../service/authService.ts";
+import { Link } from "react-router-dom";
+
+import { emailPassVerificationServ } from "../../service/authService.ts";
+import { useNotificationSystemContext } from "../../hooks/useContext.tsx";
+import useRegisterFetch from "../../fetcher/auth/useRegisterFetch.ts";
 
 const Register = () => {
-    // const { logUser } = useUserContext();
     const { enqueue } = useNotificationSystemContext();
-    const navigate = useNavigate();
+    const { register } = useRegisterFetch();
     const [userName, setUserName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [pass, setPass] = useState<string>("");
@@ -37,15 +35,15 @@ const Register = () => {
                     onSubmit={async (event) => {
                         event.preventDefault();
 
-                        const success = await registerServ(
+                        const isValid = emailPassVerificationServ(
                             email,
-                            userName,
                             pass,
                             confirmPass,
                             enqueue
                         );
-                        if (success) {
-                            navigate("/login");
+
+                        if (isValid) {
+                            register(email, pass, userName);
                         }
                     }}
                 >

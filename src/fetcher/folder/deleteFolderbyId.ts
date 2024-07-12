@@ -17,8 +17,9 @@ const deleteFolderById = async (
     if (res.status === 200) {
         enqueue({
             level: NotificationLevels.INFO,
-            msg: `"${res.data.name}" deletado com sucesso`,
+            msg: `deletado com sucesso`,
             title: "Deletado",
+            special: res.data.name,
         });
         return res.data;
     }

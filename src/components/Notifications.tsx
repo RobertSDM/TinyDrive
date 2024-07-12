@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { NotificationContext } from "../context/NotificationSystem.tsx";
 import { NotificationLevels } from "../types/enums.ts";
+import { addThreePoints } from "../control/dataConvert.ts";
 
 const Notifications = () => {
     const { dequeue, currentOne } = useContext(NotificationContext);
@@ -10,7 +11,7 @@ const Notifications = () => {
     const subAmount = 10;
 
     useEffect(() => {
-        if (perc >= 0) {
+        if (perc >= 0 && currentOne) {
             const interval = setInterval(() => {
                 const newTime = time - subAmount;
                 const newPerc = (newTime * perc) / time;
@@ -27,7 +28,7 @@ const Notifications = () => {
 
             return () => clearInterval(interval);
         }
-    }, [perc]);
+    }, [perc, currentOne]);
 
     return (
         <>
@@ -45,7 +46,7 @@ const Notifications = () => {
                                 currentOne.level === NotificationLevels.ERROR
                                     ? "text-white"
                                     : "text-purple-500"
-                            } font-semibold text-lg`}
+                            } font-bold text-lg`}
                         >
                             {currentOne.title}
                         </span>
@@ -72,7 +73,18 @@ const Notifications = () => {
                                     : "text-purple-500"
                             }`}
                         >
-                            {currentOne.msg}
+                            {currentOne.special ? (
+                                <>
+                                    <span className="font-semibold">
+                                        "
+                                        {addThreePoints(currentOne.special, 30)}
+                                        "
+                                    </span>
+                                    <span>{" "}{currentOne.msg}</span>
+                                </>
+                            ) : (
+                                currentOne.msg
+                            )}
                         </p>
                     </div>
                     <div

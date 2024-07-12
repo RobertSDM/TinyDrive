@@ -1,43 +1,31 @@
 import { useEffect, useState } from "react";
-import ContentTable from "../../components/ContentTable.tsx";
+import useTitle from "../../hooks/useTitle.tsx";
+import { useTreeContext } from "../../hooks/useContext.tsx";
+import useRootContentFetch from "../../fetcher/content/useRootContentFetch.ts";
+import { apiResponseToTreeNodes } from "../../control/dataConvert.ts";
 import ButtonGetFileOrFolder from "../../components/ButtonGetFileOrFolder.tsx";
+import ContentTable from "../../components/ContentTable.tsx";
 import { Link } from "react-router-dom";
 import { FileNode, FolderNode } from "../../control/Tree.ts";
-import { apiResponseToTreeNodes } from "../../control/dataConvert.ts";
-import {
-    useNotificationSystemContext,
-    useTreeContext,
-    useUserContext,
-} from "../../control/hooks/useContext.tsx";
-import useTitle from "../../control/hooks/useTitle.tsx";
-import getRootContent from "../../connection/content/getRootContent.ts";
 
 function Home() {
     const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
     const setTitle = useTitle();
     const { tray, tree, updateCurrentNode, currentNode } = useTreeContext();
-    const { enqueue } = useNotificationSystemContext();
-    const user = JSON.parse(localStorage.getItem("user-info")!);
-    const { token } = useUserContext();
+    const { data, isLoading } = useRootContentFetch();
+    setTitle("Tiny Drive");
 
     useEffect(() => {
-        setTitle("Tiny Drive");
-
         const updatedNode = updateCurrentNode(tree.getRoot());
 
+        if(isLoading) return 
+        
         // Get the root files and folders
-        getRootContent(user.id, enqueue, token).then((res) => {
-            if (res) {
-                apiResponseToTreeNodes(res, tree, tree.getRoot());
+        apiResponseToTreeNodes(data, tree, tree.getRoot());
 
-                setContent([
-                    ...updatedNode.getFiles(),
-                    ...updatedNode.getFolders(),
-                ]);
-                tree.viewTree();
-            }
-        });
-    }, []);
+        setContent([...updatedNode.getFiles(), ...updatedNode.getFolders()]);
+        // tree.viewTree();
+    }, [data]);
 
     return (
         <main className="mt-10 max-w-xl px-10 md:px-5 xl:px-0 md:max-w-5xl xl:max-w-7xl mx-auto">
@@ -67,6 +55,7 @@ function Home() {
                     files={content}
                     setContent={setContent}
                     currentNode={currentNode}
+                    isLoading={isLoading}
                 />
             </section>
         </main>

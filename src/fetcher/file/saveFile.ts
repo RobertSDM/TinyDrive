@@ -1,6 +1,6 @@
 import { NotificationLevels } from "../../types/enums.ts";
 import { INotification } from "../../types/types.js";
-import { beAPI } from "../../utils/index.js";
+import { beAPI } from "../../utils/index.ts";
 
 const saveFile = async (
     enqueue: (notification: INotification) => void,
@@ -11,7 +11,7 @@ const saveFile = async (
     byteSize: number,
     userId: string,
     token: string,
-    showNotif: boolean = true,
+    showNotif: boolean = true
 ) => {
     const body = {
         byteData,
@@ -32,8 +32,9 @@ const saveFile = async (
         if (showNotif) {
             enqueue({
                 level: NotificationLevels.INFO,
-                msg: `"${res.data.data.name}" salvo com sucesso`,
+                msg: `salvo com sucesso`,
                 title: "Salvamento",
+                special: res.data.data.name,
             });
         }
         return res.data.data;

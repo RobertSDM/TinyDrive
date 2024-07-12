@@ -1,61 +1,51 @@
-import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import ButtonGetFileOrFolder from "../../components/ButtonGetFileOrFolder.tsx";
 import { apiResponseToTreeNodes } from "../../control/dataConvert.ts";
-import ContentTable from "../../components/ContentTable.tsx";
+import { useEffect, useState } from "react";
+import { useTreeContext } from "../../hooks/useContext.tsx";
+import useTitle from "../../hooks/useTitle.tsx";
 import { FileNode, FolderNode } from "../../control/Tree.ts";
-import {
-    useNotificationSystemContext,
-    useTreeContext,
-    useUserContext,
-} from "../../control/hooks/useContext.tsx";
-import useTitle from "../../control/hooks/useTitle.tsx";
-import getContentByFolder from "../../connection/content/getContentByFolder.ts";
+import useContentByFolderFetch from "../../fetcher/content/useContentByFolderFetch.ts";
+import ContentTable from "../../components/ContentTable.tsx";
+import ButtonGetFileOrFolder from "../../components/ButtonGetFileOrFolder.tsx";
 
 const Folder = () => {
     const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
     const { tray, tree, updateCurrentNode, currentNode } = useTreeContext();
     const setTitle = useTitle();
     const { id } = useParams();
-    const { enqueue } = useNotificationSystemContext();
-    const user = JSON.parse(localStorage.getItem("user-info")!);
-    const { token } = useUserContext();
+    const { data, isLoading } = useContentByFolderFetch(id!);
+    setTitle("Tiny Drive | Files");
 
     useEffect(() => {
-        setTitle("Tiny Drive | Files");
-        let updatedNode: FolderNode;
-        setContent([]);
+        if (isLoading) return;
+
+        
+        let updatedNode: FolderNode | null = null;
+        // setContent([]);
 
         if (tree.getFolderNodes()[id!] !== undefined) {
             updatedNode = updateCurrentNode(tree.getFolderNodes()[id!]);
         }
 
-        getContentByFolder(id!, user.id, enqueue, token).then((res) => {
-            if (res) {
-                if (!updatedNode) {
-                    const folderNode = tree.createFolderNode(
-                        res["requestedFolder"].name,
-                        null,
-                        res["requestedFolder"].folderC_id!,
-                        res["requestedFolder"].id,
-                        res["requestedFolder"].tray,
-                        true
-                    );
+        if (!updatedNode) {
+            const folderNode = tree.createFolderNode(
+                data["requestedFolder"].name,
+                null,
+                data["requestedFolder"].folderC_id!,
+                data["requestedFolder"].id,
+                data["requestedFolder"].tray,
+                true
+            );
 
-                    updatedNode = updateCurrentNode(folderNode);
-                }
+            updatedNode = updateCurrentNode(folderNode);
+        }
 
-                apiResponseToTreeNodes(res, tree, updatedNode);
+        apiResponseToTreeNodes(data, tree, updatedNode);
 
-                setContent([
-                    ...updatedNode.getFiles(),
-                    ...updatedNode.getFolders(),
-                ]);
+        setContent([...updatedNode.getFiles(), ...updatedNode.getFolders()]);
 
-                tree.viewTree();
-            }
-        });
-    }, [id]);
+        // tree.viewTree();
+    }, [id, data]);
 
     return (
         <main className="mt-10 max-w-xl px-10 md:px-5 xl:px-0 md:max-w-5xl xl:max-w-7xl mx-auto">
@@ -85,6 +75,7 @@ const Folder = () => {
                     files={content}
                     setContent={setContent}
                     currentNode={currentNode}
+                    isLoading={isLoading}
                 />
             </section>
         </main>

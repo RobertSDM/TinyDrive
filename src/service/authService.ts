@@ -1,11 +1,8 @@
-import login from "../connection/auth/login.ts";
-import register from "../connection/auth/register.ts";
 import { NotificationLevels } from "../types/enums.ts";
 import { INotification } from "../types/types.js";
 
-export const registerServ = async (
+export const emailPassVerificationServ = (
     email: string,
-    user_name: string,
     pass: string,
     confirmPass: string,
     enqueue: (notification: INotification) => void
@@ -26,16 +23,11 @@ export const registerServ = async (
             title: "Invalid email",
         });
         return false;
-    } else {
-        const res = await register(enqueue, email, pass, user_name);
-
-        return !!res;
     }
 };
 
-export const loginServ = async (
+export const emailVerificationServ = (
     email: string,
-    pass: string,
     enqueue: (notification: INotification) => void
 ) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -47,12 +39,6 @@ export const loginServ = async (
             title: "Invalid email",
         });
         return false;
-    } else {
-        const res = await login(enqueue, email, pass);
-
-        if (res) {
-            return res;
-        }
-        return false;
     }
+    return true
 };

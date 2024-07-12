@@ -79,3 +79,16 @@ export const apiResponseToTreeNodes = (
 
     fileToFileNode(res["files"], tree, folder);
 };
+
+export function addThreePoints(str: string, max: number) {
+    if (str.length > max) {
+        return str.slice(0, max - 3) + "...";
+    }
+    return str;
+}
+
+export function toTitleCase(str: string) {
+    const list_str = str.toLowerCase().split("");
+
+    return `${list_str[0].toLocaleUpperCase()}${list_str.splice(1).join("")}`;
+}

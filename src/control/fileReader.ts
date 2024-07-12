@@ -4,11 +4,11 @@ import {
     fileToFileNode,
     folderToFolderNode,
 } from "./dataConvert.ts";
-import saveFolder from "../connection/folder/saveFolder.ts";
 import { IFolder, INotification } from "../types/types.js";
 import { FileNode, FolderNode, Tree } from "./Tree.ts";
 import { NotificationLevels } from "../types/enums.ts";
-import saveFile from "../connection/file/saveFile.ts";
+import saveFolder from "../fetcher/folder/saveFolder.ts";
+import saveFile from "../fetcher/file/saveFile.ts";
 
 const handleFolder = async (
     event: ChangeEvent<HTMLInputElement>,
@@ -46,10 +46,10 @@ const handleFolder = async (
             resFolder = await saveFolder(
                 folderName,
                 parentId,
-                enqueue,
                 userId,
-                false,
-                token
+                token,
+                enqueue,
+                false
             );
             if (tray) {
                 resFolder.tray = `${tray}/${resFolder.name};${resFolder.id}`;

@@ -1,18 +1,15 @@
 import { useState } from "react";
 import FormInput from "../../components/FormInput.tsx";
-import { Link, useNavigate } from "react-router-dom";
-import {
-    useNotificationSystemContext,
-    useUserContext,
-} from "../../control/hooks/useContext.tsx";
-import { loginServ } from "../../service/authService.ts";
+import { Link } from "react-router-dom";
+import { emailVerificationServ } from "../../service/authService.ts";
+import { useNotificationSystemContext } from "../../hooks/useContext.tsx";
+import useLoginFetch from "../../fetcher/auth/useLoginFetch.ts";
 
 const Login = () => {
+    const { enqueue } = useNotificationSystemContext();
     const [email, setEmail] = useState<string>("");
     const [pass, setPass] = useState<string>("");
-    const { enqueue } = useNotificationSystemContext();
-    const { logUser } = useUserContext();
-    const navigate = useNavigate();
+    const { login } = useLoginFetch();
 
     return (
         <div className="h-screen px-4 pt-10 space-y-36">
@@ -32,13 +29,13 @@ const Login = () => {
             <section className="flex justify-center">
                 <form
                     className="w-96 space-y-5"
-                    onSubmit={async (event) => {
+                    onSubmit={(event) => {
                         event.preventDefault();
 
-                        const res = await loginServ(email, pass, enqueue);
-                        if (res) {
-                            logUser(res.data.user, res.token);
-                            navigate("/");
+                        const isValid = emailVerificationServ(email, enqueue);
+                        console.log(isValid);
+                        if (isValid) {
+                            login(email, pass);
                         }
                     }}
                 >

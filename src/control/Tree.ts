@@ -122,13 +122,17 @@ export class FolderNode {
         parent: FolderNode | null,
         parentId: string | null,
         id: string,
-        tray: string | null
+        tray: string | ITray[] | null
     ) {
         this.name = name;
         this.parent = parent;
         this.parentId = parentId;
         this.id = id;
-        this.tray = this.createTray(tray);
+        if ((tray as ITray[])?.length !== undefined && tray !== null) {
+            this.tray = tray as ITray[];
+        } else {
+            this.tray = this.createTray(tray as string | null);
+        }
     }
 
     private createTray(strTray: string | null): ITray[] {
@@ -307,7 +311,7 @@ export class Tree {
         parent: FolderNode | null,
         parentId: string | null,
         id: string,
-        tray: string,
+        tray: string | ITray[],
         dift: boolean = false
     ): FolderNode {
         if (this.folderNodes[id] !== undefined) {
