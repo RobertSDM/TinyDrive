@@ -5,7 +5,6 @@ import { NotificationProvider } from "../../context/NotificationSystem.tsx";
 import { useEffect } from "react";
 import DefaultHeader from "../../components/DefaultHeader.tsx";
 import { useUserContext } from "../../hooks/useContext.tsx";
-import { ContentCacheProvider } from "../../context/ContentCacheContext.tsx";
 
 const ContentLayout = () => {
     const { isLogged, logoutUser, logUser, findUserToken } = useUserContext();
@@ -32,11 +31,9 @@ const ContentLayout = () => {
             <section>
                 <Notifications />
                 <DefaultHeader />
-                <ContentCacheProvider>
-                    <TreeProvider>
-                        <Outlet />
-                    </TreeProvider>
-                </ContentCacheProvider>
+                <TreeProvider>
+                    <Outlet />
+                </TreeProvider>
             </section>
         </NotificationProvider>
     );
