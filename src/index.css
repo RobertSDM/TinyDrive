@@ -33,3 +33,26 @@ details > summary::-webkit-details-marker {
         @apply bg-white shadow-lg shadow-purple-200 absolute bottom-10 left-10 rounded-md w-96 py-4 px-6
     }
 }
+
+ .carroussel-text {
+    position: relative;
+    display: inline-block;
+    animation: carrousselText 10s linear infinite;
+ }
+
+ @keyframes carrousselText {
+    0% {
+            transform: translateX(0%);
+        }
+     10% {
+        transform: translateX(0%);
+     }
+
+     70%{
+        transform: translateX(-66%);
+     }
+
+    100% {
+        transform: translateX(-66%);
+    }
+ }

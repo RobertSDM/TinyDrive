@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { FileNode, FolderNode } from "../control/Tree.ts";
 import { BACKEND_URL } from "../utils/index.ts";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NotificationContext } from "../context/NotificationSystem.tsx";
 import { TreeContext } from "../context/TreeContext.tsx";
 import { useUserContext } from "../hooks/useContext.tsx";
 import deleteFolderById from "../fetcher/folder/deleteFolderbyId.ts";
 import deleteFileById from "../fetcher/file/deleteFileById.ts";
+import { addThreePoints } from "../control/dataConvert.ts";
 
 const isFile = (item: FileNode | FolderNode) => {
     return item instanceof FileNode;
@@ -28,13 +29,28 @@ const ContentTable = ({
     const user = JSON.parse(localStorage.getItem("user-info")!);
     const { token } = useUserContext();
 
+    const [widthSize, setWidthSize] = useState(window.innerWidth);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWidthSize(window.innerWidth);
+        };
+
+        window.addEventListener("resize", handleResize);
+
+        // Cleanup listener on component unmount
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
     return (
         <table className="mt-5 w-full">
             {files.length > 0 ? (
                 <>
                     <thead>
                         <tr>
-                            <td className="font-bold w-[60%]">Nome</td>
+                            <td className="font-bold">Nome</td>
                             <td className="font-bold">Extension</td>
                             <td className="font-bold">Tamanho</td>
                         </tr>
@@ -43,13 +59,32 @@ const ContentTable = ({
                         {files.map((f) => (
                             <tr key={f.getId()}>
                                 <td className="flex justify-between">
-                                    <section>
+                                    <section
+                                        className={` max-w-40 md:max-w-[70%] relative overflow-hidden`}
+                                    >
                                         {f instanceof FolderNode ? (
-                                            <Link to={`/folder/${f.getId()}/`}>
-                                                {f.getName()}
+                                            <Link
+                                                to={`/folder/${f.getId()}/`}
+                                                className={`${
+                                                    widthSize < 768 &&
+                                                    "carroussel-text"
+                                                }`}
+                                            >
+                                                {addThreePoints(
+                                                    f.getName(),
+                                                    10
+                                                )}
                                             </Link>
                                         ) : (
-                                            <span>{f.getName()}</span>
+                                            <span
+                                                className={`${
+                                                    widthSize < 768 &&
+                                                    f.getName().length > 19 &&
+                                                    "carroussel-text"
+                                                }`}
+                                            >
+                                                {f.getName()}
+                                            </span>
                                         )}
                                     </section>
                                     <section className="flex gap-x-3">
@@ -102,7 +137,6 @@ const ContentTable = ({
                                         </section>
                                     </section>
                                 </td>
-
                                 <td className="text-center ">
                                     {isFile(f)
                                         ? "." + (f as FileNode).getExtension()
