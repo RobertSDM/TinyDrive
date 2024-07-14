@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     useNotificationSystemContext,
     useUserContext,
@@ -7,7 +7,7 @@ import { NotificationLevels } from "../../types/enums.ts";
 import { IFile, IFolder } from "../../types/types.js";
 import { beAPI } from "../../utils/index.ts";
 
-const useContentByFolderFetch = (id: string) => {
+const useContentByFolderFetch = () => {
     const { enqueue } = useNotificationSystemContext();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [status, setStatus] = useState<boolean>(false);
@@ -25,7 +25,8 @@ const useContentByFolderFetch = (id: string) => {
     const user = JSON.parse(localStorage.getItem("user-info")!);
     const { token } = useUserContext();
 
-    useEffect(() => {
+    const fetch_ = async (id: string) => {
+        setIsLoading(true);
         try {
             beAPI
                 .get(`/content/by/folder/${id}/${user.id}`, {
@@ -52,9 +53,9 @@ const useContentByFolderFetch = (id: string) => {
                 msg: "Ocorreu um erro ao carregar o conteudo, por favor tente mais tarde",
             });
         }
-    }, []);
+    };
 
-    return { isLoading, status, data };
+    return { isLoading, status, data, fetch_ };
 };
 
 export default useContentByFolderFetch;

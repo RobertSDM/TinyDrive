@@ -58,21 +58,15 @@ const ContentTable = ({
                     <tbody>
                         {files.map((f) => (
                             <tr key={f.getId()}>
-                                <td className="flex justify-between">
+                                <td className="flex justify-between items-center">
                                     <section
                                         className={` max-w-40 md:max-w-[70%] relative overflow-hidden`}
                                     >
                                         {f instanceof FolderNode ? (
-                                            <Link
-                                                to={`/folder/${f.getId()}/`}
-                                                className={`${
-                                                    widthSize < 768 &&
-                                                    "carroussel-text"
-                                                }`}
-                                            >
+                                            <Link to={`/folder/${f.getId()}/`}>
                                                 {addThreePoints(
                                                     f.getName(),
-                                                    10
+                                                    21
                                                 )}
                                             </Link>
                                         ) : (
@@ -87,7 +81,7 @@ const ContentTable = ({
                                             </span>
                                         )}
                                     </section>
-                                    <section className="flex gap-x-3">
+                                    <section className="flex md:gap-x-3">
                                         {f instanceof FileNode && (
                                             <section className="space-x-3">
                                                 <Link
@@ -102,9 +96,12 @@ const ContentTable = ({
                                         )}
                                         <section>
                                             <span
-                                                className="py-1 px-3 bg-white
+                                                className={`py-1 px-3 bg-white
                                                 cursor-pointer 
-                                                text-red-500 border  border-red-500 hover:bg-red-500 hover:text-white rounded-full"
+                                                text-red-500 border  border-red-500 hover:bg-red-500 hover:text-white rounded-full ${
+                                                    f instanceof FileNode &&
+                                                    "hidden"
+                                                } md:inline`}
                                                 onClick={async () => {
                                                     if (f instanceof FileNode) {
                                                         await deleteFileById(

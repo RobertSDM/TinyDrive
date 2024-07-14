@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     useNotificationSystemContext,
     useUserContext,
@@ -23,7 +23,7 @@ const useRootContentFetch = () => {
     const user = JSON.parse(localStorage.getItem("user-info")!);
     const { token } = useUserContext();
 
-    useEffect(() => {
+    async function fetch_() {
         try {
             beAPI
                 .get(`/content/all/${user.id}`, {
@@ -47,9 +47,9 @@ const useRootContentFetch = () => {
                 msg: "Ocorreu um erro ao carregar o conteudo, por favor tente mais tarde",
             });
         }
-    }, []);
+    }
 
-    return { isLoading, status, data };
+    return { isLoading, status, data, fetch_ };
 };
 
 export default useRootContentFetch;

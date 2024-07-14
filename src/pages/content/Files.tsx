@@ -13,15 +13,15 @@ const Folder = () => {
     const { tray, tree, updateCurrentNode, currentNode } = useTreeContext();
     const setTitle = useTitle();
     const { id } = useParams();
-    const { data, isLoading } = useContentByFolderFetch(id!);
+    const { data, isLoading, fetch_ } = useContentByFolderFetch();
     setTitle("Tiny Drive | Files");
 
     useEffect(() => {
-        if (isLoading) return;
-
-        
+        fetch_(id!);
         let updatedNode: FolderNode | null = null;
-        // setContent([]);
+
+        setContent([]);
+        if (isLoading) return;
 
         if (tree.getFolderNodes()[id!] !== undefined) {
             updatedNode = updateCurrentNode(tree.getFolderNodes()[id!]);

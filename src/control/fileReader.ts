@@ -9,6 +9,7 @@ import { FileNode, FolderNode, Tree } from "./Tree.ts";
 import { NotificationLevels } from "../types/enums.ts";
 import saveFolder from "../fetcher/folder/saveFolder.ts";
 import saveFile from "../fetcher/file/saveFile.ts";
+import { MAX_DIR_DEPTH, MAX_FILE_SIZE } from "../utils/index.ts";
 
 const handleFolder = async (
     event: ChangeEvent<HTMLInputElement>,
@@ -34,13 +35,18 @@ const handleFolder = async (
         path: string[],
         file: File,
         parentId: string | null,
-        cut = 0
+        cut = 0,
+        depth: number = 1
     ) {
-        if (path.length > 2) {
-            return readFolder(path.slice(cut + 1), file, parentId, cut + 1);
+        if (depth > MAX_DIR_DEPTH) return;
+
+        const slicedPath = path.slice(cut);
+
+        if (slicedPath.length > 2) {
+            return readFolder(path, file, parentId, cut + 1, depth + 1);
         }
 
-        const folderName = path[0];
+        const folderName = slicedPath[0];
 
         if (memo[folderName] === undefined) {
             resFolder = await saveFolder(
@@ -51,16 +57,21 @@ const handleFolder = async (
                 enqueue,
                 false
             );
+
+
             if (tray) {
                 resFolder.tray = `${tray}/${resFolder.name};${resFolder.id}`;
             } else {
                 tray = `${resFolder.name};${resFolder.id}`;
                 resFolder.tray = tray;
             }
+
             folderId = resFolder.id;
 
+            // Verifies if the actual folder the user is in, is the parent of the folder created
+            // If it is, it will be added in the tree, and shown on the screen
             if (
-                currNode?.getId() === resFolder.folderC_id ||
+                currentNode?.getId() === resFolder.folderC_id ||
                 !resFolder?.folderC_id
             ) {
                 folderToFolderNode(
@@ -77,6 +88,8 @@ const handleFolder = async (
             }
             memo[folderName] = resFolder.id!;
         }
+
+        /// Creating the file
 
         const e: ProgressEvent<FileReader> = await new Promise((resolve) => {
             const reader = new FileReader();
@@ -114,8 +127,10 @@ const handleFolder = async (
             false
         );
 
+        // Verifies if the actual folder the user is in, is the parent of the file created
+        // If it is, it will be added in the tree, and shown on the screen
         if (
-            currNode?.getId() === resFolder.folderC_id ||
+            currentNode?.getId() === resFolder.folderC_id ||
             !resFolder?.folderC_id
         ) {
             fileToFileNode([data], tree, currNode ? currNode : tree.getRoot());
@@ -132,17 +147,29 @@ const handleFolder = async (
 
     if (event.target.files) {
         while (readIndex < files.length) {
-            await readFolder(
-                files[readIndex].webkitRelativePath.split("/"),
-                files[readIndex],
-                folderId
-            );
-            readIndex++;
+            const file = files[readIndex];
+
+            if (file.size > MAX_FILE_SIZE) {
+                enqueue({
+                    level: NotificationLevels.INFO,
+                    msg: "is to big, the minimum size is 3MBs",
+                    title: "File to big",
+                    special: file.name.split(".")[0],
+                });
+                readIndex++;
+            } else {
+                await readFolder(
+                    file.webkitRelativePath.split("/"),
+                    file,
+                    folderId
+                );
+                readIndex++;
+            }
         }
         enqueue({
             level: NotificationLevels.INFO,
-            msg: `Pasta salva com sucesso`,
-            title: "Salvamento",
+            msg: `Folder saved with success`,
+            title: "Saved",
         });
     }
 };
@@ -161,7 +188,16 @@ const handleFile = async (
 
     while (readIndex < fileList.length) {
         const file = fileList[readIndex];
-
+        if (file.size > MAX_FILE_SIZE) {
+            enqueue({
+                level: NotificationLevels.INFO,
+                msg: "is to big, the minimum size is 3MBs",
+                title: "File to big",
+                special: file.name.split(".")[0],
+            });
+            readIndex++;
+            continue;
+        }
         const e: ProgressEvent<FileReader> = await new Promise((resolve) => {
             const reader = new FileReader();
             reader.readAsArrayBuffer(file);

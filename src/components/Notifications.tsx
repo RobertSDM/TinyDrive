@@ -34,7 +34,7 @@ const Notifications = () => {
         <>
             {currentOne && (
                 <div
-                    className={`${
+                    className={` ${
                         currentOne.level === NotificationLevels.ERROR
                             ? "error-notifications"
                             : "info-notifications"

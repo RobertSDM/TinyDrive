@@ -33,7 +33,6 @@ const Login = () => {
                         event.preventDefault();
 
                         const isValid = emailVerificationServ(email, enqueue);
-                        console.log(isValid);
                         if (isValid) {
                             login(email, pass);
                         }

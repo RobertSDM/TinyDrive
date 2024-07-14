@@ -128,10 +128,10 @@ export class FolderNode {
         this.parent = parent;
         this.parentId = parentId;
         this.id = id;
-        if ((tray as ITray[])?.length !== undefined && tray !== null) {
+        if ((tray as ITray[])?.map !== undefined && tray !== null) {
             this.tray = tray as ITray[];
         } else {
-            this.tray = this.createTray(tray as string | null);
+            this.tray = this.createTray(tray as string);
         }
     }
 
@@ -157,6 +157,7 @@ export class FolderNode {
                 name: name,
                 link: `/folder/${id}`,
             });
+            
         }
 
         return tray;

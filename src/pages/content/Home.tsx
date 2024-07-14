@@ -12,14 +12,15 @@ function Home() {
     const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
     const setTitle = useTitle();
     const { tray, tree, updateCurrentNode, currentNode } = useTreeContext();
-    const { data, isLoading } = useRootContentFetch();
+    const { data, isLoading, fetch_ } = useRootContentFetch();
     setTitle("Tiny Drive");
 
     useEffect(() => {
+        fetch_();
         const updatedNode = updateCurrentNode(tree.getRoot());
 
-        if(isLoading) return 
-        
+        if (isLoading) return;
+
         // Get the root files and folders
         apiResponseToTreeNodes(data, tree, tree.getRoot());
 
