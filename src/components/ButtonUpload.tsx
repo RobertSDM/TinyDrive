@@ -20,9 +20,10 @@ const ButtonUpload = ({
 
     return (
         <div
-            className={`inline relative ${
-                isOpen ? "border-black/30" : ""
-            } `}
+            className={`inline relative ${isOpen ? "border-black/30" : ""} `}
+            onBlur={() => {
+                setIsOpen(false);
+            }}
         >
             <button
                 className={`items-center gap-x-2 border-purple-500 text-black border hover:bg-purple-500  hover:text-white p-2 inline-flex cursor-pointer rounded-t-sm`}
@@ -30,9 +31,6 @@ const ButtonUpload = ({
                     setIsOpen(true);
                 }}
                 onMouseLeave={() => {
-                    setIsOpen(false);
-                }}
-                onBlur={() => {
                     setIsOpen(false);
                 }}
             >
