@@ -102,12 +102,16 @@ const ContentView = ({
                                                     await deleteFileById(
                                                         f.getId()
                                                     );
-                                                    tree.deleteFileNode(f);
+                                                    tree.deleteFileNode(
+                                                        f as FileNode
+                                                    );
                                                 } else {
                                                     await deleteFolderById(
                                                         f.getId()
                                                     );
-                                                    tree.deleteFolderNode(f);
+                                                    tree.deleteFolderNode(
+                                                        f as FolderNode
+                                                    );
                                                 }
 
                                                 setContent([
