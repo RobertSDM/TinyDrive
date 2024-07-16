@@ -37,9 +37,9 @@ const Register = () => {
 
                         const isValid = emailPassVerificationServ(
                             email,
+                            enqueue,
                             pass,
                             confirmPass,
-                            enqueue
                         );
 
                         if (isValid) {

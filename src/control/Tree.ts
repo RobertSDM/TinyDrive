@@ -157,7 +157,6 @@ export class FolderNode {
                 name: name,
                 link: `/folder/${id}`,
             });
-            
         }
 
         return tray;

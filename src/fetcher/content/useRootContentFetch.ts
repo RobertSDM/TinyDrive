@@ -7,23 +7,18 @@ import { NotificationLevels } from "../../types/enums.ts";
 import { IFile, IFolder } from "../../types/types.js";
 import { beAPI } from "../../utils/index.ts";
 
+type TData = {
+    files: IFile[];
+    folders: IFolder[];
+};
+
 const useRootContentFetch = () => {
     const { enqueue } = useNotificationSystemContext();
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [status, setStatus] = useState<boolean>(false);
-    const [data, setData] = useState<{
-        files: IFile[];
-        folders: IFolder[];
-    }>(
-        {} as {
-            files: IFile[];
-            folders: IFolder[];
-        }
-    );
-    const user = JSON.parse(localStorage.getItem("user-info")!);
-    const { token } = useUserContext();
+    const [data, setData] = useState<TData | null>(null);
+    const { token, user } = useUserContext();
 
-    async function fetch_() {
+    function fetch_() {
         try {
             beAPI
                 .get(`/content/all/${user.id}`, {
@@ -33,9 +28,7 @@ const useRootContentFetch = () => {
                 })
                 .then((res) => {
                     setIsLoading(false);
-
                     if (res.status === 200) {
-                        setStatus(true);
                         setData(res.data.data);
                     }
                 });
@@ -49,7 +42,7 @@ const useRootContentFetch = () => {
         }
     }
 
-    return { isLoading, status, data, fetch_ };
+    return { isLoading, data, fetch_ };
 };
 
 export default useRootContentFetch;

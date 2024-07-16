@@ -6,47 +6,49 @@ import { TreeContext } from "../context/TreeContext.tsx";
 import { FileNode, FolderNode } from "../control/Tree.ts";
 import { useUserContext } from "../hooks/useContext.tsx";
 
-const ButtonGetFileOrFolder = ({
+const ButtonUpload = ({
     setContent,
     currentNode,
 }: {
     setContent: React.Dispatch<React.SetStateAction<(FolderNode | FileNode)[]>>;
     currentNode: FolderNode;
 }) => {
-    const [isUploadOpen, setIsUploadOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const { tree } = useContext(TreeContext);
     const { enqueue } = useContext(NotificationContext);
-    const user = JSON.parse(localStorage.getItem("user-info")!);
-    const {token} = useUserContext()
+    const { token, user } = useUserContext();
 
     return (
         <div
             className={`inline relative ${
-                isUploadOpen ? "border-black/30" : ""
+                isOpen ? "border-black/30" : ""
             } `}
         >
             <button
                 className={`items-center gap-x-2 border-purple-500 text-black border hover:bg-purple-500  hover:text-white p-2 inline-flex cursor-pointer rounded-t-sm`}
                 onMouseEnter={() => {
-                    setIsUploadOpen(true);
+                    setIsOpen(true);
                 }}
                 onMouseLeave={() => {
-                    setIsUploadOpen(false);
+                    setIsOpen(false);
+                }}
+                onBlur={() => {
+                    setIsOpen(false);
                 }}
             >
                 <MdFileUpload />
-                Carregar
-                {!isUploadOpen ? <MdExpandLess /> : <MdExpandMore />}
+                Upload
+                {!isOpen ? <MdExpandLess /> : <MdExpandMore />}
             </button>
             <div
                 onMouseOver={() => {
-                    setIsUploadOpen(true);
+                    setIsOpen(true);
                 }}
                 onMouseLeave={() => {
-                    setIsUploadOpen(false);
+                    setIsOpen(false);
                 }}
                 className={`absolute bg-white w-full border border-black/30 border-t-0 ${
-                    isUploadOpen ? "block" : "hidden"
+                    isOpen ? "block" : "hidden"
                 }`}
             >
                 <button
@@ -63,7 +65,7 @@ const ButtonGetFileOrFolder = ({
                     }
                     className="hover:bg-purple-500 px-2 py-1 hover:text-white cursor-pointer w-full"
                 >
-                    Arquivos
+                    Files
                 </button>
                 <hr className="w-4/5 mx-auto" />
                 <button
@@ -80,11 +82,11 @@ const ButtonGetFileOrFolder = ({
                     }
                     className="hover:bg-purple-500 px-2 py-1 hover:text-white cursor-pointer w-full"
                 >
-                    Pastas
+                    Folders
                 </button>
             </div>
         </div>
     );
 };
 
-export default ButtonGetFileOrFolder;
+export default ButtonUpload;

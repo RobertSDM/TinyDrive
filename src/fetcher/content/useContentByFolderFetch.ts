@@ -15,15 +15,8 @@ const useContentByFolderFetch = () => {
         files: IFile[];
         folders: IFolder[];
         requestedFolder: IFolder;
-    }>(
-        {} as {
-            files: IFile[];
-            folders: IFolder[];
-            requestedFolder: IFolder;
-        }
-    );
-    const user = JSON.parse(localStorage.getItem("user-info")!);
-    const { token } = useUserContext();
+    } | null>(null);
+    const { token, user } = useUserContext();
 
     const fetch_ = async (id: string) => {
         setIsLoading(true);

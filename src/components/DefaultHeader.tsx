@@ -3,12 +3,7 @@ import { useUserContext } from "../hooks/useContext.tsx";
 import { addThreePoints, toTitleCase } from "../control/dataConvert.ts";
 
 const DefaultHeader = () => {
-    const { logoutUser } = useUserContext();
-    const user = JSON.parse(localStorage.getItem("user-info")!) as {
-        user_name: string;
-        id: string;
-        email: string;
-    };
+    const { logoutUser, user } = useUserContext();
 
     return (
         <header className="flex border px-8 py-4 items-center justify-between h-20">

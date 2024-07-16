@@ -1,4 +1,5 @@
 import { ReactElement, createContext, useRef, useState } from "react";
+import { TStoredUser } from "../types/types.js";
 type user = { id: string; userName: string; email: string };
 
 type context = {
@@ -7,6 +8,7 @@ type context = {
     logUser: (user: user, token: string) => void;
     logoutUser: () => void;
     findUserToken: () => string | null;
+    user: TStoredUser;
 };
 
 export const UserContext = createContext<context>({} as context);
@@ -14,6 +16,7 @@ export const UserContext = createContext<context>({} as context);
 export const UserProvider = ({ children }: { children: ReactElement }) => {
     const [isLogged, setIsLogged] = useState<boolean>(false);
     const token = useRef<string>("");
+    const storedUser = useRef<TStoredUser>({} as TStoredUser);
 
     function findUserToken() {
         const tokenL = document.cookie.split(";").filter((c) => {
@@ -56,6 +59,8 @@ export const UserProvider = ({ children }: { children: ReactElement }) => {
     ) {
         save_token(res_token);
         save_user(user);
+        storedUser.current = JSON.parse(localStorage.getItem("user-info")!);
+
         token.current = res_token;
         setIsLogged(true);
     }
@@ -74,6 +79,7 @@ export const UserProvider = ({ children }: { children: ReactElement }) => {
                 logUser,
                 logoutUser,
                 findUserToken,
+                user: storedUser.current,
             }}
         >
             {children}

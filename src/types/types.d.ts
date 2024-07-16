@@ -44,3 +44,9 @@ export interface INotification {
     msg: string;
     special?: string;
 }
+
+export type TStoredUser = {
+    id: string;
+    user_name: string;
+    emai: string;
+};

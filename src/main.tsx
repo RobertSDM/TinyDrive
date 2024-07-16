@@ -12,30 +12,37 @@ import { UserProvider } from "./context/UserContext.tsx";
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <ContentLayout />,
         children: [
+            /// Content Layout [START]
             {
-                index: true,
-                element: <Home />,
+                element: <ContentLayout />,
+                children: [
+                    {
+                        index: true,
+                        element: <Home />,
+                    },
+                    {
+                        path: "/folder/:id",
+                        element: <Files />,
+                    },
+                ],
             },
+            /// Content Layout [END]
+            /// Auth Layout [START]
             {
-                path: "/folder/:id",
-                element: <Files />,
+                element: <AuthLayout />,
+                children: [
+                    {
+                        path: "/register",
+                        element: <Register />,
+                    },
+                    {
+                        path: "/login",
+                        element: <Login />,
+                    },
+                ],
             },
-        ],
-    },
-    {
-        path: "/",
-        element: <AuthLayout />,
-        children: [
-            {
-                path: "/register",
-                element: <Register />,
-            },
-            {
-                path: "/login",
-                element: <Login />,
-            },
+            /// Auth Layout [END]
         ],
     },
 ]);

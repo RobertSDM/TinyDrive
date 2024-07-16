@@ -1,29 +1,41 @@
+import { useState } from "react";
 import { NotificationLevels } from "../../types/enums.ts";
-import { INotification } from "../../types/types.js";
 import { beAPI } from "../../utils/index.ts";
+import { useNotificationSystemContext, useUserContext } from "../../hooks/useContext.tsx";
 
-const deleteFileById = async (
-    enqueue: (notification: INotification) => void,
-    id: string,
-    userId: string,
-    token: string
-) => {
-    const res = await beAPI.delete(`/file/delete/${id}/${userId}`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-
-    if (res.status === 200) {
-        enqueue({
-            level: NotificationLevels.INFO,
-            msg: `deletado com sucesso`,
-            title: "Deletado",
-            special: res.data.name,
+const useDeleteFileById = () => {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { token, user } = useUserContext();
+    const { enqueue } = useNotificationSystemContext();
+    async function fetch_(
+        id: string,
+    ) {
+        setIsLoading(true);
+        const res = await beAPI.delete(`/file/delete/${id}/${user.id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         });
-        return res.data;
+        setIsLoading(false);
+        if (res.status === 200) {
+            enqueue({
+                level: NotificationLevels.INFO,
+                msg: `deletado com sucesso`,
+                title: "Deletado",
+                special: res.data.name,
+            });
+        } else {
+            enqueue({
+                level: NotificationLevels.ERROR,
+                msg: `Error while deleting`,
+                title: "Error",
+                special: res.data.name,
+            });
+        }
+
+        return false;
     }
 
-    return false;
+    return { fetch_, isLoading };
 };
-export default deleteFileById;
+export default useDeleteFileById;

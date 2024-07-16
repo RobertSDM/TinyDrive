@@ -3,26 +3,43 @@ import useTitle from "../../hooks/useTitle.tsx";
 import { useTreeContext } from "../../hooks/useContext.tsx";
 import useRootContentFetch from "../../fetcher/content/useRootContentFetch.ts";
 import { apiResponseToTreeNodes } from "../../control/dataConvert.ts";
-import ButtonGetFileOrFolder from "../../components/ButtonGetFileOrFolder.tsx";
-import ContentTable from "../../components/ContentTable.tsx";
+import ButtonUpload from "../../components/ButtonUpload.tsx";
+import ContentView from "../../components/ContentView/ContentView.tsx";
 import { Link } from "react-router-dom";
 import { FileNode, FolderNode } from "../../control/Tree.ts";
 
 function Home() {
     const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
-    const setTitle = useTitle();
     const { tray, tree, updateCurrentNode, currentNode } = useTreeContext();
     const { data, isLoading, fetch_ } = useRootContentFetch();
+
+    const setTitle = useTitle();
     setTitle("Tiny Drive");
 
     useEffect(() => {
-        fetch_();
         const updatedNode = updateCurrentNode(tree.getRoot());
+
+        const children = [
+            ...updatedNode.getFiles(),
+            ...updatedNode.getFolders(),
+        ];
+
+        if (children.length > 0) {
+            setContent([
+                ...updatedNode.getFiles(),
+                ...updatedNode.getFolders(),
+            ]);
+            return;
+        }
+
+        if (!data) {
+            fetch_();
+        }
 
         if (isLoading) return;
 
         // Get the root files and folders
-        apiResponseToTreeNodes(data, tree, tree.getRoot());
+        apiResponseToTreeNodes(data!, tree, tree.getRoot());
 
         setContent([...updatedNode.getFiles(), ...updatedNode.getFolders()]);
         // tree.viewTree();
@@ -48,12 +65,12 @@ function Home() {
             </nav>
 
             <section className="mt-5 mx-auto max-w-xl md:max-w-5xl xl:max-w-7xl border-t border-black/10 py-4 space-y-16">
-                <ButtonGetFileOrFolder
+                <ButtonUpload
                     setContent={setContent}
                     currentNode={currentNode}
                 />
-                <ContentTable
-                    files={content}
+                <ContentView
+                    content={content}
                     setContent={setContent}
                     currentNode={currentNode}
                     isLoading={isLoading}
