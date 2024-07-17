@@ -15,30 +15,39 @@ const saveFolder = async (
         parentId,
         owner_id: userId,
     };
-    const res = await beAPI.post("/folder/save", body, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+    try {
+        const res = await beAPI.post("/folder/save", body, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
 
-    if (res.status === 200) {
-        if (showNotif) {
-            enqueue({
-                level: NotificationLevels.INFO,
-                msg: `salvo com sucesso`,
-                title: "Salvamento",
-                special: res.data.data.name,
-            });
+        if (res.status === 200) {
+            if (showNotif) {
+                enqueue({
+                    level: NotificationLevels.INFO,
+                    msg: `saved with success`,
+                    title: "Save",
+                    special: res.data.data.name,
+                });
+            }
+            return res.data.data;
+        } else {
+            if (showNotif) {
+                enqueue({
+                    level: NotificationLevels.ERROR,
+                    msg: res.data.msg,
+                    title: "Error",
+                });
+            }
+            return {} as IFolder;
         }
-        return res.data.data;
-    } else {
-        if (showNotif) {
-            enqueue({
-                level: NotificationLevels.INFO,
-                msg: res.data.msg,
-                title: "Erro ao salvar arquivo",
-            });
-        }
+    } catch (err) {
+        enqueue({
+            level: NotificationLevels.ERROR,
+            msg: "Error while saving the folder",
+            title: "Error",
+        });
         return {} as IFolder;
     }
 };

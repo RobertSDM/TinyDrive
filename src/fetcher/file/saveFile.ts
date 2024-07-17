@@ -22,25 +22,40 @@ const saveFile = async (
         owner_id: userId,
     };
 
-    const res = await beAPI.post("/file/save", body, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+    try {
+        const res = await beAPI.post("/file/save", body, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
 
-    if (res.status === 200) {
-        if (showNotif) {
-            enqueue({
-                level: NotificationLevels.INFO,
-                msg: `salvo com sucesso`,
-                title: "Salvamento",
-                special: res.data.data.name,
-            });
+        if (res.status === 200) {
+            if (showNotif) {
+                enqueue({
+                    level: NotificationLevels.INFO,
+                    msg: `saved with success`,
+                    title: "Save",
+                    special: res.data.data.name,
+                });
+            } else {
+                enqueue({
+                    level: NotificationLevels.ERROR,
+                    msg: `could not be saved`,
+                    title: "Save error",
+                    special: res.data.data.name,
+                });
+                return false;
+            }
+            return res.data.data;
         }
-        return res.data.data;
+    } catch (err) {
+        enqueue({
+            level: NotificationLevels.ERROR,
+            msg: `Error while saving the file`,
+            title: "Save error",
+        });
+        return false;
     }
-
-    return false;
 };
 
 export default saveFile;

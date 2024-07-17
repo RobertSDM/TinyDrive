@@ -152,7 +152,7 @@ const handleFolder = async (
             if (file.size > MAX_FILE_SIZE) {
                 enqueue({
                     level: NotificationLevels.INFO,
-                    msg: "is to big, the minimum size is 3MBs",
+                    msg: "is to big, the maximum size is 3MBs",
                     title: "File to big",
                     special: file.name.split(".")[0],
                 });
@@ -191,7 +191,7 @@ const handleFile = async (
         if (file.size > MAX_FILE_SIZE) {
             enqueue({
                 level: NotificationLevels.INFO,
-                msg: "is to big, the minimum size is 3MBs",
+                msg: "is to big, the maximum size is 3MBs",
                 title: "File to big",
                 special: file.name.split(".")[0],
             });
