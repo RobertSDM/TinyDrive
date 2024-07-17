@@ -37,16 +37,18 @@ const saveFile = async (
                     title: "Save",
                     special: res.data.data.name,
                 });
-            } else {
+            }
+            return res.data.data;
+        } else {
+            if (showNotif) {
                 enqueue({
                     level: NotificationLevels.ERROR,
                     msg: `could not be saved`,
                     title: "Save error",
                     special: res.data.data.name,
                 });
-                return false;
             }
-            return res.data.data;
+            return false;
         }
     } catch (err) {
         enqueue({

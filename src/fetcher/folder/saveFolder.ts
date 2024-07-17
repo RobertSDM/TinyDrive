@@ -32,16 +32,8 @@ const saveFolder = async (
                 });
             }
             return res.data.data;
-        } else {
-            if (showNotif) {
-                enqueue({
-                    level: NotificationLevels.ERROR,
-                    msg: res.data.msg,
-                    title: "Error",
-                });
-            }
-            return {} as IFolder;
         }
+        return {} as IFolder;
     } catch (err) {
         enqueue({
             level: NotificationLevels.ERROR,

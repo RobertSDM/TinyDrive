@@ -103,66 +103,64 @@ const ContentView = ({
                                         </span>
                                     )}
                                 </section>
-                                <section className="flex md:gap-x-3">
-                                    {isFile(f) && (
-                                        <section className="space-x-3">
-                                            <Link
-                                                to={`${BACKEND_URL}/file/download/${f.getId()}`}
-                                                target="_blank"
-                                                download
-                                                className={`py-1 px-3 bg-white border  border-purple-500 hover:bg-purple-500 hover:text-white rounded-full ${
-                                                    (isDeletingFile ||
-                                                        isDeletingFolder) &&
-                                                    rowDeleteId.current ===
-                                                        f.getId() &&
-                                                    "bg-slate-300 hover:bg-slate-300 text-white border-none hover:text-white"
-                                                }`}
-                                            >
-                                                ↓
-                                            </Link>
-                                        </section>
-                                    )}
-                                    <section>
-                                        <span
-                                            className={`py-1 px-3 bg-white
+                                {(!isDeletingFile || !isDeletingFolder) &&
+                                    rowDeleteId.current !== f.getId() && (
+                                        <section className="flex md:gap-x-3">
+                                            {isFile(f) && (
+                                                <section className="space-x-3">
+                                                    <Link
+                                                        to={`${BACKEND_URL}/file/download/${f.getId()}`}
+                                                        target="_blank"
+                                                        download
+                                                        className={`py-1 px-3 bg-white border  border-purple-500 hover:bg-purple-500 hover:text-white rounded-full`}
+                                                    >
+                                                        ↓
+                                                    </Link>
+                                                </section>
+                                            )}
+                                            <section>
+                                                <span
+                                                    className={`py-1 px-3 bg-white
                                                 cursor-pointer 
                                                 text-red-500 border  border-red-500 hover:bg-red-500 hover:text-white rounded-full ${
                                                     isFile(f) && "hidden"
                                                 } md:inline ${
-                                                (isDeletingFile ||
-                                                    isDeletingFolder) &&
-                                                rowDeleteId.current ===
-                                                    f.getId() &&
-                                                "bg-slate-300 text-white border-none  hover:bg-slate-300 hover:text-white"
-                                            }`}
-                                            onClick={async () => {
-                                                rowDeleteId.current = f.getId();
-                                                if (isFile(f)) {
-                                                    await deleteFileById(
-                                                        f.getId()
-                                                    );
-                                                    tree.deleteFileNode(
-                                                        f as FileNode
-                                                    );
-                                                } else {
-                                                    await deleteFolderById(
-                                                        f.getId()
-                                                    );
-                                                    tree.deleteFolderNode(
-                                                        f as FolderNode
-                                                    );
-                                                }
+                                                        (isDeletingFile ||
+                                                            isDeletingFolder) &&
+                                                        rowDeleteId.current ===
+                                                            f.getId() &&
+                                                        "bg-slate-300 text-white border-none  hover:bg-slate-300 hover:text-white"
+                                                    }`}
+                                                    onClick={async () => {
+                                                        rowDeleteId.current =
+                                                            f.getId();
+                                                        if (isFile(f)) {
+                                                            await deleteFileById(
+                                                                f.getId()
+                                                            );
+                                                            tree.deleteFileNode(
+                                                                f as FileNode
+                                                            );
+                                                        } else {
+                                                            await deleteFolderById(
+                                                                f.getId()
+                                                            );
+                                                            tree.deleteFolderNode(
+                                                                f as FolderNode
+                                                            );
+                                                        }
 
-                                                setContent([
-                                                    ...currentNode.getFiles(),
-                                                    ...currentNode.getFolders(),
-                                                ]);
-                                            }}
-                                        >
-                                            x
-                                        </span>
-                                    </section>
-                                </section>
+                                                        setContent([
+                                                            ...currentNode.getFiles(),
+                                                            ...currentNode.getFolders(),
+                                                        ]);
+                                                    }}
+                                                >
+                                                    x
+                                                </span>
+                                            </section>
+                                        </section>
+                                    )}
                             </section>
                             <section
                                 className={`text-center ${
