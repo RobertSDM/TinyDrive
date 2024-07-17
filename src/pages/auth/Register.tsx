@@ -17,14 +17,14 @@ const Register = () => {
     return (
         <div className="h-screen px-4 pt-10 space-y-36">
             <section className="space-y-4">
-                <h1 className="text-7xl font-bold text-purple-900">
+                <h1 className="text-3xl md:text-7xl font-bold text-purple-900">
                     Registre-se
                 </h1>
                 <section className="pl-5">
-                    <p className="font-medium text-xl">
+                    <p className="font-medium text-base md:text-xl">
                         Se registre no melhor web app para salvar arquivos
                     </p>
-                    <p className="font-medium text-xl">
+                    <p className="font-medium text-base md:text-xl">
                         Um local simples rápido para salvar suas informações
                     </p>
                 </section>
@@ -39,7 +39,7 @@ const Register = () => {
                             email,
                             enqueue,
                             pass,
-                            confirmPass,
+                            confirmPass
                         );
 
                         if (isValid) {

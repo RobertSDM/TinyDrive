@@ -4,8 +4,8 @@ export default {
     theme: {
         extend: {
             gridTemplateColumns: {
-                "contentView": '2fr 1fr 1fr'
-            }
+                contentView: "minmax(100px, 2fr) repeat(2, minmax(100px, 1fr))",
+            },
         },
     },
     plugins: [],

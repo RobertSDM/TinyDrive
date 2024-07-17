@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { FileNode, FolderNode } from "../../control/Tree.ts";
 import { BACKEND_URL } from "../../utils/index.ts";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { TreeContext } from "../../context/TreeContext.tsx";
 import useDeleteFolderById from "../../fetcher/folder/deleteFolderbyId.ts";
 import useDeleteFileById from "../../fetcher/file/deleteFileById.ts";
@@ -28,15 +28,28 @@ const ContentView = ({
     const { fetch_: deleteFolderById, isLoading: isDeletingFolder } =
         useDeleteFolderById();
     const rowDeleteId = useRef("");
+    const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
 
     return (
-        <div className="mt-5 max-w-4xl mx-auto   space-y-4">
+        <div className="mt-5 md:max-w-5xl xl:max-w-7xl mx-auto   space-y-4">
             {content.length > 0 ? (
                 <section className="grid grid-flow-row gap-y-2 ">
-                    <section className="grid grid-flow-col grid-cols-contentView">
-                        <span className="font-bold">Name</span>
-                        <span className="font-bold">Extension</span>
-                        <span className="font-bold">Size</span>
+                    <section className="grid grid-flow-col grid-cols-contentView ">
+                        <span className="font-bold text-center">Name</span>
+                        <span className="font-bold text-center">Extension</span>
+                        <span className="font-bold text-center">Size</span>
                     </section>
                     {content.map((f) => (
                         <div
@@ -45,7 +58,7 @@ const ContentView = ({
                         >
                             <section className="flex items-center gap-x-2 justify-between">
                                 <section
-                                    className={`max-w-40 md:max-w-[70%] relative overflow-hidden ${
+                                    className={`max-w-40 md:max-w-full relative overflow-hidden ${
                                         (isDeletingFile || isDeletingFolder) &&
                                         rowDeleteId.current === f.getId() &&
                                         "text-black/50"
@@ -56,11 +69,37 @@ const ContentView = ({
                                             to={`/folder/${f.getId()}/`}
                                             className="relative"
                                         >
-                                            {addThreePoints(f.getName(), 24)}
+                                            {windowWidth > 1024
+                                                ? addThreePoints(
+                                                      f.getName(),
+                                                      64
+                                                  )
+                                                : windowWidth > 768
+                                                ? addThreePoints(
+                                                      f.getName(),
+                                                      30
+                                                  )
+                                                : addThreePoints(
+                                                      f.getName(),
+                                                      20
+                                                  )}
                                         </Link>
                                     ) : (
                                         <span>
-                                            {addThreePoints(f.getName(), 24)}
+                                            {windowWidth > 1024
+                                                ? addThreePoints(
+                                                      f.getName(),
+                                                      64
+                                                  )
+                                                : windowWidth > 768
+                                                ? addThreePoints(
+                                                      f.getName(),
+                                                      30
+                                                  )
+                                                : addThreePoints(
+                                                      f.getName(),
+                                                      20
+                                                  )}
                                         </span>
                                     )}
                                 </section>
@@ -76,7 +115,7 @@ const ContentView = ({
                                                         isDeletingFolder) &&
                                                     rowDeleteId.current ===
                                                         f.getId() &&
-                                                    "bg-black/50 text-white border-none hover:text-white"
+                                                    "bg-slate-300 hover:bg-slate-300 text-white border-none hover:text-white"
                                                 }`}
                                             >
                                                 ↓
@@ -94,7 +133,7 @@ const ContentView = ({
                                                     isDeletingFolder) &&
                                                 rowDeleteId.current ===
                                                     f.getId() &&
-                                                "bg-black/50 text-white border-none  hover:bg-black/50 hover:text-white"
+                                                "bg-slate-300 text-white border-none  hover:bg-slate-300 hover:text-white"
                                             }`}
                                             onClick={async () => {
                                                 rowDeleteId.current = f.getId();

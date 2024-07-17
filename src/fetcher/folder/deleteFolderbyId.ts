@@ -13,29 +13,37 @@ const useDeleteFolderById = () => {
 
     async function fetch_(id: string) {
         setIsLoading(true);
-        const res = await beAPI.delete(`/folder/delete/${id}/${user.id}`, {
-            headers: {
-                Authorization: token,
-            },
-        });
-        setIsLoading(false);
-        if (res.status === 200) {
-            enqueue({
-                level: NotificationLevels.INFO,
-                msg: `deletado com sucesso`,
-                title: "Deletado",
-                special: res.data.name,
+        try {
+            const res = await beAPI.delete(`/folder/delete/${id}/${user.id}`, {
+                headers: {
+                    Authorization: token,
+                },
             });
-        } else {
+            setIsLoading(false);
+            if (res.status === 200) {
+                enqueue({
+                    level: NotificationLevels.INFO,
+                    msg: `deletado com sucesso`,
+                    title: "Deletado",
+                    special: res.data.name,
+                });
+            } else {
+                enqueue({
+                    level: NotificationLevels.ERROR,
+                    msg: `Error while deleting`,
+                    title: "Error",
+                });
+            }
+
+            return false;
+        } catch (err) {
+            setIsLoading(false);
             enqueue({
                 level: NotificationLevels.ERROR,
                 msg: `Error while deleting`,
                 title: "Error",
-                special: res.data.name,
             });
         }
-
-        return false;
     }
     return { fetch_, isLoading };
 };

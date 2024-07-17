@@ -6,7 +6,7 @@ const DefaultHeader = () => {
     const { logoutUser, user } = useUserContext();
 
     return (
-        <header className="flex border px-8 py-4 items-center justify-between h-20">
+        <header className="flex border px-8 py-4 items-center justify-between h-20 min-w-[364px]">
             <Link
                 to={"/"}
                 className="text-2xl font-bold cursor-pointer text-purple-500"
