@@ -51,14 +51,14 @@ const Register = () => {
                         value={userName}
                         setValue={setUserName}
                         title="Nome Usuário"
-                        inputMinSize={4}
+                        inputMinLength={4}
                     />
                     <FormInput
                         value={email}
                         setValue={setEmail}
                         title="Email"
-                        inputMaxSize={40}
-                        inputMinSize={4}
+                        inputMaxLength={100}
+                        inputMinLength={4}
                     />
                     <FormInput
                         value={pass}

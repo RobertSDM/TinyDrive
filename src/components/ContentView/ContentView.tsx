@@ -6,6 +6,9 @@ import { TreeContext } from "../../context/TreeContext.tsx";
 import useDeleteFolderById from "../../fetcher/folder/deleteFolderbyId.ts";
 import useDeleteFileById from "../../fetcher/file/deleteFileById.ts";
 import { addThreePoints } from "../../control/dataConvert.ts";
+import { MdOutlineClose } from "react-icons/md";
+import { HiDownload } from "react-icons/hi";
+import { FaFolderClosed, FaFile } from "react-icons/fa6";
 
 const isFile = (item: FileNode | FolderNode) => {
     return item instanceof FileNode;
@@ -54,7 +57,7 @@ const ContentView = ({
                     {content.map((f) => (
                         <div
                             key={f.getId()}
-                            className="border grid grid-flow-col grid-cols-contentView p-2 hover:bg-purple-50 rounded-md"
+                            className="border grid grid-flow-col grid-cols-contentView p-2 hover:bg-purple-50 rounded-md items-center h-12 max-h-12"
                         >
                             <section className="flex items-center gap-x-2 justify-between">
                                 <section
@@ -67,8 +70,9 @@ const ContentView = ({
                                     {!isFile(f) ? (
                                         <Link
                                             to={`/folder/${f.getId()}/`}
-                                            className="relative"
+                                            className="relative flex gap-x-2 items-center text-nowrap"
                                         >
+                                            <FaFolderClosed className="text-slate-700 min-h-4 min-w-4" />
                                             {windowWidth > 1024
                                                 ? addThreePoints(
                                                       f.getName(),
@@ -85,7 +89,8 @@ const ContentView = ({
                                                   )}
                                         </Link>
                                     ) : (
-                                        <span>
+                                        <span className="flex gap-x-2 items-center text-nowrap">
+                                            <FaFile className="text-slate-700 min-h-4 min-w-4" />
                                             {windowWidth > 1024
                                                 ? addThreePoints(
                                                       f.getName(),
@@ -112,25 +117,15 @@ const ContentView = ({
                                                         to={`${BACKEND_URL}/file/download/${f.getId()}`}
                                                         target="_blank"
                                                         download
-                                                        className={`py-1 px-3 bg-white border  border-purple-500 hover:bg-purple-500 hover:text-white rounded-full`}
                                                     >
-                                                        ↓
+                                                        <HiDownload
+                                                            className={` bg-white border  border-purple-500 hover:bg-purple-500 hover:text-white rounded-full aspect-square min-h-8 min-w-8 p-[0.45rem]`}
+                                                        />
                                                     </Link>
                                                 </section>
                                             )}
                                             <section>
                                                 <span
-                                                    className={`py-1 px-3 bg-white
-                                                cursor-pointer 
-                                                text-red-500 border  border-red-500 hover:bg-red-500 hover:text-white rounded-full ${
-                                                    isFile(f) && "hidden"
-                                                } md:inline ${
-                                                        (isDeletingFile ||
-                                                            isDeletingFolder) &&
-                                                        rowDeleteId.current ===
-                                                            f.getId() &&
-                                                        "bg-slate-300 text-white border-none  hover:bg-slate-300 hover:text-white"
-                                                    }`}
                                                     onClick={async () => {
                                                         rowDeleteId.current =
                                                             f.getId();
@@ -156,7 +151,14 @@ const ContentView = ({
                                                         ]);
                                                     }}
                                                 >
-                                                    x
+                                                    <MdOutlineClose
+                                                        className={`p-[0.45rem] font-bold min-h-8 min-w-8 bg-white
+                                                        cursor-pointer 
+                                                        text-red-500 border  border-red-500 hover:bg-red-500 hover:text-white rounded-full ${
+                                                            isFile(f) &&
+                                                            "hidden"
+                                                        } md:inline`}
+                                                    />
                                                 </span>
                                             </section>
                                         </section>

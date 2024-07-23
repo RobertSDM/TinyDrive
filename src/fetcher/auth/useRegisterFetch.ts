@@ -22,15 +22,15 @@ const useRegisterFetch = () => {
                     if (res.status === 200) {
                         enqueue({
                             level: NotificationLevels.INFO,
-                            msg: `"${res.data.name}" deletado com sucesso`,
-                            title: "Deletado",
+                            msg: `Registred with success`,
+                            title: "Register",
                         });
                         navigate("/login");
                     } else {
                         enqueue({
                             level: NotificationLevels.ERROR,
                             msg: res.data.msg,
-                            title: "Erro ao registrar",
+                            title: "Register error",
                         });
                     }
                 });
@@ -39,7 +39,7 @@ const useRegisterFetch = () => {
             enqueue({
                 level: NotificationLevels.ERROR,
                 msg: "Error to connect to the server",
-                title: "Erro ao registrar",
+                title: "Register error",
             });
             setIsLoading(false);
         }

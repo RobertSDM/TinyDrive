@@ -45,6 +45,8 @@ const Login = () => {
                         value={email}
                         setValue={setEmail}
                         title="Email"
+                        inputMaxLength={100}
+                        inputMinLength={4}
                     />
                     <FormInput
                         value={pass}

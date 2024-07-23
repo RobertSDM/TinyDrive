@@ -44,7 +44,7 @@ const useLoginFetch = () => {
                     if (res.status === 200) {
                         enqueue({
                             level: NotificationLevels.INFO,
-                            msg: `logado com sucesso`,
+                            msg: `logged with success`,
                             title: "Login",
                         });
                         data.current = res.data;

@@ -1,19 +1,20 @@
 import { useState } from "react";
+import { FaEye, FaRegEyeSlash } from "react-icons/fa";
 
 const FormInput = ({
     value,
     setValue,
     isPass = false,
     title,
-    inputMaxSize = 20,
-    inputMinSize = 8,
+    inputMaxLength = 20,
+    inputMinLength = 8,
 }: {
     value: string;
     setValue: (value: string) => void;
     isPass?: boolean;
     title: string;
-    inputMaxSize?: number;
-    inputMinSize?: number;
+    inputMaxLength?: number;
+    inputMinLength?: number;
 }) => {
     const [showPass, setShowPass] = useState<boolean>(false);
 
@@ -29,13 +30,13 @@ const FormInput = ({
                         setValue(event.target.value);
                     }}
                     type={isPass && !showPass ? "password" : "text"}
-                    maxLength={inputMaxSize}
-                    minLength={inputMinSize}
+                    maxLength={inputMaxLength}
+                    minLength={inputMinLength}
                     required
                 />
                 {isPass && (
                     <div onClick={() => setShowPass((prev) => !prev)}>
-                        {showPass ? "X" : "O"}
+                        {showPass ? <FaRegEyeSlash /> : <FaEye />}
                     </div>
                 )}
             </div>
