@@ -10,7 +10,7 @@ const DefaultHeader = () => {
             <header className="flex md:max-w-5xl px-8 xl:px-0 xl:max-w-7xl mx-auto py-4 items-center justify-between h-20 min-w-[364px]">
                 <Link to={"/"} className="cursor-pointer">
                     <img
-                        src="../../public/imgs/tiny-drive-logo.svg"
+                        src="/imgs/tiny-drive-logo.svg"
                         className="aspect-square h-10"
                     />
                 </Link>
