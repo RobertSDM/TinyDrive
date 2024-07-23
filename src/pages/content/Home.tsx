@@ -10,20 +10,26 @@ import { FileNode, FolderNode } from "../../control/Tree.ts";
 
 function Home() {
     const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
-    const { tray, tree, updateCurrentNode, currentNode } = useTreeContext();
-    const { data, isLoading, fetch_ } = useRootContentFetch();
+    const {
+        tray,
+        tree, updateCurrentNode,
+        currentNode,
+    } = useTreeContext();
+    const {
+        data,
+        isLoading,
+        fetch_
+    } = useRootContentFetch();
 
     const setTitle = useTitle();
     setTitle("Tiny Drive");
 
     useEffect(() => {
         const updatedNode = updateCurrentNode(tree.getRoot());
-
         const children = [
             ...updatedNode.getFiles(),
             ...updatedNode.getFolders(),
         ];
-
         if (children.length > 0) {
             setContent([
                 ...updatedNode.getFiles(),
@@ -31,16 +37,12 @@ function Home() {
             ]);
             return;
         }
-
         if (!data) {
             fetch_();
         }
-
         if (isLoading) return;
-
         // Get the root files and folders
         apiResponseToTreeNodes(data!, tree, tree.getRoot());
-
         setContent([...updatedNode.getFiles(), ...updatedNode.getFolders()]);
         // tree.viewTree();
     }, [data]);

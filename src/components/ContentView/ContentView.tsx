@@ -64,7 +64,7 @@ const ContentView = ({
                                     className={`max-w-40 md:max-w-full relative overflow-hidden ${
                                         (isDeletingFile || isDeletingFolder) &&
                                         rowDeleteId.current === f.getId() &&
-                                        "text-black/50"
+                                        "text-slate-500"
                                     }`}
                                 >
                                     {!isFile(f) ? (
@@ -78,7 +78,7 @@ const ContentView = ({
                                                         isDeletingFolder) &&
                                                     rowDeleteId.current ===
                                                         f.getId() &&
-                                                    "text-black/50"
+                                                    "text-slate-500"
                                                 }`}
                                             />
                                             {windowWidth > 1024
@@ -104,7 +104,7 @@ const ContentView = ({
                                                         isDeletingFolder) &&
                                                     rowDeleteId.current ===
                                                         f.getId() &&
-                                                    "text-black/50"
+                                                    "text-slate-500"
                                                 }`}
                                             />
                                             {windowWidth > 1024
@@ -184,7 +184,7 @@ const ContentView = ({
                                 className={`text-center ${
                                     (isDeletingFile || isDeletingFolder) &&
                                     rowDeleteId.current === f.getId() &&
-                                    "text-black/50"
+                                    "text-slate-500"
                                 }`}
                             >
                                 {isFile(f)
@@ -195,7 +195,7 @@ const ContentView = ({
                                 className={`text-center ${
                                     (isDeletingFile || isDeletingFolder) &&
                                     rowDeleteId.current === f.getId() &&
-                                    "text-black/50"
+                                    "text-slate-500"
                                 }`}
                             >
                                 {isFile(f) ? (
