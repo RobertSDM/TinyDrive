@@ -72,7 +72,15 @@ const ContentView = ({
                                             to={`/folder/${f.getId()}/`}
                                             className="relative flex gap-x-2 items-center text-nowrap"
                                         >
-                                            <FaFolderClosed className="text-slate-700 min-h-4 min-w-4" />
+                                            <FaFolderClosed
+                                                className={`text-slate-700 min-h-4 min-w-4 ${
+                                                    (isDeletingFile ||
+                                                        isDeletingFolder) &&
+                                                    rowDeleteId.current ===
+                                                        f.getId() &&
+                                                    "text-black/50"
+                                                }`}
+                                            />
                                             {windowWidth > 1024
                                                 ? addThreePoints(
                                                       f.getName(),
@@ -90,7 +98,15 @@ const ContentView = ({
                                         </Link>
                                     ) : (
                                         <span className="flex gap-x-2 items-center text-nowrap">
-                                            <FaFile className="text-slate-700 min-h-4 min-w-4" />
+                                            <FaFile
+                                                className={`text-slate-700 min-h-4 min-w-4 ${
+                                                    (isDeletingFile ||
+                                                        isDeletingFolder) &&
+                                                    rowDeleteId.current ===
+                                                        f.getId() &&
+                                                    "text-black/50"
+                                                }`}
+                                            />
                                             {windowWidth > 1024
                                                 ? addThreePoints(
                                                       f.getName(),

@@ -58,7 +58,6 @@ const handleFolder = async (
                 false
             );
 
-
             if (tray) {
                 resFolder.tray = `${tray}/${resFolder.name};${resFolder.id}`;
             } else {
@@ -129,10 +128,9 @@ const handleFolder = async (
 
         // Verifies if the actual folder the user is in, is the parent of the file created
         // If it is, it will be added in the tree, and shown on the screen
-        if (
-            currentNode?.getId() === resFolder.folderC_id ||
-            !resFolder?.folderC_id
-        ) {
+
+        if (currentNode?.getId() === resFolder.folderC_id) {
+            console.log("entrou");
             fileToFileNode([data], tree, currNode ? currNode : tree.getRoot());
             if (currentNode.getId() == currNode?.getParentId()) {
                 setContent([
