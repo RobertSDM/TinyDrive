@@ -50,3 +50,18 @@ export type TStoredUser = {
     user_name: string;
     emai: string;
 };
+
+export type TSeachFile = {
+    id: string;
+    name: string;
+    extension: string;
+    byteSize: number;
+    prefix: string;
+    [Symbol.iterator]();
+};
+
+export type TSearchFolder = {
+    id: string;
+    name: str;
+    [Symbol.iterator]();
+};
