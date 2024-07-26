@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
 import { FileNode, FolderNode } from "../../control/Tree.ts";
-import { BACKEND_URL } from "../../utils/index.ts";
 import { useContext, useEffect, useRef, useState } from "react";
 import { TreeContext } from "../../context/TreeContext.tsx";
-import useDeleteFolderById from "../../fetcher/folder/deleteFolderbyId.ts";
-import useDeleteFileById from "../../fetcher/file/deleteFileById.ts";
+import useDeleteFolderById from "../../fetcher/folder/useDeleteFolderbyId.ts";
+import useDeleteFileById from "../../fetcher/file/useDeleteFileById.ts";
 import { addThreePoints } from "../../control/dataConvert.ts";
 import { MdOutlineClose } from "react-icons/md";
 import { HiDownload } from "react-icons/hi";
 import { FaFolderClosed, FaFile } from "react-icons/fa6";
+import fileDownloadService from "../../service/fileDownloadService.ts";
+import { useUserContext } from "../../hooks/useContext.tsx";
 
 const isFile = (item: FileNode | FolderNode) => {
     return item instanceof FileNode;
@@ -32,6 +33,7 @@ const ContentView = ({
         useDeleteFolderById();
     const rowDeleteId = useRef("");
     const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+    const { user, token } = useUserContext();
 
     useEffect(() => {
         const handleResize = () => {
@@ -129,15 +131,19 @@ const ContentView = ({
                                         <section className="flex md:gap-x-3">
                                             {isFile(f) && (
                                                 <section className="space-x-3">
-                                                    <Link
-                                                        to={`${BACKEND_URL}/file/download/${f.getId()}`}
-                                                        target="_blank"
-                                                        download
+                                                    <button
+                                                        onClick={() =>
+                                                            fileDownloadService(
+                                                                user.id,
+                                                                token,
+                                                                f.getId()
+                                                            )
+                                                        }
                                                     >
                                                         <HiDownload
                                                             className={` bg-white border  border-purple-500 hover:bg-purple-500 hover:text-white rounded-full aspect-square min-h-8 min-w-8 p-[0.45rem]`}
                                                         />
-                                                    </Link>
+                                                    </button>
                                                 </section>
                                             )}
                                             <section>

@@ -23,7 +23,7 @@ const FormInput = ({
             <p>{title}</p>
             <div className="flex items-center gap-x-2 border border-black/50 px-2 py-1">
                 <input
-                    className="outline-none flex-grow"
+                    className="outline-none flex-grow bg-transparent"
                     placeholder={title}
                     value={value}
                     onChange={(event) => {
