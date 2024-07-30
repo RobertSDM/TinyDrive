@@ -1,10 +1,11 @@
-import { useContext, useEffect, useState } from "react";
-import { NotificationContext } from "../context/NotificationSystem.tsx";
-import { NotificationLevels } from "../types/enums.ts";
-import { addThreePoints } from "../control/dataConvert.ts";
+import { useEffect, useState } from "react";
+import { MdOutlineClose } from "react-icons/md";
+import { useNotificationSystemContext } from "../../hooks/useContext.tsx";
+import { NotificationLevels } from "../../types/enums.ts";
+import { addThreePoints } from "../../control/dataConvert.ts";
 
 const Notifications = () => {
-    const { dequeue, currentOne } = useContext(NotificationContext);
+    const { dequeue, currentOne } = useNotificationSystemContext();
 
     const [perc, setPerc] = useState<number>(100);
     const [time, setTime] = useState<number>(4000);
@@ -62,7 +63,14 @@ const Notifications = () => {
                                 setTime(4000);
                             }}
                         >
-                            x
+                            <MdOutlineClose
+                                className={`font-bold min-h-1 min-w-1 cursor-pointer ${
+                                    currentOne.level ===
+                                    NotificationLevels.ERROR
+                                        ? "text-white"
+                                        : "text-purple-500"
+                                }`}
+                            />
                         </span>
                     </div>
                     <div className="mb-3">
@@ -80,7 +88,7 @@ const Notifications = () => {
                                         {addThreePoints(currentOne.special, 30)}
                                         "
                                     </span>
-                                    <span>{" "}{currentOne.msg}</span>
+                                    <span> {currentOne.msg}</span>
                                 </>
                             ) : (
                                 currentOne.msg

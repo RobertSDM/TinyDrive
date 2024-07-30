@@ -10,39 +10,33 @@ const useRegisterFetch = () => {
     const navigate = useNavigate();
 
     function register(email: string, password: string, user_name: string) {
-        try {
-            setIsLoading(true);
-            beAPI
-                .post(`/auth/register`, {
-                    email,
-                    password,
-                    user_name,
-                })
-                .then((res) => {
-                    if (res.status === 200) {
-                        enqueue({
-                            level: NotificationLevels.INFO,
-                            msg: `Registred with success`,
-                            title: "Register",
-                        });
-                        navigate("/login");
-                    } else {
-                        enqueue({
-                            level: NotificationLevels.ERROR,
-                            msg: res.data.msg,
-                            title: "Register error",
-                        });
-                    }
-                });
-        } catch (err) {
-            console.log(err);
-            enqueue({
-                level: NotificationLevels.ERROR,
-                msg: "Error to connect to the server",
-                title: "Register error",
+        setIsLoading(true);
+        beAPI
+            .post(`/auth/register`, {
+                email,
+                password,
+                user_name,
+            })
+            .then((res) => {
+                if (res.status === 200) {
+                    enqueue({
+                        level: NotificationLevels.INFO,
+                        msg: `Registred with success`,
+                        title: "Register",
+                    });
+                    navigate("/login");
+                }
+            })
+            .catch((err) => {
+                setIsLoading(false);
+                if (err.response) {
+                    enqueue({
+                        level: NotificationLevels.ERROR,
+                        msg: err.response.data.msg,
+                        title: "Register error",
+                    });
+                }
             });
-            setIsLoading(false);
-        }
     }
     return { isLoading, register };
 };

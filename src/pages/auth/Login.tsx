@@ -1,28 +1,31 @@
 import { useState } from "react";
-import FormInput from "../../components/FormInput.tsx";
+import FormInput from "../../components/FormInputWrapper/FormInput.tsx";
 import { Link } from "react-router-dom";
 import { emailPassVerificationServ } from "../../service/authService.ts";
 import { useNotificationSystemContext } from "../../hooks/useContext.tsx";
 import useLoginFetch from "../../fetcher/auth/useLoginFetch.ts";
+import useTitle from "../../hooks/useTitle.tsx";
 
 const Login = () => {
     const { enqueue } = useNotificationSystemContext();
     const [email, setEmail] = useState<string>("");
     const [pass, setPass] = useState<string>("");
     const { login } = useLoginFetch();
+    const setTitle = useTitle();
 
+    setTitle("Tiny Drive | Login");
     return (
         <div className="h-screen px-4 pt-10 space-y-36">
             <section className="space-y-4">
                 <h1 className="text-3xl md:text-7xl font-bold text-purple-900">
-                    Já faz parte? <br></br> Então só entrar
+                    Already a member? Just log in
                 </h1>
                 <section className="pl-5">
                     <p className="font-medium text-base md:text-xl">
-                        Então você já faz parte do Tiny Drive
+                        So you're already part of Tiny Drive
                     </p>
                     <p className="font-medium text-base md:text-xl">
-                        Só entrar, você lembra da senha, né?
+                        Just log in, you remember your password, right?
                     </p>
                 </section>
             </section>
@@ -59,12 +62,15 @@ const Login = () => {
                             type="submit"
                             className="px-4 py-2 w-full bg-purple-500 text-white font-semibold hover:bg-white hover:border hover:border-purple-500 hover:text-purple-500"
                         >
-                            Entrar
+                            Login
                         </button>
                         <div className="flex items-center flex-col">
-                            <p>Não é registrado?</p>
-                            <Link to={"/register"} className="text-blue-400">
-                                Registre-se
+                            <p>Not signed?</p>
+                            <Link
+                                to={"/register"}
+                                className="text-blue-400 font-semibold"
+                            >
+                                Sign up
                             </Link>
                         </div>
                     </section>

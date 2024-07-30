@@ -5,11 +5,13 @@ import {
     folderToFolderNode,
 } from "./dataConvert.ts";
 import { IFolder, INotification } from "../types/types.js";
-import { FileNode, FolderNode, Tree } from "./Tree.ts";
+import { Tree } from "./TreeWrapper/Tree.ts";
 import { NotificationLevels } from "../types/enums.ts";
 import saveFolder from "../fetcher/folder/saveFolder.ts";
 import saveFile from "../fetcher/file/saveFile.ts";
 import { MAX_DIR_DEPTH, MAX_FILE_SIZE } from "../utils/index.ts";
+import { FolderNode } from "./TreeWrapper/FolderNode.ts";
+import { FileNode } from "./TreeWrapper/FileNode.ts";
 
 const handleFolder = async (
     event: ChangeEvent<HTMLInputElement>,

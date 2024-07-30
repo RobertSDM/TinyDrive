@@ -1,10 +1,10 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { TreeProvider } from "../../context/TreeContext.tsx";
-import Notifications from "../../components/Notifications.tsx";
 import { NotificationProvider } from "../../context/NotificationSystem.tsx";
 import { useEffect } from "react";
-import DefaultHeader from "../../components/DefaultHeader.tsx";
+import DefaultHeader from "../../components/DefaultHeaderWrapper.tsx/DefaultHeader.tsx";
 import { useUserContext } from "../../hooks/useContext.tsx";
+import Notifications from "../../components/NotificationsWrapper/Notifications.tsx";
 
 const ContentLayout = () => {
     const { isLogged, logoutUser, logUser, findUserToken } = useUserContext();

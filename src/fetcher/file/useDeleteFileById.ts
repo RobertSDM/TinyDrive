@@ -10,6 +10,7 @@ const useDeleteFileById = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const { token, user } = useUserContext();
     const { enqueue } = useNotificationSystemContext();
+
     async function fetch_(id: string) {
         setIsLoading(true);
         try {
@@ -26,12 +27,14 @@ const useDeleteFileById = () => {
                     title: "Deletado",
                     special: res.data.name,
                 });
+                return true;
             } else {
                 enqueue({
                     level: NotificationLevels.ERROR,
                     msg: `Error while deleting`,
                     title: "Error",
                 });
+                return false;
             }
         } catch (err) {
             setIsLoading(false);
@@ -40,8 +43,8 @@ const useDeleteFileById = () => {
                 msg: `Error while deleting`,
                 title: "Error",
             });
+            return false;
         }
-        return false;
     }
 
     return { fetch_, isLoading };

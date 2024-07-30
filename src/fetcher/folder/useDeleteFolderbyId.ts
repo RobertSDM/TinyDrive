@@ -27,15 +27,15 @@ const useDeleteFolderById = () => {
                     title: "Deletado",
                     special: res.data.name,
                 });
+                return true;
             } else {
                 enqueue({
                     level: NotificationLevels.ERROR,
                     msg: `Error while deleting`,
                     title: "Error",
                 });
+                return false;
             }
-
-            return false;
         } catch (err) {
             setIsLoading(false);
             enqueue({
@@ -43,9 +43,10 @@ const useDeleteFolderById = () => {
                 msg: `Error while deleting`,
                 title: "Error",
             });
+            return false;
         }
     }
-    return { fetch_, isLoading };
+    return { fetch_, isLoading, status };
 };
 
 export default useDeleteFolderById;

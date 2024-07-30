@@ -1,10 +1,11 @@
 import { useContext, useState } from "react";
 import { MdExpandLess, MdExpandMore, MdFileUpload } from "react-icons/md";
-import { createSelectionInput } from "../control/fileReader.ts";
-import { NotificationContext } from "../context/NotificationSystem.tsx";
-import { TreeContext } from "../context/TreeContext.tsx";
-import { FileNode, FolderNode } from "../control/Tree.ts";
-import { useUserContext } from "../hooks/useContext.tsx";
+import { createSelectionInput } from "../../control/fileReader.ts";
+import { NotificationContext } from "../../context/NotificationSystem.tsx";
+import { TreeContext } from "../../context/TreeContext.tsx";
+import { useUserContext } from "../../hooks/useContext.tsx";
+import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
+import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
 
 const ButtonUpload = ({
     setContent,

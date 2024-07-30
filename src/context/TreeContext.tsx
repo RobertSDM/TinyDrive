@@ -1,6 +1,7 @@
 import { ReactElement, createContext, useState } from "react";
-import { FolderNode, Tree } from "../control/Tree.ts";
+import { Tree } from "../control/TreeWrapper/Tree.ts";
 import type { ITray } from "../types/types.js";
+import { FolderNode } from "../control/TreeWrapper/FolderNode.ts";
 
 interface ITreeContext {
     currentNode: FolderNode;

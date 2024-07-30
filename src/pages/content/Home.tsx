@@ -3,23 +3,16 @@ import useTitle from "../../hooks/useTitle.tsx";
 import { useTreeContext } from "../../hooks/useContext.tsx";
 import useRootContentFetch from "../../fetcher/content/useRootContentFetch.ts";
 import { apiResponseToTreeNodes } from "../../control/dataConvert.ts";
-import ButtonUpload from "../../components/ButtonUpload.tsx";
-import ContentView from "../../components/ContentView/ContentView.tsx";
+import ButtonUpload from "../../components/Buttons/ButtonUpload.tsx";
+import ContentView from "../../components/ContentViewWrapper/ContentView.tsx";
 import { Link } from "react-router-dom";
-import { FileNode, FolderNode } from "../../control/Tree.ts";
+import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
+import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
 
 function Home() {
     const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
-    const {
-        tray,
-        tree, updateCurrentNode,
-        currentNode,
-    } = useTreeContext();
-    const {
-        data,
-        isLoading,
-        fetch_
-    } = useRootContentFetch();
+    const { tray, tree, updateCurrentNode, currentNode } = useTreeContext();
+    const { data, isLoading, fetch_ } = useRootContentFetch();
 
     const setTitle = useTitle();
     setTitle("Tiny Drive");

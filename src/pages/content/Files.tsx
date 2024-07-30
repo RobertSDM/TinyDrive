@@ -3,10 +3,11 @@ import { apiResponseToTreeNodes } from "../../control/dataConvert.ts";
 import { useEffect, useRef, useState } from "react";
 import { useTreeContext } from "../../hooks/useContext.tsx";
 import useTitle from "../../hooks/useTitle.tsx";
-import { FileNode, FolderNode } from "../../control/Tree.ts";
 import useContentByFolderFetch from "../../fetcher/content/useContentByFolderFetch.ts";
-import ContentView from "../../components/ContentView/ContentView.tsx";
-import ButtonUpload from "../../components/ButtonUpload.tsx";
+import ContentView from "../../components/ContentViewWrapper/ContentView.tsx";
+import ButtonUpload from "../../components/Buttons/ButtonUpload.tsx";
+import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
+import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
 
 const Folder = () => {
     const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
@@ -15,23 +16,22 @@ const Folder = () => {
     const { id } = useParams();
     const lastId = useRef("");
     const { data, isLoading, fetch_ } = useContentByFolderFetch();
-    setTitle("Tiny Drive | Files");
+    setTitle("Tiny Drive | Folder");
 
     useEffect(() => {
         let updatedNode: FolderNode | null = null;
+        const treeNods = [
+            ...(tree.getFolderNodes()[id!]?.getFolders() ?? []),
+            ...(tree.getFolderNodes()[id!]?.getFiles() ?? []),
+        ];
 
         /// Verify if the folders is on the Tree Structure
-        if (
-            [
-                ...(tree.getFolderNodes()[id!]?.getFolders() ?? []),
-                ...(tree.getFolderNodes()[id!]?.getFiles() ?? []),
-            ].length > 0
-        ) {
+        if (treeNods.length > 0) {
             updatedNode = updateCurrentNode(tree.getFolderNodes()[id!]);
 
             setContent([
-                ...updatedNode.getFiles(),
-                ...updatedNode.getFolders(),
+                ...updatedNode!.getFiles(),
+                ...updatedNode!.getFolders(),
             ]);
             return;
         }
@@ -47,12 +47,7 @@ const Folder = () => {
         if (isLoading) return;
 
         if (data) {
-            if (
-                [
-                    ...(tree.getFolderNodes()[id!]?.getFolders() ?? []),
-                    ...(tree.getFolderNodes()[id!]?.getFiles() ?? []),
-                ].length > 0
-            ) {
+            if (treeNods.length > 0) {
                 updatedNode = updateCurrentNode(tree.getFolderNodes()[id!]);
             }
 
@@ -70,11 +65,11 @@ const Folder = () => {
             }
 
             /// Converts the content from the api into nodes to the Tree Structure
-            apiResponseToTreeNodes(data, tree, updatedNode);
+            apiResponseToTreeNodes(data, tree, updatedNode!);
 
             setContent([
-                ...updatedNode.getFiles(),
-                ...updatedNode.getFolders(),
+                ...updatedNode!.getFiles(),
+                ...updatedNode!.getFolders(),
             ]);
         }
     }, [id, data]);

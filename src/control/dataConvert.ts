@@ -1,5 +1,6 @@
 import type { IFile, IFolder } from "../types/types.d.ts";
-import { FolderNode, Tree } from "./Tree.ts";
+import { FolderNode } from "./TreeWrapper/FolderNode.ts";
+import {  Tree } from "./TreeWrapper/Tree.ts";
 
 export const convertArrayBufferToBase64 = (byteData: ArrayBuffer): string => {
     return btoa(
@@ -21,7 +22,7 @@ export const convertBase64ToArrayBuffer = (base64: string): ArrayBuffer => {
     }
 
     return bytes.buffer;
-}
+};
 
 export const folderToFolderNode = (
     folders: IFolder[],

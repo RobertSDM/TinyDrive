@@ -1,10 +1,11 @@
 import { useState } from "react";
-import FormInput from "../../components/FormInput.tsx";
+import FormInput from "../../components/FormInputWrapper/FormInput.tsx";
 import { Link } from "react-router-dom";
 
 import { emailPassVerificationServ } from "../../service/authService.ts";
 import { useNotificationSystemContext } from "../../hooks/useContext.tsx";
 import useRegisterFetch from "../../fetcher/auth/useRegisterFetch.ts";
+import useTitle from "../../hooks/useTitle.tsx";
 
 const Register = () => {
     const { enqueue } = useNotificationSystemContext();
@@ -13,19 +14,21 @@ const Register = () => {
     const [email, setEmail] = useState<string>("");
     const [pass, setPass] = useState<string>("");
     const [confirmPass, setConfirmPass] = useState<string>("");
+    const setTitle = useTitle();
 
+    setTitle("Tiny Drive | Sign-up");
     return (
         <div className="h-screen px-4 pt-10 space-y-36">
             <section className="space-y-4">
                 <h1 className="text-3xl md:text-7xl font-bold text-purple-900">
-                    Registre-se
+                    Sign up
                 </h1>
                 <section className="pl-5">
                     <p className="font-medium text-base md:text-xl">
-                        Se registre no melhor web app para salvar arquivos
+                        Sign up for the best web app to save files
                     </p>
                     <p className="font-medium text-base md:text-xl">
-                        Um local simples rápido para salvar suas informações
+                        "A simple and fast place to save your information
                     </p>
                 </section>
             </section>
@@ -78,16 +81,16 @@ const Register = () => {
                             type="submit"
                             className="px-4 py-2 w-full bg-purple-500 text-white font-semibold hover:bg-white hover:border hover:border-purple-500 hover:text-purple-500"
                         >
-                            Registrar
+                            Sign up
                         </button>
                         <div className="flex items-center flex-col">
-                            <div>
-                                <p>Já é registrado?</p>
+                            <div className="text-center">
+                                <p>Already Signed?</p>
                                 <Link
                                     to={"/login"}
                                     className="text-blue-400 font-semibold"
                                 >
-                                    Entrar
+                                    Login
                                 </Link>
                             </div>
                         </div>

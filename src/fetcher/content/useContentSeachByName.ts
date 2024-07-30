@@ -34,7 +34,7 @@ const useContentSearchByName = () => {
         }
     };
 
-    return { isLoading, data, fetch_ };
+    return { isLoading, data, fetch_, setIsLoading };
 };
 
 export default useContentSearchByName;
