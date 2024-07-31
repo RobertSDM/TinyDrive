@@ -1,5 +1,8 @@
 import { Link, useParams } from "react-router-dom";
-import { apiResponseToTreeNodes } from "../../control/dataConvert.ts";
+import {
+    addThreePoints,
+    apiResponseToTreeNodes,
+} from "../../control/dataConvert.ts";
 import { useEffect, useRef, useState } from "react";
 import { useTreeContext } from "../../hooks/useContext.tsx";
 import useTitle from "../../hooks/useTitle.tsx";
@@ -16,7 +19,7 @@ const Folder = () => {
     const { id } = useParams();
     const lastId = useRef("");
     const { data, isLoading, fetch_ } = useContentByFolderFetch();
-    setTitle("Tiny Drive | Folder");
+    setTitle(currentNode.getName() !== "/" ? `Tiny Drive | ${addThreePoints(currentNode.getName(), 16)}` : "Tiny Drive");
 
     useEffect(() => {
         let updatedNode: FolderNode | null = null;
