@@ -15,7 +15,11 @@ const PaginationControls = ({
     const [totalPages, setTotalPages] = useState<number>();
 
     useEffect(() => {
-        setTotalPages(Math.ceil(content.length / ITEMS_PER_PAGE));
+        const newTotalPages = Math.ceil(content.length / ITEMS_PER_PAGE);
+        setTotalPages(newTotalPages);
+        if (currentPage > newTotalPages) {
+            setCurrentPage(newTotalPages);
+        }
     }, [content]);
 
     return (

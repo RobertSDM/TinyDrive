@@ -22,21 +22,18 @@ const ContentView = ({
         <div className="mt-2 md:max-w-5xl xl:max-w-7xl mx-auto   space-y-4">
             {content.length > 0 ? (
                 <section className="grid grid-flow-row gap-y-2 ">
-                    {content.length > ITEMS_PER_PAGE && (
-               
-                            <PaginationControls
-                                setCurrentPage={setCurrentPage}
-                                currentPage={currentPage}
-                                content={content}
-                            />
- 
-                    )}
+                    <PaginationControls
+                        setCurrentPage={setCurrentPage}
+                        currentPage={currentPage}
+                        content={content}
+                        currentNode={currentNode}
+                    />
                     <section className="grid grid-flow-col grid-cols-contentView ">
                         <span className="font-bold text-center">Name</span>
                         <span className="font-bold text-center">Extension</span>
                         <span className="font-bold text-center">Size</span>
                     </section>
-                    <section>
+                    <section className="space-y-2">
                         {content
                             .slice(
                                 currentPage * ITEMS_PER_PAGE - ITEMS_PER_PAGE,
