@@ -59,7 +59,7 @@ function Home() {
                 })}
             </nav>
 
-            <section className="mt-5 mx-auto max-w-xl md:max-w-5xl xl:max-w-7xl border-t border-black/10 py-4 space-y-16">
+            <section className="mt-5 mx-auto max-w-xl md:max-w-5xl xl:max-w-7xl border-t border-black/10 py-4 space-y-10">
                 <ButtonUpload
                     setContent={setContent}
                     currentNode={currentNode}

@@ -7,8 +7,10 @@ export const beAPI = axios.create({
     baseURL: BACKEND_URL,
 });
 
-// Settings variables
+/// Settings variables
 export const MAX_DIR_DEPTH = 3;
 export const MAX_FILE_SIZE = 5_000_000; // MBs
 export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 export const DELAY_TO_SEARCH_CONTENT = 200;
+// Pagination
+export const ITEMS_PER_PAGE = 10;
