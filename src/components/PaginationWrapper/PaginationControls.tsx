@@ -19,7 +19,7 @@ const PaginationControls = ({
     }, [content]);
 
     return (
-        <>
+        <section className="flex gap-x-2 items-center justify-end">
             <button
                 onClick={() => {
                     if (currentPage === 1) {
@@ -79,7 +79,7 @@ const PaginationControls = ({
             >
                 &gt;&gt;
             </button>
-        </>
+        </section>
     );
 };
 

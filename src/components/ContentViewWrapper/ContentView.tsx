@@ -23,13 +23,13 @@ const ContentView = ({
             {content.length > 0 ? (
                 <section className="grid grid-flow-row gap-y-2 ">
                     {content.length > ITEMS_PER_PAGE && (
-                        <section className="hidden lg:flex gap-x-2 items-center justify-end">
+               
                             <PaginationControls
                                 setCurrentPage={setCurrentPage}
                                 currentPage={currentPage}
                                 content={content}
                             />
-                        </section>
+ 
                     )}
                     <section className="grid grid-flow-col grid-cols-contentView ">
                         <span className="font-bold text-center">Name</span>
@@ -51,15 +51,6 @@ const ContentView = ({
                                 />
                             ))}
                     </section>
-                    {content.length > ITEMS_PER_PAGE && (
-                        <section className="mt-2 flex gap-x-4 lg:gap-x-2 justify-center items-center lg:hidden">
-                            <PaginationControls
-                                setCurrentPage={setCurrentPage}
-                                currentPage={currentPage}
-                                content={content}
-                            />
-                        </section>
-                    )}
                 </section>
             ) : (
                 <section>
