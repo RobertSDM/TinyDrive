@@ -30,20 +30,6 @@ const PaginationControls = ({
                         return;
                     }
 
-                    setCurrentPage(1);
-                }}
-                className={`font-semibold text-lg lg:text-sm ${
-                    currentPage === 1 ? "text-slate-300" : "text-black"
-                }`}
-            >
-                &lt;&lt;
-            </button>
-            <button
-                onClick={() => {
-                    if (currentPage === 1) {
-                        return;
-                    }
-
                     setCurrentPage((prev) => prev - 1);
                 }}
                 className={`font-semibold text-lg lg:text-sm ${
@@ -68,20 +54,6 @@ const PaginationControls = ({
                 }`}
             >
                 &gt;
-            </button>
-            <button
-                onClick={() => {
-                    if (currentPage === totalPages) {
-                        return;
-                    }
-
-                    setCurrentPage(totalPages!);
-                }}
-                className={`font-semibold text-lg lg:text-sm ${
-                    currentPage === totalPages ? "text-slate-300" : "text-black"
-                }`}
-            >
-                &gt;&gt;
             </button>
         </section>
     );
