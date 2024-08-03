@@ -26,7 +26,6 @@ const ContentView = ({
                         setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         content={content}
-                        currentNode={currentNode}
                     />
                     <section className="grid grid-flow-col grid-cols-contentView ">
                         <span className="font-bold text-center">Name</span>
