@@ -8,10 +8,10 @@ import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
 import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
 
 const ButtonUpload = ({
-    setContent,
+    updateContent,
     currentNode,
 }: {
-    setContent: React.Dispatch<React.SetStateAction<(FolderNode | FileNode)[]>>;
+    updateContent: (content: Array<FileNode | FolderNode>) => void;
     currentNode: FolderNode;
 }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -51,7 +51,7 @@ const ButtonUpload = ({
                             true,
                             enqueue,
                             tree,
-                            setContent,
+                            updateContent,
                             currentNode,
                             user.id,
                             token
@@ -68,7 +68,7 @@ const ButtonUpload = ({
                             false,
                             enqueue,
                             tree,
-                            setContent,
+                            updateContent,
                             currentNode,
                             user.id,
                             token

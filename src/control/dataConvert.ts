@@ -1,10 +1,10 @@
 import type { IFile, IFolder } from "../types/types.d.ts";
 import { FolderNode } from "./TreeWrapper/FolderNode.ts";
-import {  Tree } from "./TreeWrapper/Tree.ts";
+import { Tree } from "./TreeWrapper/Tree.ts";
 
 export const convertArrayBufferToBase64 = (byteData: ArrayBuffer): string => {
     return btoa(
-        new Uint8Array(byteData as ArrayBuffer).reduce(
+        new Uint8Array(byteData).reduce(
             (data, byte) => data + String.fromCharCode(byte),
             ""
         )
@@ -15,13 +15,13 @@ export const convertBase64ToArrayBuffer = (base64: string): ArrayBuffer => {
     const binaryString = atob(base64);
 
     const len = binaryString.length;
-    const bytes = new Uint8Array(len);
+    const byteArray = new Uint8Array(len);
 
     for (let i = 0; i < len; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
+        byteArray[i] = binaryString.charCodeAt(i);
     }
 
-    return bytes.buffer;
+    return byteArray.buffer;
 };
 
 export const folderToFolderNode = (

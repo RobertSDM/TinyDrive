@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import { ChangeEvent } from "react";
 import {
     convertArrayBufferToBase64,
     fileToFileNode,
@@ -18,7 +18,7 @@ const handleFolder = async (
     // node: FolderNode,
     enqueue: (notification: INotification) => void,
     tree: Tree,
-    setContent: React.Dispatch<React.SetStateAction<(FolderNode | FileNode)[]>>,
+    updateContent: (content: Array<FileNode | FolderNode>) => void,
     currentNode: FolderNode,
     userId: string,
     token: string
@@ -82,7 +82,7 @@ const handleFolder = async (
                 );
                 currNode = tree.getFolderNodes()[resFolder.id];
 
-                setContent([
+                updateContent([
                     ...currentNode.getFiles(),
                     ...currentNode.getFolders(),
                 ]);
@@ -135,7 +135,7 @@ const handleFolder = async (
             console.log("entrou");
             fileToFileNode([data], tree, currNode ? currNode : tree.getRoot());
             if (currentNode.getId() == currNode?.getParentId()) {
-                setContent([
+                updateContent([
                     ...currentNode.getFiles(),
                     ...currentNode.getFolders(),
                 ]);
@@ -178,7 +178,7 @@ const handleFile = async (
     event: ChangeEvent<HTMLInputElement>,
     enqueue: (notification: INotification) => void,
     tree: Tree,
-    setContent: React.Dispatch<React.SetStateAction<(FolderNode | FileNode)[]>>,
+    updateContent: (content: Array<FileNode | FolderNode>) => void,
     currentNode: FolderNode,
     userId: string,
     token: string
@@ -235,7 +235,7 @@ const handleFile = async (
 
         fileToFileNode([data], tree, tree.getRoot());
 
-        setContent([...currentNode.getFiles(), ...currentNode.getFolders()]);
+        updateContent([...currentNode.getFiles(), ...currentNode.getFolders()]);
 
         readIndex++;
     }
@@ -245,7 +245,7 @@ export const createSelectionInput = (
     isFileInput: boolean,
     enqueue: (notification: INotification) => void,
     tree: Tree,
-    setContent: React.Dispatch<React.SetStateAction<(FolderNode | FileNode)[]>>,
+    updateContent: (content: Array<FileNode | FolderNode>) => void,
     currentNode: FolderNode,
     userId: string,
     token: string
@@ -264,7 +264,7 @@ export const createSelectionInput = (
                 e as unknown as ChangeEvent<HTMLInputElement>,
                 enqueue,
                 tree,
-                setContent,
+                updateContent,
                 currentNode,
                 userId,
                 token
@@ -274,7 +274,7 @@ export const createSelectionInput = (
                 e as unknown as ChangeEvent<HTMLInputElement>,
                 enqueue,
                 tree,
-                setContent,
+                updateContent,
                 currentNode,
                 userId,
                 token
@@ -292,7 +292,7 @@ export const createSelectionInput = (
                 e as unknown as ChangeEvent<HTMLInputElement>,
                 enqueue,
                 tree,
-                setContent,
+                updateContent,
                 currentNode,
                 userId,
                 token
@@ -302,7 +302,7 @@ export const createSelectionInput = (
                 e as unknown as ChangeEvent<HTMLInputElement>,
                 enqueue,
                 tree,
-                setContent,
+                updateContent,
                 currentNode,
                 userId,
                 token

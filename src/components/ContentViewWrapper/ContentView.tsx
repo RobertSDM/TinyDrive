@@ -7,12 +7,12 @@ import { ITEMS_PER_PAGE } from "../../utils/index.ts";
 
 const ContentView = ({
     content,
-    setContent,
+    updateContent,
     currentNode,
     isLoading,
 }: {
     content: Array<FileNode | FolderNode>;
-    setContent: React.Dispatch<React.SetStateAction<(FileNode | FolderNode)[]>>;
+    updateContent: (content: Array<FileNode | FolderNode>) => void;
     currentNode: FolderNode;
     isLoading: boolean;
 }) => {
@@ -41,7 +41,7 @@ const ContentView = ({
                             .map((f) => (
                                 <ContentRow
                                     key={f.getId()}
-                                    setContent={setContent}
+                                    updateContent={updateContent}
                                     currentNode={currentNode}
                                     item={f}
                                 />

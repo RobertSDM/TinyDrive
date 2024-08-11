@@ -3,7 +3,7 @@ import {
     addThreePoints,
     apiResponseToTreeNodes,
 } from "../../control/dataConvert.ts";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTreeContext } from "../../hooks/useContext.tsx";
 import useTitle from "../../hooks/useTitle.tsx";
 import useContentByFolderFetch from "../../fetcher/content/useContentByFolderFetch.ts";
@@ -19,20 +19,37 @@ const Folder = () => {
     const { id } = useParams();
     const lastId = useRef("");
     const { data, isLoading, fetch_ } = useContentByFolderFetch();
-    setTitle(currentNode.getName() !== "/" ? `Tiny Drive | ${addThreePoints(currentNode.getName(), 16)}` : "Tiny Drive");
+    const updateContent = useCallback(
+        (content: Array<FileNode | FolderNode>) => {
+            const newContent = content.sort(
+                (a: FileNode | FolderNode, b: FileNode | FolderNode) => {
+                    return a.getName().localeCompare(b.getName());
+                }
+            );
+
+            setContent(newContent);
+        },
+        [content]
+    );
+
+    setTitle(
+        currentNode.getName() !== "/"
+            ? `Tiny Drive | ${addThreePoints(currentNode.getName(), 16)}`
+            : "Tiny Drive"
+    );
 
     useEffect(() => {
         let updatedNode: FolderNode | null = null;
-        const treeNods = [
+        const nodeNodes = [
             ...(tree.getFolderNodes()[id!]?.getFolders() ?? []),
             ...(tree.getFolderNodes()[id!]?.getFiles() ?? []),
         ];
 
         /// Verify if the folders is on the Tree Structure
-        if (treeNods.length > 0) {
+        if (nodeNodes.length > 0) {
             updatedNode = updateCurrentNode(tree.getFolderNodes()[id!]);
 
-            setContent([
+            updateContent([
                 ...updatedNode!.getFiles(),
                 ...updatedNode!.getFolders(),
             ]);
@@ -40,7 +57,7 @@ const Folder = () => {
         }
 
         /// Verify if the id has changed to fetch new content
-        setContent([]);
+        updateContent([]);
         if (!data || lastId.current !== id) {
             lastId.current = id!;
             fetch_(id!);
@@ -50,7 +67,7 @@ const Folder = () => {
         if (isLoading) return;
 
         if (data) {
-            if (treeNods.length > 0) {
+            if (nodeNodes.length > 0) {
                 updatedNode = updateCurrentNode(tree.getFolderNodes()[id!]);
             }
 
@@ -70,7 +87,7 @@ const Folder = () => {
             /// Converts the content from the api into nodes to the Tree Structure
             apiResponseToTreeNodes(data, tree, updatedNode!);
 
-            setContent([
+            updateContent([
                 ...updatedNode!.getFiles(),
                 ...updatedNode!.getFolders(),
             ]);
@@ -98,12 +115,12 @@ const Folder = () => {
 
             <section className="mt-5 mx-auto max-w-xl md:max-w-5xl xl:max-w-7xl border-t border-black/10 py-4 space-y-16">
                 <ButtonUpload
-                    setContent={setContent}
+                    updateContent={updateContent}
                     currentNode={currentNode}
                 />
                 <ContentView
                     content={content}
-                    setContent={setContent}
+                    updateContent={updateContent}
                     currentNode={currentNode}
                     isLoading={isLoading}
                 />

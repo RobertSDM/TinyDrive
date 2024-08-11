@@ -16,11 +16,11 @@ const isFile = (item: FileNode | FolderNode) => {
 };
 
 const ContentRow = ({
-    setContent,
+    updateContent,
     currentNode,
     item,
 }: {
-    setContent: React.Dispatch<React.SetStateAction<(FileNode | FolderNode)[]>>;
+    updateContent: (content: Array<FileNode | FolderNode>) => void;
     currentNode: FolderNode;
     item: FileNode | FolderNode;
 }) => {
@@ -118,7 +118,7 @@ const ContentRow = ({
                                             );
                                     }
 
-                                    setContent([
+                                    updateContent([
                                         ...currentNode.getFiles(),
                                         ...currentNode.getFolders(),
                                     ]);
