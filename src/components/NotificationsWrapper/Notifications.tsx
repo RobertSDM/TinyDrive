@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { MdOutlineClose } from "react-icons/md";
 import { useNotificationSystemContext } from "../../hooks/useContext.tsx";
 import { NotificationLevels } from "../../types/enums.ts";
-import { addThreePoints } from "../../control/dataConvert.ts";
+import { addThreePoints } from "../../utils/dataConvertion.ts";
 
 const Notifications = () => {
     const { dequeue, currentOne } = useNotificationSystemContext();

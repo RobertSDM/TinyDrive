@@ -1,4 +1,4 @@
-import { beAPI } from "../../utils/index.ts";
+import { beAPI } from "../../utils/enviromentVariables.ts";
 
 const downloadFile = async (userId: string, id: string, token: string) => {
     try {
@@ -7,7 +7,6 @@ const downloadFile = async (userId: string, id: string, token: string) => {
                 Authorization: `Bearer ${token}`,
             },
         });
-
 
         if (res.status === 200) {
             return res.data;

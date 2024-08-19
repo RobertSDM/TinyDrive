@@ -5,7 +5,7 @@ import {
 } from "../../hooks/useContext.tsx";
 import { NotificationLevels } from "../../types/enums.ts";
 import { IFile, IFolder } from "../../types/types.js";
-import { beAPI } from "../../utils/index.ts";
+import { beAPI } from "../../utils/enviromentVariables.ts";
 
 type TData = {
     files: IFile[];

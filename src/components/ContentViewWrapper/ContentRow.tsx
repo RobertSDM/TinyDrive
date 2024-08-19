@@ -5,7 +5,7 @@ import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
 import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
 import { Link } from "react-router-dom";
 import { FaFolderClosed } from "react-icons/fa6";
-import { addThreePoints } from "../../control/dataConvert.ts";
+import { addThreePoints } from "../../utils/dataConvertion.ts";
 import { FaFile } from "react-icons/fa";
 import DownloadButton from "../Buttons/DownloadFileButton.tsx";
 import DeleteContentButton from "../Buttons/DeleteContentButton.tsx";

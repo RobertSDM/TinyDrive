@@ -3,13 +3,13 @@ import {
     convertArrayBufferToBase64,
     fileToFileNode,
     folderToFolderNode,
-} from "./dataConvert.ts";
+} from "../utils/dataConvertion.ts";
 import { IFolder, INotification } from "../types/types.js";
 import { Tree } from "./TreeWrapper/Tree.ts";
 import { NotificationLevels } from "../types/enums.ts";
 import saveFolder from "../fetcher/folder/saveFolder.ts";
 import saveFile from "../fetcher/file/saveFile.ts";
-import { MAX_DIR_DEPTH, MAX_FILE_SIZE } from "../utils/index.ts";
+import { MAX_DIR_DEPTH, MAX_FILE_SIZE } from "../utils/enviromentVariables.ts";
 import { FolderNode } from "./TreeWrapper/FolderNode.ts";
 import { FileNode } from "./TreeWrapper/FileNode.ts";
 
@@ -132,7 +132,6 @@ const handleFolder = async (
         // If it is, it will be added in the tree, and shown on the screen
 
         if (currentNode?.getId() === resFolder.folderC_id) {
-            console.log("entrou");
             fileToFileNode([data], tree, currNode ? currNode : tree.getRoot());
             if (currentNode.getId() == currNode?.getParentId()) {
                 updateContent([

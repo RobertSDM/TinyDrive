@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NotificationLevels } from "../../types/enums.ts";
-import { beAPI } from "../../utils/index.ts";
+import { beAPI } from "../../utils/enviromentVariables.ts";
 import {
     useNotificationSystemContext,
     useUserContext,

@@ -1,6 +1,7 @@
+import { IFile } from "./../../types/types.js";
 import { NotificationLevels } from "../../types/enums.ts";
 import { INotification } from "../../types/types.js";
-import { beAPI } from "../../utils/index.ts";
+import { beAPI } from "../../utils/enviromentVariables.ts";
 
 const saveFile = async (
     enqueue: (notification: INotification) => void,
@@ -38,25 +39,25 @@ const saveFile = async (
                     special: res.data.data.name,
                 });
             }
-            return res.data.data;
-        } else {
-            if (showNotif) {
-                enqueue({
-                    level: NotificationLevels.ERROR,
-                    msg: `could not be saved`,
-                    title: "Save error",
-                    special: res.data.data.name,
-                });
-            }
-            return false;
         }
-    } catch (err) {
-        enqueue({
-            level: NotificationLevels.ERROR,
-            msg: `Error while saving the file`,
-            title: "Save error",
-        });
-        return false;
+        return res.data.data;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+        if (err.response) {
+            enqueue({
+                level: NotificationLevels.ERROR,
+                msg: err.response.data.msg,
+                title: "File already exists",
+            });
+        } else {
+            enqueue({
+                level: NotificationLevels.ERROR,
+                msg: `Error while saving the file`,
+                title: "Save error",
+            });
+        }
+
+        return {} as IFile;
     }
 };
 

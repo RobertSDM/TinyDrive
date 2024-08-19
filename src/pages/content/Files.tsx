@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import {
     addThreePoints,
     apiResponseToTreeNodes,
-} from "../../control/dataConvert.ts";
+} from "../../utils/dataConvertion.ts";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTreeContext } from "../../hooks/useContext.tsx";
 import useTitle from "../../hooks/useTitle.tsx";

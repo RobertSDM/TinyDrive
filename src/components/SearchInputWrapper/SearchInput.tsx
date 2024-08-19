@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import useContentSearchByName from "../../fetcher/content/useContentSeachByName.ts";
 import ButtonType from "../Buttons/ButtonType.tsx";
 import SearchResultItem from "./SearchResultItem.tsx";
-import { DELAY_TO_SEARCH_CONTENT } from "../../utils/index.ts";
+import { DELAY_TO_SEARCH_CONTENT } from "../../utils/enviromentVariables.ts";
 
 const SearchInput = () => {
     const timer = useRef<NodeJS.Timeout>();
@@ -31,7 +31,7 @@ const SearchInput = () => {
     }
 
     useEffect(() => {
-        if (searchValue.length <= limitToStartCounting ) {
+        if (searchValue.length <= limitToStartCounting) {
             return;
         }
         fetch_(searchValue, contentType);

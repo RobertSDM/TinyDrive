@@ -4,7 +4,7 @@ import {
     useNotificationSystemContext,
     useUserContext,
 } from "../../hooks/useContext.tsx";
-import { BACKEND_URL, beAPI } from "../../utils/index.ts";
+import { BACKEND_URL, beAPI } from "../../utils/enviromentVariables.ts";
 import { NotificationLevels } from "../../types/enums.ts";
 
 type responseLoginAPI = {
@@ -51,7 +51,7 @@ const useLoginFetch = () => {
                     });
                     data.current = res.data;
                 }
-                
+
                 logUser(data.current.data.user, data.current.token);
                 navigate("/");
                 sessionStorage.removeItem("contCache");

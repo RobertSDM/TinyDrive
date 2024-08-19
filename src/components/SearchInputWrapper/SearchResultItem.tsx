@@ -2,7 +2,7 @@ import { FaFile, FaFolderClosed, FaLink } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import DownloadButton from "../Buttons/DownloadFileButton.tsx";
 import { TSeachFile, TSearchFolder } from "../../types/types.js";
-import { addThreePoints } from "../../control/dataConvert.ts";
+import { addThreePoints } from "../../utils/dataConvertion.ts";
 import { useEffect, useState } from "react";
 
 const isFile = (item: TSeachFile | TSearchFolder) => {
@@ -31,9 +31,7 @@ const SearchResultItem = ({ item }: { item: TSeachFile | TSearchFolder }) => {
     return (
         <>
             {isFile(item) ? (
-                <span
-                    className="hover:bg-purple-50 px-2 py-1 md:px-5 flex items-center justify-between"
-                >
+                <span className="hover:bg-purple-50 px-2 py-1 md:px-5 flex items-center justify-between">
                     <section className="flex items-center justify-between gap-x-10">
                         <span className="flex items-center gap-x-2">
                             <FaFile className="text-slate-700" />

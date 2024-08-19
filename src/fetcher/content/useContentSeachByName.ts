@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useUserContext } from "../../hooks/useContext.tsx";
 import { TSearchFolder, TSeachFile } from "../../types/types.js";
-import { beAPI } from "../../utils/index.ts";
+import { beAPI } from "../../utils/enviromentVariables.ts";
 
 const useContentSearchByName = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -15,14 +15,11 @@ const useContentSearchByName = () => {
         setIsLoading(true);
         try {
             beAPI
-                .get(
-                    `/content/search/${user.id}?q=${search}&type=${type}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                )
+                .get(`/content/search/${user.id}?q=${search}&type=${type}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
                 .then((res) => {
                     setIsLoading(false);
                     if (res.status === 200) {

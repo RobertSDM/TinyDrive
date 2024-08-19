@@ -1,5 +1,5 @@
 import { NotificationLevels } from "../../types/enums.ts";
-import { beAPI } from "../../utils/index.ts";
+import { beAPI } from "../../utils/enviromentVariables.ts";
 import { IFolder, INotification } from "../../types/types.js";
 
 const saveFolder = async (
@@ -34,12 +34,21 @@ const saveFolder = async (
             return res.data.data;
         }
         return {} as IFolder;
-    } catch (err) {
-        enqueue({
-            level: NotificationLevels.ERROR,
-            msg: "Error while saving the folder",
-            title: "Error",
-        });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+        if (err.response) {
+            enqueue({
+                level: NotificationLevels.ERROR,
+                msg: err.response.data.msg,
+                title: "Register error",
+            });
+        } else {
+            enqueue({
+                level: NotificationLevels.ERROR,
+                msg: "Error while saving the folder",
+                title: "Error",
+            });
+        }
         return {} as IFolder;
     }
 };

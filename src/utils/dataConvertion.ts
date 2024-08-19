@@ -1,6 +1,6 @@
-import type { IFile, IFolder } from "../types/types.d.ts";
-import { FolderNode } from "./TreeWrapper/FolderNode.ts";
-import { Tree } from "./TreeWrapper/Tree.ts";
+import type { IFile, IFolder } from "../types/types.js";
+import { FolderNode } from "../control/TreeWrapper/FolderNode.ts";
+import { Tree } from "../control/TreeWrapper/Tree.ts";
 
 export const convertArrayBufferToBase64 = (byteData: ArrayBuffer): string => {
     return btoa(
@@ -72,6 +72,10 @@ export const fileToFileNode = (
     files.forEach((item) => {
         item = item as IFile;
 
+        if (Object.entries(item).length === 0) {
+            return;
+        }
+
         tree.createFileNode(
             item.name,
             folder,
@@ -95,7 +99,7 @@ export const apiResponseToTreeNodes = (
 };
 
 export function addThreePoints(str: string, max: number) {
-    if (str.length > max) {
+    if (str?.length > max) {
         return str.slice(0, max - 3) + "...";
     }
     return str;

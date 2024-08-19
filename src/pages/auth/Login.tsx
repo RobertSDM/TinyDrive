@@ -10,7 +10,7 @@ const Login = () => {
     const { enqueue } = useNotificationSystemContext();
     const [email, setEmail] = useState<string>("");
     const [pass, setPass] = useState<string>("");
-    const { login } = useLoginFetch();
+    const { login, isLoading } = useLoginFetch();
     const setTitle = useTitle();
 
     setTitle("Tiny Drive | Login");
@@ -59,10 +59,14 @@ const Login = () => {
                     />
                     <section className="space-y-10">
                         <button
+                            disabled={isLoading}
                             type="submit"
-                            className="px-4 py-2 w-full bg-purple-500 text-white font-semibold hover:bg-white hover:border hover:border-purple-500 hover:text-purple-500"
+                            className="px-4 py-2 w-full bg-purple-500 text-white font-semibold hover:bg-white hover:border hover:border-purple-500 hover:text-purple-500
+                            
+                            disabled:bg-slate-500 disabled:text-slate-300 disabled:hover:bg-slate-500 disabled:hover:border-slate-500 disabled:hover:text-slate-300
+                            "
                         >
-                            Login
+                            {isLoading ? "Loading..." : "Login"}
                         </button>
                         <div className="flex items-center flex-col">
                             <p>Not signed?</p>

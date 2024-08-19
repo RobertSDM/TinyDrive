@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useUserContext } from "../../hooks/useContext.tsx";
-import { addThreePoints, toTitleCase } from "../../control/dataConvert.ts";
+import { addThreePoints, toTitleCase } from "../../utils/dataConvertion.ts";
 import SearchInput from "../SearchInputWrapper/SearchInput.tsx";
 
 const DefaultHeader = () => {

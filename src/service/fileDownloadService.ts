@@ -1,4 +1,4 @@
-import { convertBase64ToArrayBuffer } from "../control/dataConvert.ts";
+import { convertBase64ToArrayBuffer } from "../utils/dataConvertion.ts";
 import downloadFile from "../fetcher/file/downloadFile.ts";
 
 const fileDownloadService = async (

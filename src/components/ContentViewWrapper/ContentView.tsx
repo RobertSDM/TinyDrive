@@ -3,7 +3,7 @@ import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
 import ContentRow from "./ContentRow.tsx";
 import PaginationControls from "../PaginationWrapper/PaginationControls.tsx";
 import { useState } from "react";
-import { ITEMS_PER_PAGE } from "../../utils/index.ts";
+import { ITEMS_PER_PAGE } from "../../utils/enviromentVariables.ts";
 
 const ContentView = ({
     content,

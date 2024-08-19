@@ -1,6 +1,6 @@
 import { NotificationLevels } from "../types/enums.ts";
 import { INotification } from "../types/types.js";
-import { EMAIL_REGEX } from "../utils/index.ts";
+import { EMAIL_REGEX } from "../utils/enviromentVariables.ts";
 
 export const emailPassVerificationServ = (
     email: string,
