@@ -34,7 +34,6 @@ const saveFolder = async (
             return res.data.data;
         }
         return {} as IFolder;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
         if (err.response) {
             enqueue({

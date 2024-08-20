@@ -9,7 +9,13 @@ import { addThreePoints } from "../../utils/dataConvertion.ts";
 import { FaFile } from "react-icons/fa";
 import DownloadButton from "../Buttons/DownloadFileButton.tsx";
 import DeleteContentButton from "../Buttons/DeleteContentButton.tsx";
-import { useTreeContext } from "../../hooks/useContext.tsx";
+import {
+    useNotificationSystemContext,
+    useTreeContext,
+    useUserContext,
+} from "../../hooks/useContext.tsx";
+import EditButton from "../Buttons/EditButton.tsx";
+import updateFileName from "../../fetcher/file/updateFileName.ts";
 
 const isFile = (item: FileNode | FolderNode) => {
     return item instanceof FileNode;
@@ -31,6 +37,8 @@ const ContentRow = ({
     const [rowDeleteId, setRowDeleteId] = useState<string>("");
     const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
     const { tree } = useTreeContext();
+    const { enqueue } = useNotificationSystemContext();
+    const { user, token } = useUserContext();
 
     useEffect(() => {
         const handleResize = () => {
@@ -95,7 +103,32 @@ const ContentRow = ({
                     rowDeleteId !== item.getId() && (
                         <section className="flex md:gap-x-3">
                             {isFile(item) && (
-                                <DownloadButton itemId={item.getId()} />
+                                <div className="flex gap-x-2">
+                                    <DownloadButton itemId={item.getId()} />
+                                    <EditButton
+                                        text={item.getName()}
+                                        callback={(newName: string) => {
+                                            if (newName === item.getName()) {
+                                                return;
+                                            }
+
+                                            updateFileName(
+                                                enqueue,
+                                                newName,
+                                                item.getName(),
+                                                item.getParentId() === ""
+                                                    ? null
+                                                    : item.getParentId(),
+                                                item.getExtension(),
+                                                item.getId(),
+                                                user.id,
+                                                token
+                                            ).then((name) => {
+                                                item.setName(name);
+                                            });
+                                        }}
+                                    />
+                                </div>
                             )}
                             <DeleteContentButton
                                 onclick={async () => {
