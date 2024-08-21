@@ -16,6 +16,8 @@ import {
 } from "../../hooks/useContext.tsx";
 import EditButton from "../Buttons/EditButton.tsx";
 import updateFileName from "../../fetcher/file/updateFileName.ts";
+import { validateName } from "../../utils/valitation.ts";
+import updateFolderName from "../../fetcher/folder/updateFolderName.ts";
 
 const isFile = (item: FileNode | FolderNode) => {
     return item instanceof FileNode;
@@ -103,33 +105,51 @@ const ContentRow = ({
                     rowDeleteId !== item.getId() && (
                         <section className="flex md:gap-x-3">
                             {isFile(item) && (
-                                <div className="flex gap-x-2">
-                                    <DownloadButton itemId={item.getId()} />
-                                    <EditButton
-                                        text={item.getName()}
-                                        callback={(newName: string) => {
-                                            if (newName === item.getName()) {
-                                                return;
-                                            }
-
-                                            updateFileName(
-                                                enqueue,
-                                                newName,
-                                                item.getName(),
-                                                item.getParentId() === ""
-                                                    ? null
-                                                    : item.getParentId(),
-                                                item.getExtension(),
-                                                item.getId(),
-                                                user.id,
-                                                token
-                                            ).then((name) => {
-                                                item.setName(name);
-                                            });
-                                        }}
-                                    />
-                                </div>
+                                <DownloadButton itemId={item.getId()} />
                             )}
+                            <EditButton
+                                text={item.getName()}
+                                callback={(newName: string) => {
+                                    const valid = validateName(
+                                        item.getName(),
+                                        newName,
+                                        enqueue
+                                    );
+
+                                    if (!valid) return;
+
+                                    if (isFile(item)) {
+                                        updateFileName(
+                                            enqueue,
+                                            newName,
+                                            item.getName(),
+                                            item.getParentId() === ""
+                                                ? null
+                                                : item.getParentId(),
+                                            (item as FileNode).getExtension(),
+                                            item.getId(),
+                                            user.id,
+                                            token
+                                        ).then((name) => {
+                                            item.setName(name);
+                                        });
+                                    } else {
+                                        updateFolderName(
+                                            enqueue,
+                                            newName,
+                                            item.getName(),
+                                            item.getParentId() === ""
+                                                ? null
+                                                : item.getParentId(),
+                                            item.getId(),
+                                            user.id,
+                                            token
+                                        ).then((name) => {
+                                            item.setName(name);
+                                        });
+                                    }
+                                }}
+                            />
                             <DeleteContentButton
                                 onclick={async () => {
                                     setRowDeleteId(item.getId());
