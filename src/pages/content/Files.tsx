@@ -118,12 +118,13 @@ const Folder = () => {
                     updateContent={updateContent}
                     currentNode={currentNode}
                 />
-                <ContentView
-                    content={content}
-                    updateContent={updateContent}
-                    currentNode={currentNode}
-                    isLoading={isLoading}
-                />
+                    <ContentView
+                        id={id}
+                        content={content}
+                        updateContent={updateContent}
+                        currentNode={currentNode}
+                        isLoading={isLoading}
+                    />
             </section>
         </main>
     );

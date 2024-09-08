@@ -10,7 +10,9 @@ const ContentView = ({
     updateContent,
     currentNode,
     isLoading,
+    id,
 }: {
+    id: string | undefined | null;
     content: Array<FileNode | FolderNode>;
     updateContent: (content: Array<FileNode | FolderNode>) => void;
     currentNode: FolderNode;
@@ -23,6 +25,7 @@ const ContentView = ({
             {content.length > 0 ? (
                 <section className="grid grid-flow-row gap-y-2 ">
                     <PaginationControls
+                        id={id}
                         setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         content={content}

@@ -76,12 +76,13 @@ function Home() {
                     updateContent={updateContent}
                     currentNode={currentNode}
                 />
-                <ContentView
-                    content={content}
-                    updateContent={updateContent}
-                    currentNode={currentNode}
-                    isLoading={isLoading}
-                />
+                    <ContentView
+                        id={null}
+                        content={content}
+                        updateContent={updateContent}
+                        currentNode={currentNode}
+                        isLoading={isLoading}
+                    />
             </section>
         </main>
     );

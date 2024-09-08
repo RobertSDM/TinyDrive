@@ -13,7 +13,6 @@ const TextModal = ({
     title?: string;
     text: string;
 }) => {
-    if (!isOpen) return;
 
     const [modalText, setModalText] = useState<string>(text);
     const inputRef: LegacyRef<HTMLInputElement> = useRef(null);
@@ -35,7 +34,7 @@ const TextModal = ({
 
     return (
         <div
-            className="w-full h-full absolute top-0 left-0 bg-transparent"
+            className={`w-full h-full absolute top-0 left-0 bg-transparent ${isOpen ? "" : "hidden"}`}
             onClick={(e) => {
                 if (e.target === e.currentTarget) cancel();
             }}

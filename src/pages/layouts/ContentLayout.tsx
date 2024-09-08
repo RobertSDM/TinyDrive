@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import DefaultHeader from "../../components/DefaultHeaderWrapper.tsx/DefaultHeader.tsx";
 import { useUserContext } from "../../hooks/useContext.tsx";
 import Notifications from "../../components/NotificationsWrapper/Notifications.tsx";
+import { PaginationProvider } from "../../context/paginationSave.tsx";
 
 const ContentLayout = () => {
     const { isLogged, logoutUser, logUser, findUserToken } = useUserContext();
@@ -32,7 +33,9 @@ const ContentLayout = () => {
                 <Notifications />
                 <DefaultHeader />
                 <TreeProvider>
-                    <Outlet />
+                    <PaginationProvider>
+                        <Outlet />
+                    </PaginationProvider>
                 </TreeProvider>
             </section>
         </NotificationProvider>
