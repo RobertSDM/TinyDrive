@@ -5,7 +5,7 @@ export class FolderNode {
     private name: string;
     private files: Set<FileNode> = new Set();
     private folders: Set<FolderNode> = new Set();
-    private tray: ITray[];
+    private tray: ITray[] = [];
     private parent: FolderNode | null = null;
     private parentId: string | null;
     private type = "FOLDER" as const;
@@ -25,18 +25,19 @@ export class FolderNode {
         if ((tray as ITray[])?.map !== undefined && tray !== null) {
             this.tray = tray as ITray[];
         } else {
-            this.tray = this.createTray(tray as string);
+            this.updateTray(tray as string);
         }
     }
 
-    private createTray(strTray: string | null): ITray[] {
+    public updateTray(strTray: string | null) {
         const tray: ITray[] = [];
         tray.push({
             name: "/",
             link: `/`,
         });
         if (!strTray) {
-            return tray;
+            this.tray = tray;
+            return;
         }
         const parts = strTray.split("/");
 
@@ -53,7 +54,8 @@ export class FolderNode {
             });
         }
 
-        return tray;
+        this.tray = tray;
+        return;
     }
 
     public addFile(file: FileNode): void {

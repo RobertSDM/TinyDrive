@@ -143,9 +143,28 @@ const ContentRow = ({
                                                 : item.getParentId(),
                                             item.getId(),
                                             user.id,
+                                            item.getParentId() === ""
+                                                ? null
+                                                : item.getParentId(),
                                             token
-                                        ).then((name) => {
-                                            item.setName(name);
+                                        ).then((res) => {
+                                            item.setName(res.name);
+                                            if (res.tray) {
+                                                for (let i of Object.keys(
+                                                    res.tray
+                                                )) {
+                                                    const folder =
+                                                        tree.getFolderNodes()[
+                                                            i
+                                                        ];
+
+                                                    if (folder) {
+                                                        folder.updateTray(
+                                                            res.tray[i]
+                                                        );
+                                                    }
+                                                }
+                                            }
                                         });
                                     }
                                 }}
