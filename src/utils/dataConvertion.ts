@@ -63,6 +63,15 @@ export const folderToFolderNode = (
         });
     });
 };
+export function fileArrayToFileList(files: File[]): FileList {
+    const dataTransfer = new DataTransfer();
+
+    files.forEach((file) => {
+        dataTransfer.items.add(file);
+    });
+
+    return dataTransfer.files;
+}
 
 export const fileToFileNode = (
     files: IFile[],

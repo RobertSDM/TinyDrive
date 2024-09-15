@@ -1,23 +1,23 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { MdExpandLess, MdExpandMore, MdFileUpload } from "react-icons/md";
-import { createSelectionInput } from "../../control/fileReader.ts";
-import { NotificationContext } from "../../context/NotificationSystem.tsx";
-import { TreeContext } from "../../context/TreeContext.tsx";
-import { useUserContext } from "../../hooks/useContext.tsx";
 import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
 import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
+import createSelectionInput from "../../service/fileReaderService.ts";
+import { useNotificationSystemContext, useTreeContext, useUserContext } from "../../hooks/useContext.tsx";
 
 const ButtonUpload = ({
     updateContent,
-    currentNode,
 }: {
     updateContent: (content: Array<FileNode | FolderNode>) => void;
     currentNode: FolderNode;
 }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const { tree } = useContext(TreeContext);
-    const { enqueue } = useContext(NotificationContext);
-    const { token, user } = useUserContext();
+    const { enqueue } = useNotificationSystemContext();
+    const {
+        user: { id: userId },
+        token,
+    } = useUserContext();
+    const { currentNode, tree } = useTreeContext();
 
     return (
         <div className={`inline relative ${isOpen ? "border-black/30" : ""} `}>
@@ -49,12 +49,12 @@ const ButtonUpload = ({
                     onClick={() =>
                         createSelectionInput(
                             true,
-                            enqueue,
-                            tree,
                             updateContent,
+                            enqueue,
+                            userId,
+                            token,
                             currentNode,
-                            user.id,
-                            token
+                            tree
                         )
                     }
                     className="hover:bg-purple-500 px-2 py-1 hover:text-white cursor-pointer w-full"
@@ -63,16 +63,16 @@ const ButtonUpload = ({
                 </button>
                 <hr className="w-4/5 mx-auto" />
                 <button
-                    onClick={() =>
+                    onClick={() =>{
                         createSelectionInput(
                             false,
-                            enqueue,
-                            tree,
                             updateContent,
+                            enqueue,
+                            userId,
+                            token,
                             currentNode,
-                            user.id,
-                            token
-                        )
+                            tree
+                        )}
                     }
                     className="hover:bg-purple-500 px-2 py-1 hover:text-white cursor-pointer w-full"
                 >

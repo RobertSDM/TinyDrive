@@ -6,14 +6,14 @@ import { beAPI } from "../../utils/enviromentVariables.ts";
 const saveFile = async (
     enqueue: (notification: INotification) => void,
     byteData: ArrayBuffer | string,
-    folderId: string | null,
     name: string,
     extension: string,
     byteSize: number,
     userId: string,
     token: string,
+    folderId: string | null = null,
     showNotif: boolean = true
-) => {
+): Promise<IFile> => {
     const body = {
         byteData,
         folderId,
