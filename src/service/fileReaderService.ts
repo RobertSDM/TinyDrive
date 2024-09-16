@@ -41,15 +41,19 @@ const createSelectionInput = (
                 tree
             );
         } else {
-            handleFolderUpload(
-                event.target.files,
-                updateContent,
-                enqueue,
-                userId,
-                token,
-                currentNode,
-                tree
-            );
+            try {
+                handleFolderUpload(
+                    event.target.files,
+                    updateContent,
+                    enqueue,
+                    userId,
+                    token,
+                    currentNode,
+                    tree
+                );
+            } catch (err) {
+                console.log(err);
+            }
         }
     });
 

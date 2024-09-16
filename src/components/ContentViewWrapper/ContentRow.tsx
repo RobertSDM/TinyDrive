@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
-import useDeleteFileById from "../../fetcher/file/useDeleteFileById.ts";
-import useDeleteFolderById from "../../fetcher/folder/useDeleteFolderbyId.ts";
-import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
-import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
-import { Link } from "react-router-dom";
-import { FaFolderClosed } from "react-icons/fa6";
-import { addThreePoints } from "../../utils/dataConvertion.ts";
 import { FaFile } from "react-icons/fa";
-import DownloadButton from "../Buttons/DownloadFileButton.tsx";
-import DeleteContentButton from "../Buttons/DeleteContentButton.tsx";
+import { FaFolderClosed } from "react-icons/fa6";
+import { Link } from "react-router-dom";
+import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
+import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
+import updateFileName from "../../fetcher/file/updateFileName.ts";
+import useDeleteFileById from "../../fetcher/file/useDeleteFileById.ts";
+import updateFolderName from "../../fetcher/folder/updateFolderName.ts";
+import useDeleteFolderById from "../../fetcher/folder/useDeleteFolderbyId.ts";
 import {
     useNotificationSystemContext,
     useTreeContext,
     useUserContext,
 } from "../../hooks/useContext.tsx";
-import EditButton from "../Buttons/EditButton.tsx";
-import updateFileName from "../../fetcher/file/updateFileName.ts";
+import { addThreePoints } from "../../utils/dataConvertion.ts";
 import { validateName } from "../../utils/valitation.ts";
-import updateFolderName from "../../fetcher/folder/updateFolderName.ts";
+import DeleteContentButton from "../Buttons/DeleteContentButton.tsx";
+import DownloadButton from "../Buttons/DownloadButton.tsx";
+import EditButton from "../Buttons/EditButton.tsx";
 
 const isFile = (item: FileNode | FolderNode) => {
     return item instanceof FileNode;
@@ -27,10 +27,12 @@ const ContentRow = ({
     updateContent,
     currentNode,
     item,
+    downloadState,
 }: {
     updateContent: (content: Array<FileNode | FolderNode>) => void;
     currentNode: FolderNode;
     item: FileNode | FolderNode;
+    downloadState: React.MutableRefObject<Array<string>>;
 }) => {
     const { fetch_: deleteFileById, isLoading: isDeletingFile } =
         useDeleteFileById();
@@ -104,9 +106,12 @@ const ContentRow = ({
                 {(!isDeletingFile || !isDeletingFolder) &&
                     rowDeleteId !== item.getId() && (
                         <section className="flex md:gap-x-3">
-                            {isFile(item) && (
-                                <DownloadButton itemId={item.getId()} />
-                            )}
+                            <DownloadButton
+                                itemId={item.getId()}
+                                isFile={isFile(item)}
+                                name={item.getName()}
+                                downloadState={downloadState}
+                            />
                             <EditButton
                                 text={item.getName()}
                                 callback={(newName: string) => {

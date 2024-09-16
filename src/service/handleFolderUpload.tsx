@@ -6,7 +6,7 @@ import { NotificationLevels } from "../types/enums.ts";
 import { IFolder, INotification } from "../types/types.js";
 import {
     fileArrayToFileList,
-    folderToFolderNode
+    folderToFolderNode,
 } from "../utils/dataConvertion.ts";
 import handleFilesUpload from "./handleFilesUpload.tsx";
 
@@ -29,7 +29,6 @@ const handleFolderUpload = async (
     // create a tray for the created folder
     let tray: string | null = null;
 
-
     // holds the created folders
     const structInMemo = {} as {
         [key: string]: File[];
@@ -39,18 +38,18 @@ const handleFolderUpload = async (
         [key: string]: string | null;
     };
 
-    for (let file of Array.from(files)) {
-        let path = "";
-        let key = "";
-        const splited = file.webkitRelativePath.split("/");
-        const depthFile = splited.length;
-        splited.pop();
+    try {
+        for (let file of Array.from(files)) {
+            let path = "";
+            let key = "";
+            const splited = file.webkitRelativePath.split("/");
+            const depthFile = splited.length;
+            splited.pop();
 
-        for (let folder of splited) {
-            path += folder + "/";
+            for (let folder of splited) {
+                path += folder + "/";
 
-            if (pathsUsed[path] === undefined) {
-                try {
+                if (pathsUsed[path] === undefined) {
                     // create the folder
                     savedFolder = await saveFolder(
                         folder,
@@ -60,6 +59,10 @@ const handleFolderUpload = async (
                         enqueue,
                         false
                     );
+
+                    if (savedFolder.folderC_id === undefined) {
+                        throw new Error(folder);
+                    }
 
                     tray = tray
                         ? `${tray}/${savedFolder.name};${savedFolder.id}`
@@ -89,42 +92,33 @@ const handleFolderUpload = async (
                         currentUpdatedFolderNode =
                             tree.getFolderNodes()[savedFolder.id];
                     }
-                } catch (err) {
-                    console.log(err);
-                    enqueue({
-                        level: NotificationLevels.ERROR,
-                        msg: "failed to save folder.",
-                        title: "Error",
-                        special: folder,
-                    });
+                } else {
+                    parentId = pathsUsed[path];
+                    key = path + ";" + parentId;
                 }
-            } else {
-                parentId = pathsUsed[path];
-                key = path + ";" + parentId;
-            }
-            if (structInMemo[key] && depthFile === path.split("/").length) {
-                structInMemo[key].push(file);
+                if (structInMemo[key] && depthFile === path.split("/").length) {
+                    structInMemo[key].push(file);
+                }
             }
         }
-    }
 
-    const filesPromise = Object.keys(structInMemo).map(async (key) => {
-        if (structInMemo[key].length > 0) {
-            await handleFilesUpload(
-                fileArrayToFileList(structInMemo[key]),
-                updateContent,
-                enqueue,
-                userId,
-                token,
-                currentFolderNode,
-                tree,
-                key.split(";")[1],
-                false
-            );
-        }
-    });
+        const filesPromise = Object.keys(structInMemo).map(async (key) => {
+            if (structInMemo[key].length > 0) {
+                await handleFilesUpload(
+                    fileArrayToFileList(structInMemo[key]),
+                    updateContent,
+                    enqueue,
+                    userId,
+                    token,
+                    currentFolderNode,
+                    tree,
+                    key.split(";")[1],
+                    false
+                );
+            }
+        });
 
-    Promise.all(filesPromise).then(() => {
+        await Promise.all(filesPromise);
         updateContent([
             ...currentFolderNode.getFiles(),
             ...currentFolderNode.getFolders(),
@@ -135,7 +129,9 @@ const handleFolderUpload = async (
             msg: "Folder created successfully",
             title: "Success",
         });
-    });
+    } catch (error: Error | any) {
+        throw error;
+    }
 };
 
 export default handleFolderUpload;

@@ -1,9 +1,9 @@
 import { FaFile, FaFolderClosed, FaLink } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import DownloadButton from "../Buttons/DownloadFileButton.tsx";
+import DownloadButton from "../Buttons/DownloadButton.tsx";
 import { TSeachFile, TSearchFolder } from "../../types/types.js";
 import { addThreePoints } from "../../utils/dataConvertion.ts";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const isFile = (item: TSeachFile | TSearchFolder) => {
     return (item as TSeachFile)?.byteSize !== undefined;
@@ -11,6 +11,7 @@ const isFile = (item: TSeachFile | TSearchFolder) => {
 
 const SearchResultItem = ({ item }: { item: TSeachFile | TSearchFolder }) => {
     const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+    const downloadState = useRef<Array<string>>([]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -39,7 +40,11 @@ const SearchResultItem = ({ item }: { item: TSeachFile | TSearchFolder }) => {
                             {(item as TSeachFile).extension}
                         </span>
                     </section>
-                    <DownloadButton itemId={item.id} />
+                    <DownloadButton
+                        itemId={item.id}
+                        isFile={isFile(item)}
+                        downloadState={downloadState}
+                    />
                 </span>
             ) : (
                 <Link

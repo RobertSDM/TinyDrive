@@ -2,7 +2,7 @@ import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
 import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
 import ContentRow from "./ContentRow.tsx";
 import PaginationControls from "../PaginationWrapper/PaginationControls.tsx";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ITEMS_PER_PAGE } from "../../utils/enviromentVariables.ts";
 
 const ContentView = ({
@@ -19,6 +19,7 @@ const ContentView = ({
     isLoading: boolean;
 }) => {
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const downloadState = useRef<Array<string>>([]);
 
     return (
         <div className="mt-2 md:max-w-5xl xl:max-w-7xl mx-auto   space-y-4">
@@ -47,6 +48,7 @@ const ContentView = ({
                                     updateContent={updateContent}
                                     currentNode={currentNode}
                                     item={f}
+                                    downloadState={downloadState}
                                 />
                             ))}
                     </section>

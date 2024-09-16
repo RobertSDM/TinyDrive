@@ -83,12 +83,14 @@ const Notifications = () => {
                         >
                             {currentOne.special ? (
                                 <>
+                                {" "}
                                     <span className="font-semibold">
                                         "
                                         {addThreePoints(currentOne.special, 30)}
                                         "
                                     </span>
-                                    <span> {currentOne.msg}</span>
+                                {" "}
+                                    <span>{currentOne.msg}</span>
                                 </>
                             ) : (
                                 currentOne.msg

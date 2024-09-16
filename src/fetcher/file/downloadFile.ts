@@ -11,6 +11,7 @@ const downloadFile = async (userId: string, id: string, token: string) => {
         if (res.status === 200) {
             return res.data;
         }
+        return false
     } catch (err) {
         return false;
     }

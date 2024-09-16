@@ -76,7 +76,6 @@ const handleFilesUpload = async (
             showNotif
         );
 
-        console.log(`${currentNode?.getId()} === ${folderId}`);
         const currentFolderId = currentNode?.getId() === "" && null
         
         if (currentFolderId === folderId || savedFile.parentId === null) {
