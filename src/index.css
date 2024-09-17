@@ -1,9 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 *{
     box-sizing: border-box;
+    @apply font-poppins;
+}
+
+.custom-file-input::before {
+  display: inline-block;
+  -webkit-user-select: none;
+  cursor: pointer;
+}
+
+.custom-file-input::-webkit-file-upload-button {
+  visibility: hidden;
 }
 
 details > summary {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import FormInput from "../../components/FormInputWrapper/FormInput.tsx";
 import { Link } from "react-router-dom";
-import { emailPassVerificationServ } from "../../service/authService.ts";
+import { emailPassVerification } from "../../service/authService.ts";
 import { useNotificationSystemContext } from "../../hooks/useContext.tsx";
 import useLoginFetch from "../../fetcher/auth/useLoginFetch.ts";
 import useTitle from "../../hooks/useTitle.tsx";
@@ -35,10 +35,7 @@ const Login = () => {
                     onSubmit={(event) => {
                         event.preventDefault();
 
-                        const isValid = emailPassVerificationServ(
-                            email,
-                            enqueue
-                        );
+                        const isValid = emailPassVerification(email, enqueue);
                         if (isValid) {
                             login(email, pass);
                         }

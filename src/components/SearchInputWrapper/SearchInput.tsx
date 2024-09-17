@@ -15,6 +15,9 @@ const SearchInput = () => {
         null
     );
     const [isTypeButtonOpen, setIsTypeButtonOpen] = useState<boolean>(false);
+    const nodeId = useRef<string>(
+        Math.floor(new Date().getTime() * Math.random()).toString()
+    );
 
     function clearSearchInput() {
         setSearchValue("");
@@ -31,14 +34,24 @@ const SearchInput = () => {
     }
 
     useEffect(() => {
-        if (searchValue.length <= limitToStartCounting) {
-            return;
+        if (searchValue.length > limitToStartCounting) {
+            window.addEventListener("click", (e) => {
+                if (nodeId.current === (e.target as Node).parentElement!.id) {
+                    return;
+                }
+                clearSearchInput();
+            });
         }
-        fetch_(searchValue, contentType);
-    }, [contentType]);
+        return () => {
+            window.removeEventListener("click", () => {
+                clearSearchInput();
+            });
+        };
+    }, [searchValue]);
 
     return (
         <div
+            id={nodeId.current}
             className={`border border-slate-300 px-2 py-1 rounded-md items-center relative w-1/2 hidden md:flex gap-x-4 min-w-[450px] ${
                 searchValue.length <= limitToStartCounting
                     ? "border"
@@ -54,6 +67,10 @@ const SearchInput = () => {
                 className={`outline-none w-full bg-transparent`}
                 onChange={(e) => {
                     setSearchValue(e.target.value);
+                    if (searchValue.length > limitToStartCounting) {
+                        fetch_(searchValue, contentType);
+                    }
+
                     restartCounter();
                     if (e.target.value.length > limitToStartCounting) {
                         setIsLoading(true);

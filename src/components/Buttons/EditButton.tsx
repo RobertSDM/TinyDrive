@@ -1,13 +1,15 @@
-import { MdEdit } from "react-icons/md";
 import { useState } from "react";
+import { MdEdit } from "react-icons/md";
 import TextModal from "../modalWrapper/TextModal.tsx";
 
 const EditButton = ({
-    callback,
+    onclick,
     text,
+    className = "",
 }: {
-    callback: (text: string) => any;
+    onclick: (text: string) => any;
     text: string;
+    className?: string;
 }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -18,9 +20,10 @@ const EditButton = ({
                 text={text}
                 setIsOpen={setIsModalOpen}
                 isOpen={isModalOpen}
-                callback={callback}
+                callback={onclick}
             />
             <button
+                className={`active:scale-95 ${className}`}
                 onClick={() => {
                     setIsModalOpen(true);
                 }}

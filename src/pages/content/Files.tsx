@@ -1,36 +1,24 @@
+import { useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
+import ButtonUpload from "../../components/Buttons/ButtonUpload.tsx";
+import ContentView from "../../components/ContentViewWrapper/ContentView.tsx";
+import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
+import useContentByFolderFetch from "../../fetcher/content/useContentByFolderFetch.ts";
+import { useTreeContext } from "../../hooks/useContext.tsx";
+import useTitle from "../../hooks/useTitle.tsx";
 import {
     addThreePoints,
     apiResponseToTreeNodes,
 } from "../../utils/dataConvertion.ts";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useTreeContext } from "../../hooks/useContext.tsx";
-import useTitle from "../../hooks/useTitle.tsx";
-import useContentByFolderFetch from "../../fetcher/content/useContentByFolderFetch.ts";
-import ContentView from "../../components/ContentViewWrapper/ContentView.tsx";
-import ButtonUpload from "../../components/Buttons/ButtonUpload.tsx";
-import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
-import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
+import { updateContent } from "../../utils/filterFunctions.ts";
 
 const Folder = () => {
-    const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
-    const { tray, tree, updateCurrentNode, currentNode } = useTreeContext();
+    const { tray, tree, updateCurrentNode, currentNode, content, setContent } =
+        useTreeContext();
     const setTitle = useTitle();
     const { id } = useParams();
     const lastId = useRef("");
     const { data, isLoading, fetch_ } = useContentByFolderFetch();
-    const updateContent = useCallback(
-        (content: Array<FileNode | FolderNode>) => {
-            const newContent = content.sort(
-                (a: FileNode | FolderNode, b: FileNode | FolderNode) => {
-                    return a.getName().localeCompare(b.getName());
-                }
-            );
-
-            setContent(newContent);
-        },
-        [content]
-    );
 
     setTitle(
         currentNode.getName() !== "/"
@@ -49,15 +37,17 @@ const Folder = () => {
         if (nodeNodes.length > 0) {
             updatedNode = updateCurrentNode(tree.getFolderNodes()[id!]);
 
-            updateContent([
-                ...updatedNode!.getFiles(),
-                ...updatedNode!.getFolders(),
-            ]);
+            setContent(
+                updateContent([
+                    ...updatedNode!.getFiles(),
+                    ...updatedNode!.getFolders(),
+                ])
+            );
             return;
         }
 
         /// Verify if the id has changed to fetch new content
-        updateContent([]);
+        setContent(updateContent([]));
         if (!data || lastId.current !== id) {
             lastId.current = id!;
             fetch_(id!);
@@ -87,15 +77,17 @@ const Folder = () => {
             /// Converts the content from the api into nodes to the Tree Structure
             apiResponseToTreeNodes(data, tree, updatedNode!);
 
-            updateContent([
-                ...updatedNode!.getFiles(),
-                ...updatedNode!.getFolders(),
-            ]);
+            setContent(
+                updateContent([
+                    ...updatedNode!.getFiles(),
+                    ...updatedNode!.getFolders(),
+                ])
+            );
         }
     }, [id, data]);
 
     return (
-        <main className="mt-10 max-w-xl px-10 md:px-5 xl:px-0 md:max-w-5xl xl:max-w-7xl mx-auto">
+        <main className="mt-10 w-full md:max-w-[90%] px-10 mx-auto mb-20">
             <nav className="text-xl text-black/50">
                 {tray.map((item, index) => {
                     return (
@@ -113,19 +105,10 @@ const Folder = () => {
                 })}
             </nav>
 
-            <section className="mt-5 mx-auto max-w-xl md:max-w-5xl xl:max-w-7xl border-t border-black/10 py-4 space-y-16">
-                <ButtonUpload
-                    updateContent={updateContent}
-                    currentNode={currentNode}
-                />
-                    <ContentView
-                        id={id}
-                        content={content}
-                        updateContent={updateContent}
-                        currentNode={currentNode}
-                        isLoading={isLoading}
-                    />
+            <section className="mt-5 mx-auto border-t border-black/10 py-4 space-y-10 mb-10">
+                <ButtonUpload />
             </section>
+            <ContentView id={id} content={content} isLoading={isLoading} />
         </main>
     );
 };

@@ -4,6 +4,7 @@ import DownloadButton from "../Buttons/DownloadButton.tsx";
 import { TSeachFile, TSearchFolder } from "../../types/types.js";
 import { addThreePoints } from "../../utils/dataConvertion.ts";
 import { useEffect, useRef, useState } from "react";
+import { useDownloadContent } from "../../hooks/useContent.tsx";
 
 const isFile = (item: TSeachFile | TSearchFolder) => {
     return (item as TSeachFile)?.byteSize !== undefined;
@@ -11,7 +12,13 @@ const isFile = (item: TSeachFile | TSearchFolder) => {
 
 const SearchResultItem = ({ item }: { item: TSeachFile | TSearchFolder }) => {
     const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
-    const downloadState = useRef<Array<string>>([]);
+    const downloadState = useRef<boolean>(false);
+    const downloadContent = useDownloadContent(
+        item.id,
+        item.name,
+        downloadState,
+        isFile(item)
+    );
 
     useEffect(() => {
         const handleResize = () => {
@@ -40,11 +47,7 @@ const SearchResultItem = ({ item }: { item: TSeachFile | TSearchFolder }) => {
                             {(item as TSeachFile).extension}
                         </span>
                     </section>
-                    <DownloadButton
-                        itemId={item.id}
-                        isFile={isFile(item)}
-                        downloadState={downloadState}
-                    />
+                    <DownloadButton onclick={downloadContent} />
                 </span>
             ) : (
                 <Link

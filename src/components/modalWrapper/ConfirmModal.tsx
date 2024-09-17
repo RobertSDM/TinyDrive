@@ -1,36 +1,34 @@
-import { LegacyRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-const TextModal = ({
+const ConfirmModal = ({
     callback,
     isOpen,
     setIsOpen,
-    title = "Type the text",
-    text,
+    text = "This action cannot be undone.",
+    title = "Are you sure you want to delete this item?",
 }: {
-    callback: (text: string) => void;
+    callback: () => void;
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
     title?: string;
-    text: string;
+    text?: string;
 }) => {
-
-    const [modalText, setModalText] = useState<string>(text);
-    const inputRef: LegacyRef<HTMLInputElement> = useRef(null);
-
-    useEffect(() => {
-        inputRef.current!.focus();
-        inputRef.current!.select();
-    }, [isOpen]);
+    const btnDelete = useRef<HTMLButtonElement>(null);
 
     function confirm() {
         setIsOpen(false);
-        callback(modalText);
+        callback();
     }
 
     function cancel() {
         setIsOpen(false);
-        setModalText(text);
     }
+
+    useEffect(() => {
+        if (isOpen) {
+            btnDelete.current?.focus();
+        }
+    }, [isOpen]);
 
     return (
         <div
@@ -48,23 +46,21 @@ const TextModal = ({
                     if (e.key === "Escape") cancel();
                 }}
             >
-                <p className="text-center text-md w-52 text-slate-700 font-semibold">
-                    {title}
-                </p>
-                <input
-                    ref={inputRef}
-                    type="text"
-                    placeholder="New name"
-                    value={modalText}
-                    onChange={(e) => setModalText(e.target.value)}
-                    className="border border-slate-300 px-4 py-2 outline-none"
-                />
-                <div className="flex justify-end gap-x-4 mt-2">
+                <div className="space-y-2">
+                    <p className="text-center text-md w-52 text-slate-700 font-semibold">
+                        {title}
+                    </p>
+                    <p className="text-center text-sm font-medium text-slate-700">
+                        {text}
+                    </p>
+                </div>
+                <div className="flex justify-end gap-x-4 mt-6">
                     <button
+                        ref={btnDelete}
                         onClick={confirm}
-                        className="text-sm text-purple-500 rounded-md px-4 py-2 font-semibold bg-purple-50"
+                        className="text-sm text-red-500 rounded-md px-4 py-2 font-semibold bg-red-50"
                     >
-                        Confirm
+                        Delete
                     </button>
                     <button
                         onClick={cancel}
@@ -78,4 +74,4 @@ const TextModal = ({
     );
 };
 
-export default TextModal;
+export default ConfirmModal;

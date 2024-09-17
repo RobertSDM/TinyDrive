@@ -1,30 +1,17 @@
-import { useCallback, useEffect, useState } from "react";
-import useTitle from "../../hooks/useTitle.tsx";
-import { useTreeContext } from "../../hooks/useContext.tsx";
-import useRootContentFetch from "../../fetcher/content/useRootContentFetch.ts";
-import { apiResponseToTreeNodes } from "../../utils/dataConvertion.ts";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import ButtonUpload from "../../components/Buttons/ButtonUpload.tsx";
 import ContentView from "../../components/ContentViewWrapper/ContentView.tsx";
-import { Link } from "react-router-dom";
-import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
-import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
+import useRootContentFetch from "../../fetcher/content/useRootContentFetch.ts";
+import { useTreeContext } from "../../hooks/useContext.tsx";
+import useTitle from "../../hooks/useTitle.tsx";
+import { apiResponseToTreeNodes } from "../../utils/dataConvertion.ts";
+import { updateContent } from "../../utils/filterFunctions.ts";
 
 function Home() {
-    const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
-    const { tray, tree, updateCurrentNode, currentNode } = useTreeContext();
+    const { tray, tree, updateCurrentNode, setContent, content } =
+        useTreeContext();
     const { data, isLoading, fetch_ } = useRootContentFetch();
-    const updateContent = useCallback(
-        (content: Array<FileNode | FolderNode>) => {
-            const newContent = content.sort(
-                (a: FileNode | FolderNode, b: FileNode | FolderNode) => {
-                    return a.getName().localeCompare(b.getName());
-                }
-            );
-
-            setContent(newContent);
-        },
-        []
-    );
 
     const setTitle = useTitle();
     setTitle("Tiny Drive");
@@ -36,10 +23,12 @@ function Home() {
             ...updatedNode.getFolders(),
         ];
         if (nodeNodes.length > 0) {
-            updateContent([
-                ...updatedNode.getFiles(),
-                ...updatedNode.getFolders(),
-            ]);
+            setContent(
+                updateContent([
+                    ...updatedNode.getFiles(),
+                    ...updatedNode.getFolders(),
+                ])
+            );
             return;
         }
         if (!data) {
@@ -48,12 +37,17 @@ function Home() {
         if (isLoading) return;
         // Get the root files and folders
         apiResponseToTreeNodes(data!, tree, tree.getRoot());
-        updateContent([...updatedNode.getFiles(), ...updatedNode.getFolders()]);
+        setContent(
+            updateContent([
+                ...updatedNode.getFiles(),
+                ...updatedNode.getFolders(),
+            ])
+        );
         // tree.viewTree();
     }, [data]);
 
     return (
-        <main className="mt-10 max-w-xl px-10 md:px-5 xl:px-0 md:max-w-5xl xl:max-w-7xl mx-auto">
+        <main className="mt-10 w-full md:max-w-[90%] px-10 mx-auto mb-20">
             <nav className="text-xl text-black/50">
                 {tray.map((item, index) => {
                     return (
@@ -71,19 +65,10 @@ function Home() {
                 })}
             </nav>
 
-            <section className="mt-5 mx-auto max-w-xl md:max-w-5xl xl:max-w-7xl border-t border-black/10 py-4 space-y-10">
-                <ButtonUpload
-                    updateContent={updateContent}
-                    currentNode={currentNode}
-                />
-                    <ContentView
-                        id={null}
-                        content={content}
-                        updateContent={updateContent}
-                        currentNode={currentNode}
-                        isLoading={isLoading}
-                    />
+            <section className="mt-5 mx-auto border-t border-black/10 py-4 space-y-10 mb-10">
+                <ButtonUpload />
             </section>
+            <ContentView id={null} content={content} isLoading={isLoading} />
         </main>
     );
 }

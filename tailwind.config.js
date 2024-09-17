@@ -6,6 +6,9 @@ export default {
             gridTemplateColumns: {
                 contentView: "minmax(100px, 2fr) repeat(2, minmax(100px, 1fr))",
             },
+            fontFamily: {
+                poppins: ["Poppins", "sans-serif"],
+            },
         },
     },
     plugins: [],

@@ -1,40 +1,39 @@
-import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
+import { useState } from "react";
 import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
-import ContentRow from "./ContentRow.tsx";
-import PaginationControls from "../PaginationWrapper/PaginationControls.tsx";
-import { useRef, useState } from "react";
+import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
 import { ITEMS_PER_PAGE } from "../../utils/enviromentVariables.ts";
+import PaginationControls from "../PaginationWrapper/PaginationControls.tsx";
+import ContentRow from "./ContentRow.tsx";
 
 const ContentView = ({
     content,
-    updateContent,
-    currentNode,
     isLoading,
     id,
 }: {
     id: string | undefined | null;
     content: Array<FileNode | FolderNode>;
-    updateContent: (content: Array<FileNode | FolderNode>) => void;
-    currentNode: FolderNode;
     isLoading: boolean;
 }) => {
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const downloadState = useRef<Array<string>>([]);
 
     return (
-        <div className="mt-2 md:max-w-5xl xl:max-w-7xl mx-auto   space-y-4">
+        <div className="mt-2 mx-auto space-y-4">
             {content.length > 0 ? (
-                <section className="grid grid-flow-row gap-y-2 ">
+                <section
+                // className="grid grid-flow-row gap-y-2 "
+                >
                     <PaginationControls
                         id={id}
                         setCurrentPage={setCurrentPage}
                         currentPage={currentPage}
                         content={content}
                     />
-                    <section className="grid grid-flow-col grid-cols-contentView ">
-                        <span className="font-bold text-center">Name</span>
-                        <span className="font-bold text-center">Extension</span>
-                        <span className="font-bold text-center">Size</span>
+                    <section
+                    // className="grid grid-flow-col grid-cols-contentView "
+                    >
+                        <span className="font-semibold text-slate-500">
+                            Name
+                        </span>
                     </section>
                     <section className="space-y-2">
                         {content
@@ -45,10 +44,7 @@ const ContentView = ({
                             .map((f) => (
                                 <ContentRow
                                     key={f.getId()}
-                                    updateContent={updateContent}
-                                    currentNode={currentNode}
                                     item={f}
-                                    downloadState={downloadState}
                                 />
                             ))}
                     </section>
