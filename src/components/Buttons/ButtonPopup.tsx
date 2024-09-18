@@ -30,17 +30,25 @@ export default ({
     useEffect(() => {
         if (isOpen) {
             window.addEventListener("click", (e) => {
-                if (nodeId.current === (e.target as Node).parentElement!.id) {
+                if (
+                    nodeId.current === (e.target as Node).parentElement!.id ||
+                    e.target instanceof HTMLInputElement
+                ) {
+                    return;
+                }
+                close();
+            });
+        } else {
+            window.removeEventListener("click", (e) => {
+                if (
+                    nodeId.current === (e.target as Node).parentElement!.id ||
+                    e.target instanceof HTMLInputElement
+                ) {
                     return;
                 }
                 close();
             });
         }
-        return () => {
-            window.removeEventListener("click", () => {
-                close();
-            });
-        };
     }, [isOpen]);
 
     return (
@@ -52,11 +60,11 @@ export default ({
             >
                 {nameList.map(({ name, callback, modal }) => (
                     <div key={name} id={nodeId.current}>
-                        <>{modal}</>
+                        <div>{modal}</div>
                         <button
                             onClick={() => {
                                 callback();
-                                if(!modal) close();
+                                if (!modal) close();
                             }}
                             className="w-full h-10 hover:bg-purple-200 px-2 flex items-center"
                         >
@@ -67,7 +75,7 @@ export default ({
             </div>
             <IoMdMore
                 onClick={() => {
-                    isOpen ? close() : open();
+                    open();
                 }}
                 className={`bg-transparent hover:bg-slate-200 cursor-pointer text-slate-700 rounded-full aspect-square min-h-8 min-w-8 p-[0.45rem]`}
             />

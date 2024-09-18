@@ -11,6 +11,6 @@ export const beAPI = axios.create({
 export const MAX_DIR_DEPTH = 3;
 export const MAX_FILE_SIZE = 15_000_000; // MBs
 export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-export const DELAY_TO_SEARCH_CONTENT = 200;
+export const DELAY_TO_SEARCH_CONTENT = 150;
 // Pagination
 export const ITEMS_PER_PAGE = 8;

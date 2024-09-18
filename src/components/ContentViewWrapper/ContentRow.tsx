@@ -17,6 +17,7 @@ import DownloadButton from "../Buttons/DownloadButton.tsx";
 import EditButton from "../Buttons/EditButton.tsx";
 import ConfirmModal from "../modalWrapper/ConfirmModal.tsx";
 import TextModal from "../modalWrapper/TextModal.tsx";
+import { FaFolderClosed } from "react-icons/fa6";
 
 const ContentRow = ({
     item,
@@ -60,14 +61,25 @@ const ContentRow = ({
                 flex items-center overflow-hidden`}
             >
                 {/* Name Column */}
-                <FaFile
-                    className={` mr-2 min-h-4 min-w-4 ${
-                        (isDeletingFile || isDeletingFolder) &&
-                        rowDeleteId === item.getId()
-                            ? "text-slate-500"
-                            : "text-slate-700"
-                    }`}
-                />
+                {isFile(item) ? (
+                    <FaFile
+                        className={` mr-2 min-h-4 min-w-4 ${
+                            (isDeletingFile || isDeletingFolder) &&
+                            rowDeleteId === item.getId()
+                                ? "text-slate-500"
+                                : "text-slate-700"
+                        }`}
+                    />
+                ) : (
+                    <FaFolderClosed
+                        className={` mr-2 min-h-4 min-w-4 ${
+                            (isDeletingFile || isDeletingFolder) &&
+                            rowDeleteId === item.getId()
+                                ? "text-slate-500"
+                                : "text-slate-700"
+                        }`}
+                    />
+                )}
                 <span
                     className={`whitespace-nowrap text-ellipsis overflow-hidden ${
                         (isDeletingFile || isDeletingFolder) &&
@@ -85,7 +97,9 @@ const ContentRow = ({
                             "text-slate-500 "
                         }`}
                     >
-                        {isFile(item) ? "." + (item as FileNode).getExtension() : ""}
+                        {isFile(item)
+                            ? "." + (item as FileNode).getExtension()
+                            : ""}
                     </span>
                     <section className={`text-slate-400 text-nowrap`}>
                         {isFile(item) && (
@@ -153,7 +167,7 @@ const ContentRow = ({
                                 }}
                             />
                         ),
-                    }
+                    },
                 ]}
             />
         </section>

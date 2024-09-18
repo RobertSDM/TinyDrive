@@ -6,6 +6,7 @@ import DefaultHeader from "../../components/DefaultHeaderWrapper.tsx/DefaultHead
 import { useUserContext } from "../../hooks/useContext.tsx";
 import Notifications from "../../components/NotificationsWrapper/Notifications.tsx";
 import { PaginationProvider } from "../../context/paginationSave.tsx";
+import Footer from "../../components/FooterWrapper/Footer.tsx";
 
 const ContentLayout = () => {
     const { isLogged, logoutUser, logUser, findUserToken } = useUserContext();
@@ -37,6 +38,7 @@ const ContentLayout = () => {
                         <Outlet />
                     </PaginationProvider>
                 </TreeProvider>
+                <Footer />
             </section>
         </NotificationProvider>
     );

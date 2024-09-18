@@ -8,7 +8,7 @@ const DefaultHeader = () => {
 
     return (
         <div className="border">
-            <header className="flex md:max-w-5xl px-8 xl:px-0 xl:max-w-[85%] mx-auto py-4 items-center justify-between h-20 min-w-[364px]">
+            <header className="flex px-8 max-w-[85%] mx-auto py-4 items-center justify-between h-20 min-w-[364px]">
                 <Link to={"/"} className="cursor-pointer">
                     <img
                         src="/imgs/tiny-drive-logo.svg"
