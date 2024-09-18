@@ -1,10 +1,9 @@
-import { FaFile, FaFolderClosed, FaLink } from "react-icons/fa6";
+import { useRef } from "react";
+import { FaFile, FaFolderClosed } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import DownloadButton from "../Buttons/DownloadButton.tsx";
-import { TSeachFile, TSearchFolder } from "../../types/types.js";
-import { addThreePoints } from "../../utils/dataConvertion.ts";
-import { useEffect, useRef, useState } from "react";
 import { useDownloadContent } from "../../hooks/useContent.tsx";
+import { TSeachFile, TSearchFolder } from "../../types/types.js";
+import DownloadButton from "../Buttons/DownloadButton.tsx";
 
 const isFile = (item: TSeachFile | TSearchFolder) => {
     return (item as TSeachFile)?.byteSize !== undefined;
