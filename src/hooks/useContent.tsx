@@ -2,9 +2,9 @@ import { FileNode } from "../control/TreeWrapper/FileNode.ts";
 import { FolderNode } from "../control/TreeWrapper/FolderNode.ts";
 import updateFileName from "../fetcher/file/updateFileName.ts";
 import updateFolderName from "../fetcher/folder/updateFolderName.ts";
-import { updateContent } from "../utils/filterFunctions.ts";
+import { orderByName } from "../utils/filterFunctions.ts";
 import isFile from "../utils/isFile.ts";
-import { validateName } from "../utils/valitation.ts";
+import { correctName, validateName } from "../utils/valitation.ts";
 import {
     useNotificationSystemContext,
     useTreeContext,
@@ -31,24 +31,35 @@ export const useDeleteContent = (
             if (success) tree.deleteFolderNode(item as FolderNode);
         }
 
-        setContent(
-            updateContent([
-                ...currentNode.getFiles(),
-                ...currentNode.getFolders(),
-            ])
-        );
+        console.log(currentNode.getId() + " " + item.getParentId());
+        if(currentNode.getId() === item.getParentId()){
+            setContent(
+                orderByName([
+                    ...currentNode.getFiles(),
+                    ...currentNode.getFolders(),
+                ])
+            );
+        }
     };
 };
 
 export const useEditContentName = (item: FileNode | FolderNode) => {
     const { user, token } = useUserContext();
     const { enqueue } = useNotificationSystemContext();
-    const { tree } = useTreeContext();
+    const { tree, setContent, content } = useTreeContext();
 
     return (newName: string) => {
-        const valid = validateName(item.getName(), newName, enqueue);
+        newName = newName.trim();
 
-        if (!valid) return;
+        if (newName !== "") {
+            newName = correctName(newName);
+        }
+
+        const valid = validateName(newName, enqueue, item.getName());
+
+        if (!valid) {
+            return;
+        }
 
         if (isFile(item)) {
             updateFileName(
@@ -62,6 +73,7 @@ export const useEditContentName = (item: FileNode | FolderNode) => {
                 token
             ).then((name) => {
                 item.setName(name);
+                setContent(orderByName([...content]));
             });
         } else {
             updateFolderName(
@@ -82,6 +94,7 @@ export const useEditContentName = (item: FileNode | FolderNode) => {
                         if (folder) {
                             folder.updateTray(res.tray[i]);
                         }
+                        setContent(orderByName([...content]));
                     }
                 }
             });

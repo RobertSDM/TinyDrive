@@ -1,8 +1,26 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { NotificationProvider } from "../../context/NotificationSystem.tsx";
 import Notifications from "../../components/NotificationsWrapper/Notifications.tsx";
+import { useUserContext } from "../../hooks/useContext.tsx";
+import { useEffect } from "react";
 
 const AuthLayout = () => {
+    const { isLogged, findUserToken } = useUserContext();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = findUserToken();
+        const user = localStorage.getItem("user-info");
+
+        if (token || user) {
+            navigate("/");
+        }
+    }, [isLogged]);
+
+    if (isLogged) {
+        return;
+    }
+
     return (
         <NotificationProvider>
             <section>

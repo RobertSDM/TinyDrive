@@ -6,7 +6,7 @@ import useRootContentFetch from "../../fetcher/content/useRootContentFetch.ts";
 import { useTreeContext } from "../../hooks/useContext.tsx";
 import useTitle from "../../hooks/useTitle.tsx";
 import { apiResponseToTreeNodes } from "../../utils/dataConvertion.ts";
-import { updateContent } from "../../utils/filterFunctions.ts";
+import { orderByName } from "../../utils/filterFunctions.ts";
 
 function Home() {
     const { tray, tree, updateCurrentNode, setContent, content } =
@@ -24,7 +24,7 @@ function Home() {
         ];
         if (nodeNodes.length > 0) {
             setContent(
-                updateContent([
+                orderByName([
                     ...updatedNode.getFiles(),
                     ...updatedNode.getFolders(),
                 ])
@@ -38,7 +38,7 @@ function Home() {
         // Get the root files and folders
         apiResponseToTreeNodes(data!, tree, tree.getRoot());
         setContent(
-            updateContent([
+            orderByName([
                 ...updatedNode.getFiles(),
                 ...updatedNode.getFolders(),
             ])

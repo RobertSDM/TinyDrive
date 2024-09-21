@@ -5,6 +5,7 @@ interface IListItems {
     name: string;
     callback: (...args: any) => void;
     modal?: ReactElement;
+    
 }
 
 export default ({

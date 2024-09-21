@@ -8,7 +8,8 @@ import {
     folderToFolderNode,
 } from "../utils/dataConvertion.ts";
 import { MAX_DIR_DEPTH } from "../utils/enviromentVariables.ts";
-import { updateContent } from "../utils/filterFunctions.ts";
+import { orderByName } from "../utils/filterFunctions.ts";
+import { correctName, validateName } from "../utils/valitation.ts";
 import {
     useNotificationSystemContext,
     useTreeContext,
@@ -80,7 +81,12 @@ export const useHandleFolderUpload = () => {
                 for (let folder of splited) {
                     path += folder + "/";
                     depth += 1;
+                    let name = folder;
+                    
                     if (depth > MAX_DIR_DEPTH) break;
+                    if (!validateName(name, enqueue)) {
+                        name = correctName(name);
+                    }
 
                     if (pathsUsed[path] === undefined) {
                         // create the folder
@@ -143,14 +149,14 @@ export const useHandleFolderUpload = () => {
                 if (structInMemo[key].length > 0) {
                     await handleFilesUpload(
                         fileArrayToFileList(structInMemo[key]),
-                        key.split(";")[1],
+                        key.split(";")[1]
                     );
                 }
             });
 
             await Promise.all(filesPromise);
             setContent(
-                updateContent([
+                orderByName([
                     ...currentFolderNode.getFiles(),
                     ...currentFolderNode.getFolders(),
                 ])

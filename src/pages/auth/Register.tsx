@@ -2,10 +2,10 @@ import { useState } from "react";
 import FormInput from "../../components/FormInputWrapper/FormInput.tsx";
 import { Link } from "react-router-dom";
 
-import { emailPassVerification } from "../../service/authService.ts";
 import { useNotificationSystemContext } from "../../hooks/useContext.tsx";
 import useRegisterFetch from "../../fetcher/auth/useRegisterFetch.ts";
 import useTitle from "../../hooks/useTitle.tsx";
+import { emailPassVerification } from "../../utils/valitation.ts";
 
 const Register = () => {
     const { enqueue } = useNotificationSystemContext();

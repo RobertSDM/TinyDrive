@@ -7,7 +7,8 @@ import {
     fileToFileNode,
 } from "../utils/dataConvertion.ts";
 import { MAX_FILE_SIZE } from "../utils/enviromentVariables.ts";
-import { updateContent } from "../utils/filterFunctions.ts";
+import { orderByName } from "../utils/filterFunctions.ts";
+import { correctName, validateName } from "../utils/valitation.ts";
 import {
     useNotificationSystemContext,
     useTreeContext,
@@ -63,6 +64,9 @@ export const useHandleFilesUpload = (
 
     return async (files: FileList, folderId: string | null = null) => {
         const filePromises = Array.from(files).map(async (file) => {
+            let [name, ...rest] = file.name.split(".");
+            name = correctName(name);
+
             if (file.size > MAX_FILE_SIZE) {
                 enqueue({
                     level: NotificationLevels.INFO,
@@ -77,7 +81,6 @@ export const useHandleFilesUpload = (
 
             const fileReader = await readFile(file);
 
-            const [name, ...rest] = file.name.split(".");
             let extension = "";
 
             if (rest.length > 0) {
@@ -95,7 +98,7 @@ export const useHandleFilesUpload = (
             const savedFile = await saveFile(
                 enqueue,
                 base64,
-                name,
+                name.trim(),
                 extension,
                 fileReader.total,
                 userId,
@@ -110,7 +113,7 @@ export const useHandleFilesUpload = (
                 fileToFileNode([savedFile], tree, tree.getRoot());
 
                 setContent(
-                    updateContent([
+                    orderByName([
                         ...currentNode.getFiles(),
                         ...currentNode.getFolders(),
                     ])

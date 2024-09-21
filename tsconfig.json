@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "ES6",
         "useDefineForClassFields": true,
-        "lib": ["ES6", "DOM", "DOM.Iterable"],
+        "lib": ["ES6", "DOM", "DOM.Iterable",  "ES2021.String"],
         "module": "NodeNext",
         "skipLibCheck": true,
 
@@ -18,8 +18,8 @@
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true
+        "noFallthroughCasesInSwitch": true,
     },
-    "include": ["src"],
+    "include": ["src", "src/utils/filterFunctions.ts"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }

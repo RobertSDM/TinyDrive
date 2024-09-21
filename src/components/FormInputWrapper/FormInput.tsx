@@ -35,7 +35,7 @@ const FormInput = ({
                     required
                 />
                 {isPass && (
-                    <div onClick={() => setShowPass((prev) => !prev)}>
+                    <div onClick={() => setShowPass((prev) => !prev)} className="cursor-pointer">
                         {showPass ? <FaRegEyeSlash /> : <FaEye />}
                     </div>
                 )}

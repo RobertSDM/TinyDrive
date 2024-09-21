@@ -10,7 +10,7 @@ import {
     addThreePoints,
     apiResponseToTreeNodes,
 } from "../../utils/dataConvertion.ts";
-import { updateContent } from "../../utils/filterFunctions.ts";
+import { orderByName } from "../../utils/filterFunctions.ts";
 
 const Folder = () => {
     const { tray, tree, updateCurrentNode, currentNode, content, setContent } =
@@ -38,7 +38,7 @@ const Folder = () => {
             updatedNode = updateCurrentNode(tree.getFolderNodes()[id!]);
 
             setContent(
-                updateContent([
+                orderByName([
                     ...updatedNode!.getFiles(),
                     ...updatedNode!.getFolders(),
                 ])
@@ -47,7 +47,7 @@ const Folder = () => {
         }
 
         /// Verify if the id has changed to fetch new content
-        setContent(updateContent([]));
+        setContent(orderByName([]));
         if (!data || lastId.current !== id) {
             lastId.current = id!;
             fetch_(id!);
@@ -78,7 +78,7 @@ const Folder = () => {
             apiResponseToTreeNodes(data, tree, updatedNode!);
 
             setContent(
-                updateContent([
+                orderByName([
                     ...updatedNode!.getFiles(),
                     ...updatedNode!.getFolders(),
                 ])

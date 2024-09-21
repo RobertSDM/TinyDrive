@@ -1,10 +1,10 @@
 import { useState } from "react";
 import FormInput from "../../components/FormInputWrapper/FormInput.tsx";
 import { Link } from "react-router-dom";
-import { emailPassVerification } from "../../service/authService.ts";
 import { useNotificationSystemContext } from "../../hooks/useContext.tsx";
 import useLoginFetch from "../../fetcher/auth/useLoginFetch.ts";
 import useTitle from "../../hooks/useTitle.tsx";
+import { emailPassVerification } from "../../utils/valitation.ts";
 
 const Login = () => {
     const { enqueue } = useNotificationSystemContext();
@@ -29,11 +29,13 @@ const Login = () => {
                     </p>
                 </section>
             </section>
-            <section className="flex justify-center">
+            <section className="flex items-center flex-col">
                 <form
                     className="w-96 space-y-5"
                     onSubmit={(event) => {
                         event.preventDefault();
+
+                        setEmail((prev) => prev.trimEnd());
 
                         const isValid = emailPassVerification(email, enqueue);
                         if (isValid) {
@@ -54,7 +56,7 @@ const Login = () => {
                         title="Senha"
                         isPass={true}
                     />
-                    <section className="space-y-10">
+                    <section className="">
                         <button
                             disabled={isLoading}
                             type="submit"
@@ -65,17 +67,17 @@ const Login = () => {
                         >
                             {isLoading ? "Loading..." : "Login"}
                         </button>
-                        <div className="flex items-center flex-col">
-                            <p>Not signed?</p>
-                            <Link
-                                to={"/register"}
-                                className="text-blue-400 font-semibold"
-                            >
-                                Sign up
-                            </Link>
-                        </div>
                     </section>
                 </form>
+                <div className="flex items-center flex-col mt-10">
+                    <p>Not signed?</p>
+                    <Link
+                        to={"/register"}
+                        className="text-blue-400 font-semibold"
+                    >
+                        Sign up
+                    </Link>
+                </div>
             </section>
         </div>
     );
