@@ -9,13 +9,17 @@ const AuthLayout = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (isLogged) {
+            return;
+        }
+
         const token = findUserToken();
         const user = localStorage.getItem("user-info");
 
-        if (token || user) {
+        if (token && user) {
             navigate("/");
         }
-    }, [isLogged]);
+    }, []);
 
     if (isLogged) {
         return;
