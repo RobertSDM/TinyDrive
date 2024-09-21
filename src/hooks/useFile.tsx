@@ -8,7 +8,7 @@ import {
 } from "../utils/dataConvertion.ts";
 import { MAX_FILE_SIZE } from "../utils/enviromentVariables.ts";
 import { orderByName } from "../utils/filterFunctions.ts";
-import { correctName, validateName } from "../utils/valitation.ts";
+import { correctName } from "../utils/valitation.ts";
 import {
     useNotificationSystemContext,
     useTreeContext,
