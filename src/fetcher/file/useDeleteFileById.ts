@@ -23,8 +23,8 @@ const useDeleteFileById = () => {
             if (res.status === 200) {
                 enqueue({
                     level: NotificationLevels.INFO,
-                    msg: `deletado com sucesso`,
-                    title: "Deletado",
+                    msg: `successfully deleted`,
+                    title: "Delete",
                     special: res.data.name,
                 });
                 return true;

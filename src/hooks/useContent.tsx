@@ -1,12 +1,15 @@
+import { useNavigate } from "react-router-dom";
 import { FileNode } from "../control/TreeWrapper/FileNode.ts";
 import { FolderNode } from "../control/TreeWrapper/FolderNode.ts";
 import updateFileName from "../fetcher/file/updateFileName.ts";
 import updateFolderName from "../fetcher/folder/updateFolderName.ts";
+import { ITEMS_PER_PAGE } from "../utils/enviromentVariables.ts";
 import { orderByName } from "../utils/filterFunctions.ts";
 import isFile from "../utils/isFile.ts";
 import { correctName, validateName } from "../utils/valitation.ts";
 import {
     useNotificationSystemContext,
+    usePaginationContext,
     useTreeContext,
     useUserContext,
 } from "./useContext.tsx";
@@ -17,9 +20,14 @@ export const useDeleteContent = (
     item: FileNode | FolderNode,
     setRowDeleteId: (rowDeleteId: string) => void,
     deleteFileById: (id: string) => Promise<boolean>,
-    deleteFolderById: (id: string) => Promise<boolean>
+    deleteFolderById: (id: string) => Promise<boolean>,
+    setTotalPages: React.Dispatch<React.SetStateAction<number>>,
+    page: number,
+    totalPages: number
 ) => {
     const { tree, currentNode, setContent } = useTreeContext();
+    const { setPagesCache, pagesCache } = usePaginationContext();
+    const navigate = useNavigate();
 
     return async () => {
         setRowDeleteId(item.getId());
@@ -31,14 +39,39 @@ export const useDeleteContent = (
             if (success) tree.deleteFolderNode(item as FolderNode);
         }
 
-        console.log(currentNode.getId() + " " + item.getParentId());
-        if(currentNode.getId() === item.getParentId()){
-            setContent(
-                orderByName([
-                    ...currentNode.getFiles(),
-                    ...currentNode.getFolders(),
-                ])
-            );
+        setRowDeleteId("");
+
+        const childNodes = [
+            ...currentNode.getFiles(),
+            ...currentNode.getFolders(),
+        ];
+
+        if (currentNode.getId() === item.getParentId()) {
+            setContent(orderByName(childNodes));
+        }
+
+        const pageCacheKey = currentNode.getId();
+
+        if (childNodes.length <= totalPages * ITEMS_PER_PAGE - ITEMS_PER_PAGE) {
+            setTotalPages((prev) => prev - 1);
+
+            if (
+                pagesCache[pageCacheKey] &&
+                pagesCache[pageCacheKey].totalPages - 1 >= 0
+            ) {
+                setPagesCache((prev) => {
+                    prev[pageCacheKey].loadedPages.push(page);
+
+                    return {
+                        ...prev,
+                        [pageCacheKey]: {
+                            loadedPages: prev[pageCacheKey].loadedPages,
+                            totalPages: totalPages - 1,
+                        },
+                    };
+                });
+            }
+            if (page === totalPages) navigate(`?p=${page - 1}`);
         }
     };
 };

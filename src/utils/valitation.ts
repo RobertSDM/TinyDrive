@@ -3,23 +3,16 @@ import { INotification } from "../types/types.js";
 import { EMAIL_REGEX } from "./enviromentVariables.ts";
 
 export const correctName = (name: string) => {
-    name = name
-        .replaceAll("/", "")
-        .replaceAll("\\", "")
-        .replaceAll("\\0", "")
-        .replaceAll("<", "")
-        .replaceAll(">", "")
-        .replaceAll("?", "")
-        .replaceAll('"', "")
-        .replaceAll("'", "")
-        .replaceAll("*", "")
-        .replaceAll(":", "");
+    name = name.replace(/[\/\\\0<>\?"'\*:\']/g, "");
+    
     let whitespaceFound = false;
     let newName = "";
     for (let i of name) {
         if (i !== " ") {
             newName += i;
+            whitespaceFound = false;
         } else if (!whitespaceFound) {
+            newName += " ";
             whitespaceFound = true;
         }
     }

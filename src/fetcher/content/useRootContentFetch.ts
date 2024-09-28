@@ -8,41 +8,45 @@ import { IFile, IFolder } from "../../types/types.js";
 import { beAPI } from "../../utils/enviromentVariables.ts";
 
 type TData = {
-    files: IFile[];
-    folders: IFolder[];
+    content: Array<IFile | IFolder>;
+    totalPages: number;
 };
 
 const useRootContentFetch = () => {
     const { enqueue } = useNotificationSystemContext();
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [data, setData] = useState<TData | null>(null);
     const { token, user } = useUserContext();
 
-    function fetch_() {
+    async function fetch_(page: number) {
+        setIsLoading(true);
         try {
-            beAPI
-                .get(`/content/all/${user.id}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                .then((res) => {
-                    setIsLoading(false);
-                    if (res.status === 200) {
-                        setData(res.data.data);
-                    }
-                });
+            const res = await beAPI.get(`/content/all/${user.id}?p=${page}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (res.status === 200) {
+                setIsLoading(false);
+                return {
+                    content: res.data.content,
+                    totalPages: res.data.totalCount,
+                } as TData;
+            } else {
+                setIsLoading(false);
+                return null;
+            }
         } catch (err) {
             setIsLoading(false);
             enqueue({
                 level: NotificationLevels.ERROR,
-                title: "Erro ao carregar conteudo",
-                msg: "Ocorreu um erro ao carregar o conteudo, por favor tente mais tarde",
+                title: "Error loading the content",
+                msg: "Error while loading the content. Please try again",
             });
+            return null;
         }
     }
 
-    return { isLoading, data, fetch_ };
+    return { isLoading, fetch_ };
 };
 
 export default useRootContentFetch;

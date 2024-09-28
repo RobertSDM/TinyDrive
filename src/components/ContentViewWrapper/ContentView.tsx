@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
 import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
 import { ITEMS_PER_PAGE } from "../../utils/enviromentVariables.ts";
@@ -9,13 +8,17 @@ const ContentView = ({
     content,
     isLoading,
     id,
+    totalPages,
+    page,
+    setTotalPages,
 }: {
     id: string | undefined | null;
     content: Array<FileNode | FolderNode>;
     isLoading: boolean;
+    totalPages: number;
+    page: number;
+    setTotalPages: React.Dispatch<React.SetStateAction<number>>;
 }) => {
-    const [currentPage, setCurrentPage] = useState<number>(1);
-
     return (
         <div className="mt-2 mx-auto space-y-4">
             {content.length > 0 ? (
@@ -23,10 +26,9 @@ const ContentView = ({
                 // className="grid grid-flow-row gap-y-2 "
                 >
                     <PaginationControls
+                        totalPages={totalPages}
                         id={id}
-                        setCurrentPage={setCurrentPage}
-                        currentPage={currentPage}
-                        content={content}
+                        page={page}
                     />
                     <section
                     // className="grid grid-flow-col grid-cols-contentView "
@@ -36,25 +38,40 @@ const ContentView = ({
                         </span>
                     </section>
                     <section className="space-y-2">
-                        {content
-                            .slice(
-                                currentPage * ITEMS_PER_PAGE - ITEMS_PER_PAGE,
-                                currentPage * ITEMS_PER_PAGE
-                            )
-                            .map((f) => (
-                                <ContentRow
-                                    key={f.getId()}
-                                    item={f}
-                                />
-                            ))}
+                        {content.length <= ITEMS_PER_PAGE
+                            ? content.map((f) => (
+                                  <ContentRow
+                                      page={page}
+                                      setTotalPages={setTotalPages}
+                                      key={f.getId()}
+                                      item={f}
+                                      totalPages={totalPages}
+                                  />
+                              ))
+                            : content
+                                  .slice(
+                                      page * ITEMS_PER_PAGE - ITEMS_PER_PAGE,
+                                      page * ITEMS_PER_PAGE
+                                  )
+                                  .map((f) => (
+                                      <ContentRow
+                                          page={page}
+                                          setTotalPages={setTotalPages}
+                                          key={f.getId()}
+                                          item={f}
+                                          totalPages={totalPages}
+                                      />
+                                  ))}
                     </section>
                 </section>
             ) : (
                 <section>
                     <span className="mx-auto flex justify-center text-black/30 font-semibold">
-                        {!isLoading
-                            ? "No content saved. What about start now?"
-                            : "Loading..."}
+                        {isLoading
+                            ? "Loading..."
+                            : page > 1
+                            ? "No content found on the page"
+                            : "No content saved. What about start now?"}
                     </span>
                 </section>
             )}

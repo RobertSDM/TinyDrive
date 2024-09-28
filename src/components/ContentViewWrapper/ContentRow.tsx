@@ -21,8 +21,14 @@ import { FaFolderClosed } from "react-icons/fa6";
 
 const ContentRow = ({
     item,
+    setTotalPages,
+    page,
+    totalPages,
 }: {
     item: FileNode | FolderNode;
+    setTotalPages: React.Dispatch<React.SetStateAction<number>>;
+    page: number;
+    totalPages: number;
 }) => {
     const [rowDeleteId, setRowDeleteId] = useState<string>("");
 
@@ -36,7 +42,10 @@ const ContentRow = ({
         item,
         setRowDeleteId,
         deleteFileById,
-        deleteFolderById
+        deleteFolderById,
+        setTotalPages,
+        page,
+        totalPages
     );
     const isDownloading = useRef<boolean>(false);
     const downloadContent = useDownloadContent(

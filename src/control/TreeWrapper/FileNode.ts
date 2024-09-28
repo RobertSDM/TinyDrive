@@ -4,10 +4,9 @@ export class FileNode {
     private name: string;
     private parentId: string | null;
     private parent: FolderNode | null;
-    private type = "FILE" as const;
+    private type: "FILE" = "FILE";
     private id: string;
 
-    // private byteSize_formatted: string;
     private prefix: string;
     private extension: string;
     private byteSize: number;
@@ -18,7 +17,6 @@ export class FileNode {
         parent: FolderNode | null,
         id: string,
         prefix: string,
-        // byteSize_formatted: string,
         extension: string,
         byteSize: number
     ) {
@@ -27,7 +25,6 @@ export class FileNode {
         this.parent = parent;
         this.id = id;
         this.prefix = prefix;
-        // this.byteSize_formatted = byteSize_formatted
         this.byteSize = byteSize;
         this.extension = extension;
     }
@@ -68,15 +65,6 @@ export class FileNode {
         this.extension = extension;
     }
 
-    // Getter and Setter for name
-    // public getByteSizeFormatted(): string {
-    //     return this.byteSize_formatted;
-    // }
-
-    // public setByteSizeFormatted(byteSize_formatted: string): void {
-    //     this.byteSize_formatted = byteSize_formatted;
-    // }
-
     // Getter and Setter for parentId
     public getParentId(): string | null {
         return this.parentId;
@@ -96,7 +84,7 @@ export class FileNode {
     }
 
     // Getter for type
-    public getType(): "FILE" {
+    public getType(): string {
         return this.type;
     }
 

@@ -82,7 +82,7 @@ export const useHandleFolderUpload = () => {
                     path += folder + "/";
                     depth += 1;
                     let name = folder;
-                    
+
                     if (depth > MAX_DIR_DEPTH) break;
                     if (!validateName(name, enqueue)) {
                         name = correctName(name);
@@ -123,7 +123,7 @@ export const useHandleFolderUpload = () => {
                             savedFolder?.folderC_id === null
                         ) {
                             folderToFolderNode(
-                                [savedFolder],
+                                savedFolder,
                                 tree,
                                 currentUpdatedFolderNode
                                     ? currentUpdatedFolderNode

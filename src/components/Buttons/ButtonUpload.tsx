@@ -1,12 +1,23 @@
 import { ChangeEvent, useState } from "react";
 import { MdExpandLess, MdExpandMore, MdFileUpload } from "react-icons/md";
-import { useTreeContext } from "../../hooks/useContext.tsx";
+import {
+    usePaginationContext,
+    useTreeContext,
+} from "../../hooks/useContext.tsx";
 import { useHandleFilesUpload } from "../../hooks/useFile.tsx";
 import { useHandleFolderUpload } from "../../hooks/useFolder.tsx";
+import { ITEMS_PER_PAGE } from "../../utils/enviromentVariables.ts";
 
-const ButtonUpload = () => {
+const ButtonUpload = ({
+    page,
+    setTotalPages,
+}: {
+    page: number;
+    setTotalPages: React.Dispatch<React.SetStateAction<number>>;
+}) => {
     const [isOpen, setIsOpen] = useState(false);
     const { currentNode, tree } = useTreeContext();
+    const { pagesCache, setPagesCache } = usePaginationContext();
 
     let handleFolderUpload = useHandleFolderUpload();
     let handleFilesUpload = useHandleFilesUpload();
@@ -59,7 +70,40 @@ const ButtonUpload = () => {
                             tree.getRoot().getId() === currentNode?.getId()
                                 ? null
                                 : currentNode?.getId()
-                        );
+                        ).then(() => {
+                            const childNodes = [
+                                ...currentNode!.getFiles(),
+                                ...currentNode!.getFolders(),
+                            ];
+
+                            if (
+                                childNodes.length >=
+                                page * ITEMS_PER_PAGE - ITEMS_PER_PAGE
+                            ) {
+                                const key = currentNode.getId();
+                                if (pagesCache[key]) {
+                                    setTotalPages(
+                                        pagesCache[key].totalPages + 1
+                                    );
+
+                                    setPagesCache((prev) => {
+                                        prev[key].loadedPages.push(page);
+
+                                        return {
+                                            ...prev,
+                                            [key]: {
+                                                loadedPages:
+                                                    prev[key].loadedPages,
+                                                totalPages:
+                                                    prev[key].totalPages + 1,
+                                            },
+                                        };
+                                    });
+                                } else {
+                                    setTotalPages((prev) => prev + 1);
+                                }
+                            }
+                        });
                     }}
                     className="hidden"
                 />
@@ -85,7 +129,40 @@ const ButtonUpload = () => {
                             return;
                         }
 
-                        handleFolderUpload(e.target.files);
+                        handleFolderUpload(e.target.files).then(() => {
+                            const childNodes = [
+                                ...currentNode!.getFiles(),
+                                ...currentNode!.getFolders(),
+                            ];
+
+                            if (
+                                childNodes.length >=
+                                page * ITEMS_PER_PAGE - ITEMS_PER_PAGE
+                            ) {
+                                const key = currentNode.getId();
+                                if (pagesCache[key]) {
+                                    setTotalPages(
+                                        pagesCache[key].totalPages + 1
+                                    );
+
+                                    setPagesCache((prev) => {
+                                        prev[key].loadedPages.push(page);
+
+                                        return {
+                                            ...prev,
+                                            [key]: {
+                                                loadedPages:
+                                                    prev[key].loadedPages,
+                                                totalPages:
+                                                    prev[key].totalPages + 1,
+                                            },
+                                        };
+                                    });
+                                } else {
+                                    setTotalPages((prev) => prev + 1);
+                                }
+                            }
+                        });
                     }}
                     className="hidden"
                 />

@@ -21,6 +21,17 @@ interface IFileData {
     file: IFile[];
 }
 
+/*
+byteSize
+extension
+folder
+folder_id
+fullname
+id
+name
+prefix
+*/
+
 export interface IFolder {
     id: string;
     name: string;

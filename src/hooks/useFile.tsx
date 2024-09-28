@@ -63,64 +63,78 @@ export const useHandleFilesUpload = (
     const { enqueue } = useNotificationSystemContext();
 
     return async (files: FileList, folderId: string | null = null) => {
-        const filePromises = Array.from(files).map(async (file) => {
-            let [name, ...rest] = file.name.split(".");
-            name = correctName(name);
+        try {
+            const filePromises = Array.from(files).map(async (file) => {
+                let [name, ...rest] = file.name.split(".");
+                name = correctName(name);
 
-            if (file.size > MAX_FILE_SIZE) {
-                enqueue({
-                    level: NotificationLevels.INFO,
-                    msg: `is to big, the maximum size is ${
-                        MAX_FILE_SIZE / 1_000_000
-                    }MBs`,
-                    title: "File to big",
-                    special: file.name.split(".")[0],
-                });
-                return;
-            }
+                if (file.size > MAX_FILE_SIZE) {
+                    enqueue({
+                        level: NotificationLevels.INFO,
+                        msg: `is to big, the maximum size is ${
+                            MAX_FILE_SIZE / 1_000_000
+                        }MBs`,
+                        title: "File to big",
+                        special: file.name.split(".")[0],
+                    });
+                    return;
+                }
 
-            const fileReader = await readFile(file);
+                const fileReader = await readFile(file);
 
-            let extension = "";
+                let extension = "";
 
-            if (rest.length > 0) {
-                extension = rest[rest.length - 1];
-            }
+                if (rest.length > 0) {
+                    extension = rest[rest.length - 1];
+                }
 
-            if (!fileReader.target) {
-                return;
-            }
+                if (!fileReader.target) {
+                    return;
+                }
 
-            const base64 = convertArrayBufferToBase64(
-                fileReader.target.result as ArrayBuffer
-            );
-
-            const savedFile = await saveFile(
-                enqueue,
-                base64,
-                name.trim(),
-                extension,
-                fileReader.total,
-                userId,
-                token,
-                folderId,
-                showNotif
-            );
-
-            const currentFolderId = currentNode?.getId() === "" && null;
-
-            if (currentFolderId === folderId || savedFile.parentId === null) {
-                fileToFileNode([savedFile], tree, tree.getRoot());
-
-                setContent(
-                    orderByName([
-                        ...currentNode.getFiles(),
-                        ...currentNode.getFolders(),
-                    ])
+                const base64 = convertArrayBufferToBase64(
+                    fileReader.target.result as ArrayBuffer
                 );
-            }
-        });
 
-        Promise.all(filePromises);
+                try {
+                    const savedFile = await saveFile(
+                        enqueue,
+                        base64,
+                        name.trim(),
+                        extension,
+                        fileReader.total,
+                        userId,
+                        token,
+                        folderId,
+                        showNotif
+                    );
+
+                    const currentFolderId = currentNode?.getId() === "" && null;
+
+                    if (
+                        currentFolderId === folderId ||
+                        savedFile.parentId === null
+                    ) {
+                        fileToFileNode(savedFile, tree, tree.getRoot());
+
+                        setContent(
+                            orderByName([
+                                ...currentNode.getFiles(),
+                                ...currentNode.getFolders(),
+                            ])
+                        );
+                    }
+                } catch (err) {
+                    if (files.length == 1) {
+                        throw err;
+                    }
+                }
+            });
+            await Promise.all(filePromises);
+        } catch (err) {
+            if (files.length == 1) {
+                throw err;
+            }
+        }
     };
 };

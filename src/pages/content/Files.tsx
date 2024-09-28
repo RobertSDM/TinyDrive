@@ -1,10 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ButtonUpload from "../../components/Buttons/ButtonUpload.tsx";
 import ContentView from "../../components/ContentViewWrapper/ContentView.tsx";
-import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
 import useContentByFolderFetch from "../../fetcher/content/useContentByFolderFetch.ts";
-import { useTreeContext } from "../../hooks/useContext.tsx";
+import {
+    usePaginationContext,
+    useTreeContext,
+} from "../../hooks/useContext.tsx";
+import useQueryParams from "../../hooks/useQueryParams.tsx";
 import useTitle from "../../hooks/useTitle.tsx";
 import {
     addThreePoints,
@@ -16,75 +19,105 @@ const Folder = () => {
     const { tray, tree, updateCurrentNode, currentNode, content, setContent } =
         useTreeContext();
     const setTitle = useTitle();
-    const { id } = useParams();
-    const lastId = useRef("");
-    const { data, isLoading, fetch_ } = useContentByFolderFetch();
+    const { pagesCache, setPagesCache } = usePaginationContext();
 
-    setTitle(
-        currentNode.getName() !== "/"
-            ? `Tiny Drive | ${addThreePoints(currentNode.getName(), 16)}`
-            : "Tiny Drive"
-    );
+    const { id } = useParams();
+    const [page] = useQueryParams("p", 1, Number);
+    const { isLoading, fetch_ } = useContentByFolderFetch();
+
+    // save the current page + id in a cache having the totalPages as value
+    const [totalPages, setTotalPages] = useState<number>(0);
+
+    useMemo(() => {
+        setTitle(
+            currentNode.getName() !== "/"
+                ? `Tiny Drive | ${addThreePoints(currentNode.getName(), 16)}`
+                : "Tiny Drive"
+        );
+    }, []);
 
     useEffect(() => {
-        let updatedNode: FolderNode | null = null;
-        const nodeNodes = [
-            ...(tree.getFolderNodes()[id!]?.getFolders() ?? []),
-            ...(tree.getFolderNodes()[id!]?.getFiles() ?? []),
-        ];
-
-        /// Verify if the folders is on the Tree Structure
-        if (nodeNodes.length > 0) {
-            updatedNode = updateCurrentNode(tree.getFolderNodes()[id!]);
-
-            setContent(
-                orderByName([
-                    ...updatedNode!.getFiles(),
-                    ...updatedNode!.getFolders(),
-                ])
-            );
+        if (!id) {
             return;
         }
 
-        /// Verify if the id has changed to fetch new content
-        setContent(orderByName([]));
-        if (!data || lastId.current !== id) {
-            lastId.current = id!;
-            fetch_(id!);
+        // If the folders is on the Tree Structure
+        let updatedNode = tree.getFolderNodes()[id] || null;
+        let childNodes;
+
+        if (updatedNode) {
+            // grouping all files and folders from tree
+            childNodes = [
+                ...updatedNode.getFolders(),
+                ...updatedNode.getFiles(),
+            ];
+            updateCurrentNode(updatedNode);
+        }
+
+        const pageCacheKey = id;
+
+        if (
+            childNodes &&
+            pagesCache[pageCacheKey] &&
+            pagesCache[pageCacheKey].loadedPages.includes(page)
+        ) {
+            setContent(orderByName(childNodes));
+            setTotalPages(pagesCache[pageCacheKey].totalPages);
             return;
         }
 
-        if (isLoading) return;
+        fetch_(id, page).then((res) => {
+            if (!res) return;
 
-        if (data) {
-            if (nodeNodes.length > 0) {
-                updatedNode = updateCurrentNode(tree.getFolderNodes()[id!]);
-            }
+            const { requestedFolder: reqFolder } = res;
 
+            // If folder is not on the Tree Structure
             if (!updatedNode) {
                 const folderNode = tree.createFolderNode(
-                    data["requestedFolder"].name,
+                    reqFolder.name,
+                    // not passing the parentNode to connect
                     null,
-                    data["requestedFolder"].folderC_id!,
-                    data["requestedFolder"].id,
-                    data["requestedFolder"].tray,
+                    reqFolder.folderC_id!,
+                    reqFolder.id,
+                    reqFolder.tray,
+                    // making the folder an island
                     true
                 );
 
                 updatedNode = updateCurrentNode(folderNode);
             }
 
-            /// Converts the content from the api into nodes to the Tree Structure
-            apiResponseToTreeNodes(data, tree, updatedNode!);
+            setPagesCache((prev) => {
+                if (prev[pageCacheKey]) {
+                    prev[pageCacheKey].loadedPages.push(page);
+                } else {
+                    prev[pageCacheKey] = {
+                        loadedPages: [page],
+                        totalPages: res.totalPages,
+                    };
+                }
 
-            setContent(
-                orderByName([
-                    ...updatedNode!.getFiles(),
-                    ...updatedNode!.getFolders(),
-                ])
-            );
-        }
-    }, [id, data]);
+                return {
+                    ...prev,
+                    [pageCacheKey]: {
+                        loadedPages: prev[pageCacheKey].loadedPages,
+                        totalPages: res.totalPages,
+                    },
+                };
+            });
+
+            // Converts the content from the api into nodes to the Tree Structure
+            apiResponseToTreeNodes(res.content, tree, updatedNode!);
+            setTotalPages(res.totalPages);
+
+            childNodes = [
+                ...updatedNode.getFiles(),
+                ...updatedNode.getFolders(),
+            ];
+
+            setContent(orderByName(childNodes));
+        });
+    }, [id, page]);
 
     return (
         <main className="mt-10 w-full md:max-w-[90%] px-10 mx-auto mb-20">
@@ -106,9 +139,16 @@ const Folder = () => {
             </nav>
 
             <section className="mt-5 mx-auto border-t border-black/10 py-4 space-y-10 mb-10">
-                <ButtonUpload />
+                <ButtonUpload page={page} setTotalPages={setTotalPages} />
             </section>
-            <ContentView id={id} content={content} isLoading={isLoading} />
+            <ContentView
+                id={id}
+                page={page}
+                setTotalPages={setTotalPages}
+                content={content}
+                isLoading={isLoading}
+                totalPages={totalPages}
+            />
         </main>
     );
 };

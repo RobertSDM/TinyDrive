@@ -56,7 +56,7 @@ const saveFile = async (
             });
         }
 
-        return {} as IFile;
+        throw err;
     }
 };
 

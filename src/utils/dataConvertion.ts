@@ -25,42 +25,40 @@ export const convertBase64ToArrayBuffer = (base64: string): ArrayBuffer => {
 };
 
 export const folderToFolderNode = (
-    folders: IFolder[],
+    folder: IFolder,
     tree: Tree,
-    folder: FolderNode
+    parent: FolderNode
 ) => {
-    folders.forEach((item) => {
-        item = item as IFolder;
+    folder = folder as IFolder;
 
-        const folderNode = tree.createFolderNode(
-            item.name,
-            folder,
-            folder && folder.getId(),
-            item.id,
-            item.tray
-        );
+    const folderNode = tree.createFolderNode(
+        folder.name,
+        parent,
+        parent && parent.getId(),
+        folder.id,
+        folder.tray
+    );
 
-        if (
-            folder.getId() === tree.getRoot().getId() &&
-            folderNode.getParentId() === null
-        ) {
-            tree.getRoot().addFolder(folderNode);
-            folderNode.setParent(tree.getRoot());
+    if (
+        parent.getId() === tree.getRoot().getId() &&
+        folderNode.getParentId() === null
+    ) {
+        tree.getRoot().addFolder(folderNode);
+        folderNode.setParent(tree.getRoot());
+    }
+
+    Object.values(tree.getFolderNodes()).forEach((node) => {
+        // Is father?
+        if (node.getId() === folderNode.getParentId()) {
+            folderNode.setParent(node);
+            node.addFolder(folderNode);
         }
-
-        Object.values(tree.getFolderNodes()).forEach((node) => {
-            // Is father?
-            if (node.getId() === folderNode.getParentId()) {
-                folderNode.setParent(node);
-                node.addFolder(folderNode);
-            }
-            // Is child?
-            else if (node.getParentId() === folderNode.getId()) {
-                node.getParent()?.removeFolder(folderNode);
-                node.setParent(folderNode);
-                folderNode.addFolder(node);
-            }
-        });
+        // Is child?
+        else if (node.getParentId() === folderNode.getId()) {
+            node.getParent()?.removeFolder(folderNode);
+            node.setParent(folderNode);
+            folderNode.addFolder(node);
+        }
     });
 };
 export function fileArrayToFileList(files: File[]): FileList {
@@ -73,38 +71,36 @@ export function fileArrayToFileList(files: File[]): FileList {
     return dataTransfer.files;
 }
 
-export const fileToFileNode = (
-    files: IFile[],
-    tree: Tree,
-    folder: FolderNode
-) => {
-    files.forEach((item) => {
-        item = item as IFile;
+export const fileToFileNode = (file: IFile, tree: Tree, parent: FolderNode) => {
+    file = file as IFile;
 
-        if (Object.entries(item).length === 0) {
-            return;
-        }
+    if (Object.entries(file).length === 0) {
+        return;
+    }
 
-        tree.createFileNode(
-            item.name,
-            folder,
-            folder.getId(),
-            item.id,
-            item.prefix,
-            item.extension,
-            item.byteSize
-        );
-    });
+    tree.createFileNode(
+        file.name,
+        parent,
+        parent.getId(),
+        file.id,
+        file.prefix,
+        file.extension,
+        file.byteSize
+    );
 };
 
 export const apiResponseToTreeNodes = (
-    res: { files: IFile[]; folders: IFolder[] },
+    res: Array<IFolder | IFile>,
     tree: Tree,
-    folder: FolderNode
+    parent: FolderNode
 ) => {
-    folderToFolderNode(res["folders"], tree, folder);
-
-    fileToFileNode(res["files"], tree, folder);
+    res.forEach((item) => {
+        if ((item as IFile)["extension"] !== undefined) {
+            fileToFileNode(item as IFile, tree, parent);
+        } else {
+            folderToFolderNode(item as IFolder, tree, parent);
+        }
+    });
 };
 
 export function addThreePoints(str: string, max: number) {

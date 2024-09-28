@@ -2,16 +2,16 @@
 
 import { createContext, ReactElement, useState } from "react";
 
-type IPagination = {
+type pageCache = {
     [id: string]: {
-        page: number;
+        loadedPages: number[];
+        totalPages: number;
     };
 };
 
 type context = {
-    savePage: (id: string, page: number) => void;
-    getSavedPage: (id: string) => number | undefined;
-    pagination: IPagination;
+    pagesCache: pageCache;
+    setPagesCache: React.Dispatch<React.SetStateAction<pageCache>>;
 };
 
 export const PaginationContext = createContext<context>({} as context);
@@ -21,24 +21,10 @@ export const PaginationProvider = ({
 }: {
     children: ReactElement;
 }) => {
-    const [pagination, setPagination] = useState<IPagination>({});
-
-    function savePage(id: string, page: number) {
-        const obj = {
-            ...pagination,
-            [id]: { page },
-        };
-        setPagination({ ...obj });
-    }
-
-    function getSavedPage(id: string): number | undefined {
-        return pagination[id]?.page;
-    }
+    const [pagesCache, setPagesCache] = useState<pageCache>({} as pageCache);
 
     return (
-        <PaginationContext.Provider
-            value={{ savePage, getSavedPage, pagination }}
-        >
+        <PaginationContext.Provider value={{ pagesCache, setPagesCache }}>
             {children}
         </PaginationContext.Provider>
     );

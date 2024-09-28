@@ -3,18 +3,18 @@ import { FileNode } from "./FileNode.ts";
 import { FolderNode } from "./FolderNode.ts";
 
 export class Tree {
-    private root: FolderNode;
+    private root: FolderNode = new FolderNode("/", null, null, "", null);;
     private fileNodes = {} as {
         [key: string]: FileNode;
     };
+    
     private folderNodes = {} as {
         [key: string]: FolderNode;
     };
+
     private nodes: Set<FileNode | FolderNode> = new Set();
 
-    constructor() {
-        this.root = new FolderNode("/", null, null, "", null);
-    }
+    constructor() {}
 
     public deleteFileNode(node: FileNode): void {
         node.getParent()?.removeFile(node);
@@ -35,10 +35,11 @@ export class Tree {
                     this.deleteFolderNode(item);
                 }
                 delete this.folderNodes[item.getId()];
-            } else if (item instanceof FileNode) {
+            } else {
                 delete this.fileNodes[item.getId()];
             }
         });
+        
         node.getParent()?.removeFolder(node);
     }
 
@@ -48,7 +49,6 @@ export class Tree {
         parentId: string | null,
         id: string,
         prefix: string,
-        // byteSize_formatted: string,
         extension: string,
         byteSize: number
     ): void {
@@ -83,7 +83,8 @@ export class Tree {
         parentId: string | null,
         id: string,
         tray: string | ITray[],
-        dift: boolean = false
+        // bool to connect or not the node to the parent
+        island: boolean = false
     ): FolderNode {
         if (this.folderNodes[id] !== undefined) {
             return this.folderNodes[id];
@@ -91,7 +92,7 @@ export class Tree {
 
         const node = new FolderNode(name, parent, parentId, id, tray);
 
-        if (!dift) {
+        if (!island) {
             if (parent != null) {
                 parent.addFolder(node);
             } else {
@@ -105,24 +106,23 @@ export class Tree {
         return node;
     }
 
-    // Algoritmhs
-
-    public viewTree(node: FolderNode = this.root, deep = 0) {
+    public treeView(node: FolderNode = this.root, depth = 0) {
         if (node.getFiles().size == 0 && node.getFolders().size === 0) return;
 
-        for (const n of [...node.getFiles(), ...node.getFolders()]) {
+        const listNodes = [...node.getFiles(), ...node.getFolders()] 
+
+        for (const n of listNodes) {
             if (n instanceof FolderNode) {
-                console.log(" ".repeat(deep * 4) + n.getName());
-                this.viewTree(n, deep + 1);
+                console.log(" ".repeat(depth * 4) + n.getName());
+                this.treeView(n, depth + 1);
             } else {
                 console.log(
-                    " ".repeat(deep * 4) + n.getName() + "." + n.getExtension()
+                    " ".repeat(depth * 4) + n.getName() + "." + n.getExtension()
                 );
             }
         }
     }
 
-    // Getter
     public getFileNodes(): {
         [key: string]: FileNode;
     } {

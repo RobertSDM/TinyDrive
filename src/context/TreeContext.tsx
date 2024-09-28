@@ -16,10 +16,9 @@ interface ITreeContext {
 export const TreeContext = createContext({} as ITreeContext);
 
 export const TreeProvider = ({ children }: { children: ReactElement }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [tree] = useState<Tree>(new Tree());
 
-    const [currentNode, setCurrentNode] = useState<FolderNode>(tree!.getRoot());
+    const [currentNode, setCurrentNode] = useState<FolderNode>(tree.getRoot());
     const [tray, setTray] = useState<ITray[]>(currentNode.getTray());
     const [content, setContent] = useState<Array<FileNode | FolderNode>>([]);
 
