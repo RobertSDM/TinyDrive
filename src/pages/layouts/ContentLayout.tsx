@@ -3,7 +3,7 @@ import { TreeProvider } from "../../context/TreeContext.tsx";
 import { NotificationProvider } from "../../context/NotificationSystem.tsx";
 import { useEffect } from "react";
 import DefaultHeader from "../../components/DefaultHeaderWrapper.tsx/DefaultHeader.tsx";
-import { useUserContext } from "../../hooks/useContext.tsx";
+import { useUserContext } from "../../context/useContext.tsx";
 import Notifications from "../../components/NotificationsWrapper/Notifications.tsx";
 import { PaginationProvider } from "../../context/paginationSave.tsx";
 import Footer from "../../components/FooterWrapper/Footer.tsx";

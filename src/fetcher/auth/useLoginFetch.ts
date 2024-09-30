@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
     useNotificationSystemContext,
     useUserContext,
-} from "../../hooks/useContext.tsx";
+} from "../../context/useContext.tsx";
 import { BACKEND_URL, beAPI } from "../../utils/enviromentVariables.ts";
 import { NotificationLevels } from "../../types/enums.ts";
 
@@ -47,7 +47,6 @@ const useLoginFetch = () => {
                     enqueue({
                         level: NotificationLevels.INFO,
                         msg: `logged with success`,
-                        title: "Login",
                     });
                     data.current = res.data;
                 }
@@ -61,7 +60,6 @@ const useLoginFetch = () => {
                     enqueue({
                         level: NotificationLevels.ERROR,
                         msg: err.response.data.msg,
-                        title: "Register error",
                     });
                 }
                 setIsLoading(false);

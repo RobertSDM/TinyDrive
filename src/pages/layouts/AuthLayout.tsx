@@ -1,7 +1,7 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { NotificationProvider } from "../../context/NotificationSystem.tsx";
 import Notifications from "../../components/NotificationsWrapper/Notifications.tsx";
-import { useUserContext } from "../../hooks/useContext.tsx";
+import { useUserContext } from "../../context/useContext.tsx";
 import { useEffect } from "react";
 
 const AuthLayout = () => {

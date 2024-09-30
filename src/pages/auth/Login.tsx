@@ -1,7 +1,7 @@
 import { useState } from "react";
 import FormInput from "../../components/FormInputWrapper/FormInput.tsx";
 import { Link } from "react-router-dom";
-import { useNotificationSystemContext } from "../../hooks/useContext.tsx";
+import { useNotificationSystemContext } from "../../context/useContext.tsx";
 import useLoginFetch from "../../fetcher/auth/useLoginFetch.ts";
 import useTitle from "../../hooks/useTitle.tsx";
 import { emailPassVerification } from "../../utils/valitation.ts";

@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { UserContext } from "../context/UserContext.tsx";
-import { NotificationContext } from "../context/NotificationSystem.tsx";
-import { TreeContext } from "../context/TreeContext.tsx";
-import { PaginationContext } from "../context/paginationSave.tsx";
+import { UserContext } from "./UserContext.tsx";
+import { NotificationContext } from "./NotificationSystem.tsx";
+import { TreeContext } from "./TreeContext.tsx";
+import { PaginationContext } from "./paginationSave.tsx";
 
 export const useUserContext = () => {
     return useContext(UserContext);

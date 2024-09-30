@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
     useNotificationSystemContext,
     useUserContext,
-} from "../../hooks/useContext.tsx";
+} from "../../context/useContext.tsx";
 import { NotificationLevels } from "../../types/enums.ts";
 import { beAPI } from "../../utils/enviromentVariables.ts";
 import { IFile, IFolder } from "../../types/types.js";
@@ -44,7 +44,6 @@ const useContentByFolderFetch = () => {
             setIsLoading(false);
             enqueue({
                 level: NotificationLevels.ERROR,
-                title: "Error loading the content",
                 msg: "Error while loading the content. Please try again",
             });
             return null;

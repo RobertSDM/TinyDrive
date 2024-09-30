@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNotificationSystemContext } from "../../hooks/useContext.tsx";
+import { useNotificationSystemContext } from "../../context/useContext.tsx";
 import { NotificationLevels } from "../../types/enums.ts";
 import { beAPI } from "../../utils/enviromentVariables.ts";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +22,6 @@ const useRegisterFetch = () => {
                     enqueue({
                         level: NotificationLevels.INFO,
                         msg: `Registred with success`,
-                        title: "Register",
                     });
                     navigate("/login");
                 }
@@ -33,13 +32,11 @@ const useRegisterFetch = () => {
                     enqueue({
                         level: NotificationLevels.ERROR,
                         msg: err.response.data.msg,
-                        title: "Register error",
                     });
                 } else {
                     enqueue({
                         level: NotificationLevels.ERROR,
                         msg: "Server error",
-                        title: "Register error",
                     });
                 }
             });

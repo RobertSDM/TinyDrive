@@ -34,7 +34,6 @@ const updateFileName = async (
             enqueue({
                 level: NotificationLevels.INFO,
                 msg: `updated with success`,
-                title: "Save",
             });
             return newName;
         }
@@ -44,13 +43,11 @@ const updateFileName = async (
             enqueue({
                 level: NotificationLevels.ERROR,
                 msg: err.response.data.msg,
-                title: "The name already exists in the folder",
             });
         } else {
             enqueue({
                 level: NotificationLevels.ERROR,
                 msg: `Error while updating the file`,
-                title: "Update error",
             });
         }
 

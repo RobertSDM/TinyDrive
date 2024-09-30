@@ -10,7 +10,7 @@ import {
     usePaginationContext,
     useTreeContext,
     useUserContext,
-} from "./useContext.tsx";
+} from "../context/useContext.tsx";
 import { useFileDownload } from "./useFile.tsx";
 import { useFolderDownload } from "./useFolder.tsx";
 import { FolderNode } from "../model/three/FolderNode.ts";
@@ -48,7 +48,7 @@ export const useDeleteContent = (
         }
 
         setContent((prev) => {
-            if (prev[0].getId() !== currentNode.getId()) return prev;
+            if (prev[0].getParentId() !== currentNode.getId()) return prev;
             return orderByName(currentNode.getChildrenValues());
         });
 
@@ -73,7 +73,8 @@ export const useDeleteContent = (
         }
         if (
             page === totalPages &&
-            len <= ITEMS_PER_PAGE * totalPages - ITEMS_PER_PAGE
+            len <= ITEMS_PER_PAGE * totalPages - ITEMS_PER_PAGE &&
+            page - 1 >= 1
         ) {
             navigate(`?p=${page - 1}`);
         }

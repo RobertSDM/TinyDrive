@@ -42,11 +42,18 @@ details > summary::-webkit-details-marker {
 }
 
 @layer base {
+    .notification-base-static {
+        @apply shadow-lg fixed rounded-md w-[380px] py-4 px-6 z-10
+    }
+    .notification-base-dynamic {
+        @apply shadow-lg fixed rounded-md w-[380px] py-4 px-6 z-10
+    }
+
     .error-notifications {
-        @apply bg-red-500 shadow-lg shadow-red-100 absolute top-10 right-10 rounded-md w-96 py-4 px-6 z-10;
+        @apply bg-red-500  shadow-red-100 top-5 right-5 ;
     }
 
     .info-notifications {
-        @apply bg-white shadow-lg shadow-purple-200 absolute bottom-10 left-10 rounded-md w-96 py-4 px-6 z-10;
+        @apply bg-purple-500 shadow-purple-200  bottom-5 left-5;
     }
 }

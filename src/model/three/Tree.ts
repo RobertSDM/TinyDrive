@@ -2,7 +2,7 @@ import { FileNode } from "./FileNode.ts";
 import { FolderNode } from "./FolderNode.ts";
 
 export class Tree {
-    private root: FolderNode = new FolderNode("/", "root", "", "", null);
+    private root: FolderNode = new FolderNode("", "root", "", "", null);
     private nodes = {} as {
         [key: string]: FileNode | FolderNode;
     };

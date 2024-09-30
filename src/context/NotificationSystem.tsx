@@ -21,7 +21,10 @@ export const NotificationProvider = ({
     children: ReactElement;
 }) => {
     const [notifications, setNotifications] = useState<INotification[]>([]);
-    const [currentOne, setCurrentOne] = useState<INotification | null>(null);
+
+    const [currentNotif, setCurrentNotif] = useState<INotification | null>(
+        null
+    );
 
     const addNotif = useCallback((notification: INotification) => {
         const id = Date.now();
@@ -41,23 +44,23 @@ export const NotificationProvider = ({
         });
 
         if (notifications.length > 0) {
-            setCurrentOne(getFirst());
+            setCurrentNotif(getFirst());
         } else {
-            setCurrentOne(null);
+            setCurrentNotif(null);
         }
 
         return notification;
-    }, [getFirst, notifications]);
+    }, [notifications]);
 
     useEffect(() => {
-        if (!currentOne && notifications.length > 0) {
-            setCurrentOne(getFirst());
+        if (!currentNotif && notifications.length > 0) {
+            setCurrentNotif(getFirst());
         }
-    }, [notifications]);
+    }, [notifications.length]);
 
     return (
         <NotificationContext.Provider
-            value={{ addNotif, removeNotif, currentOne }}
+            value={{ addNotif, removeNotif, currentOne: currentNotif }}
         >
             {children}
         </NotificationContext.Provider>

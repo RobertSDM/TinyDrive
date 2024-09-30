@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ButtonUpload from "../../components/Buttons/ButtonUpload.tsx";
 import ContentView from "../../components/ContentViewWrapper/ContentView.tsx";
 import Tray from "../../components/Tray.tsx";
@@ -7,7 +7,7 @@ import useContentByFolderFetch from "../../fetcher/content/useContentByFolderFet
 import {
     usePaginationContext,
     useTreeContext,
-} from "../../hooks/useContext.tsx";
+} from "../../context/useContext.tsx";
 import useQueryParams from "../../hooks/useQueryParams.tsx";
 import useTitle from "../../hooks/useTitle.tsx";
 import { FolderNode } from "../../model/three/FolderNode.ts";
@@ -21,6 +21,7 @@ const Folder = () => {
     const { tree, updateCurrentNode, currentNode, content, setContent } =
         useTreeContext();
     const setTitle = useTitle();
+    const navigate = useNavigate();
     const { pagesCache, setPagesCache } = usePaginationContext();
 
     const { id } = useParams();
@@ -120,6 +121,9 @@ const Folder = () => {
     }, [id, page]);
 
     useEffect(() => {
+        if (page < 1) {
+            navigate(`?p=${1}`);
+        }
         if (!pagesCache[id!]) {
             setContent([]);
         }

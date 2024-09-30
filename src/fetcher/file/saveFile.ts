@@ -1,5 +1,5 @@
 import { IFile } from "./../../types/types.js";
-import { NotificationLevels } from "../../types/enums.ts";
+import { NotificationLevels, NotificationTypes } from "../../types/enums.ts";
 import { INotification } from "../../types/types.js";
 import { beAPI } from "../../utils/enviromentVariables.ts";
 
@@ -24,6 +24,14 @@ const saveFile = async (
     };
 
     try {
+        if (showNotif) {
+            enqueue({
+                level: NotificationLevels.INFO,
+                msg: `upload started`,
+                type: NotificationTypes.STATIC,
+            });
+        }
+
         const res = await beAPI.post("/file/save", body, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -35,7 +43,7 @@ const saveFile = async (
                 enqueue({
                     level: NotificationLevels.INFO,
                     msg: `saved with success`,
-                    title: "Save",
+                    type: NotificationTypes.STATIC,
                     special: res.data.data.name,
                 });
             }
@@ -46,13 +54,11 @@ const saveFile = async (
             enqueue({
                 level: NotificationLevels.ERROR,
                 msg: err.response.data.msg,
-                title: "File already exists",
             });
         } else {
             enqueue({
                 level: NotificationLevels.ERROR,
                 msg: `Error while saving the file`,
-                title: "Save error",
             });
         }
 

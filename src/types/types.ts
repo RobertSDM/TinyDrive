@@ -1,4 +1,4 @@
-import { NotificationLevels } from "./enums.ts";
+import { NotificationLevels, NotificationTypes } from "./enums.ts";
 
 export interface IFile {
     id: string;
@@ -29,8 +29,8 @@ export interface ITray {
 
 export interface INotification {
     level: NotificationLevels;
+    type?: NotificationTypes;
     id?: number;
-    title: string;
     msg: string;
     special?: string;
 }

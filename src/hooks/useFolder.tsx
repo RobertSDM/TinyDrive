@@ -1,7 +1,7 @@
 import downloadFolder from "../fetcher/folder/downloadFolder.ts";
 import saveFolder from "../fetcher/folder/saveFolder.ts";
 import { FolderNode } from "../model/three/FolderNode.ts";
-import { NotificationLevels } from "../types/enums.ts";
+import { NotificationLevels, NotificationTypes } from "../types/enums.ts";
 import { IFolder } from "../types/types.js";
 import {
     fileArrayToFileList,
@@ -14,7 +14,7 @@ import {
     useNotificationSystemContext,
     useTreeContext,
     useUserContext,
-} from "./useContext.tsx";
+} from "../context/useContext.tsx";
 import { useHandleFilesUpload } from "./useFile.tsx";
 
 export const useFolderDownload = (fileId: string, name: string) => {
@@ -51,6 +51,13 @@ export const useHandleFolderUpload = () => {
 
     return async (files: FileList) => {
         if (files.length === 0) return;
+
+        enqueue({
+            level: NotificationLevels.INFO,
+            msg: `upload started`,
+            type: NotificationTypes.STATIC,
+        });
+        
         // refers to the created folder returned from the api
         let savedFolder: IFolder;
         // refers to the current folder on the save process
@@ -130,8 +137,9 @@ export const useHandleFolderUpload = () => {
                                     : currentFolderNode
                             );
 
-                            currentUpdatedFolderNode =
-                                tree.getNodes()[savedFolder.id] as FolderNode;
+                            currentUpdatedFolderNode = tree.getNodes()[
+                                savedFolder.id
+                            ] as FolderNode;
                         }
                     } else {
                         parentId = pathsUsed[path];
@@ -162,7 +170,6 @@ export const useHandleFolderUpload = () => {
             enqueue({
                 level: NotificationLevels.INFO,
                 msg: "Folder created successfully",
-                title: "Success",
             });
         } catch (error: Error | any) {
             throw error;

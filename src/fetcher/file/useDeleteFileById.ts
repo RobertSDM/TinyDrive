@@ -4,7 +4,7 @@ import { beAPI } from "../../utils/enviromentVariables.ts";
 import {
     useNotificationSystemContext,
     useUserContext,
-} from "../../hooks/useContext.tsx";
+} from "../../context/useContext.tsx";
 
 const useDeleteFileById = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -24,7 +24,6 @@ const useDeleteFileById = () => {
                 enqueue({
                     level: NotificationLevels.INFO,
                     msg: `successfully deleted`,
-                    title: "Delete",
                     special: res.data.name,
                 });
                 return true;
@@ -32,7 +31,6 @@ const useDeleteFileById = () => {
                 enqueue({
                     level: NotificationLevels.ERROR,
                     msg: `Error while deleting`,
-                    title: "Error",
                 });
                 return false;
             }
@@ -41,7 +39,6 @@ const useDeleteFileById = () => {
             enqueue({
                 level: NotificationLevels.ERROR,
                 msg: `Error while deleting`,
-                title: "Error",
             });
             return false;
         }

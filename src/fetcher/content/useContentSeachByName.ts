@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUserContext } from "../../hooks/useContext.tsx";
+import { useUserContext } from "../../context/useContext.tsx";
 import { TSearchFolder, TSeachFile } from "../../types/types.js";
 import { beAPI } from "../../utils/enviromentVariables.ts";
 

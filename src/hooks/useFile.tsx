@@ -1,6 +1,6 @@
 import downloadFile from "../fetcher/file/downloadFile.ts";
 import saveFile from "../fetcher/file/saveFile.ts";
-import { NotificationLevels } from "../types/enums.ts";
+import { NotificationLevels, NotificationTypes } from "../types/enums.ts";
 import {
     convertArrayBufferToBase64,
     convertBase64ToArrayBuffer,
@@ -13,7 +13,7 @@ import {
     useNotificationSystemContext,
     useTreeContext,
     useUserContext,
-} from "./useContext.tsx";
+} from "../context/useContext.tsx";
 
 export const useFileDownload = (fileId: string) => {
     const {
@@ -63,6 +63,14 @@ export const useHandleFilesUpload = (
     const { addNotif: enqueue } = useNotificationSystemContext();
 
     return async (files: FileList, folderId: string | null = null) => {
+        if (files.length > 1) {
+            enqueue({
+                level: NotificationLevels.INFO,
+                msg: `upload started`,
+                type: NotificationTypes.STATIC,
+            });
+        }
+        
         try {
             const filePromises = Array.from(files).map(async (file) => {
                 let [name, ...rest] = file.name.split(".");
@@ -74,7 +82,6 @@ export const useHandleFilesUpload = (
                         msg: `is to big, the maximum size is ${
                             MAX_FILE_SIZE / 1_000_000
                         }MBs`,
-                        title: "File to big",
                         special: file.name.split(".")[0],
                     });
                     return;
@@ -134,8 +141,8 @@ export const useHandleFilesUpload = (
                 if (files.length > 1) {
                     enqueue({
                         level: NotificationLevels.INFO,
+                        type: NotificationTypes.STATIC,
                         msg: "All fioes have been uploaded",
-                        title: "Upload",
                     });
                 }
             });

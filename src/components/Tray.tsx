@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useTreeContext } from "../hooks/useContext.tsx";
+import { useTreeContext } from "../context/useContext.tsx";
 
 export default () => {
     const { tray } = useTreeContext();

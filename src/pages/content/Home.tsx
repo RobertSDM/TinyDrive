@@ -6,17 +6,20 @@ import useRootContentFetch from "../../fetcher/content/useRootContentFetch.ts";
 import {
     usePaginationContext,
     useTreeContext,
-} from "../../hooks/useContext.tsx";
+} from "../../context/useContext.tsx";
 import useQueryParams from "../../hooks/useQueryParams.tsx";
 import useTitle from "../../hooks/useTitle.tsx";
 import { apiResponseToTreeNodes } from "../../utils/dataConvertion.ts";
 import { orderByName } from "../../utils/filterFunctions.ts";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
     const { tree, updateCurrentNode, setContent, content } = useTreeContext();
     const setTitle = useTitle();
+    const navigate = useNavigate();
 
     const [page] = useQueryParams("p", 1, Number);
+
     const { isLoading, fetch_ } = useRootContentFetch();
 
     const [totalPages, setTotalPages] = useState<number>(0);
@@ -27,6 +30,9 @@ function Home() {
     }, []);
 
     useEffect(() => {
+        if (page < 1) {
+            navigate(`?p=${1}`);
+        }
         const updatedNode = updateCurrentNode(tree.getRoot());
 
         const childNodes = updatedNode.getChildrenValues();

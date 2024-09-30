@@ -3,7 +3,7 @@ import { MdExpandLess, MdExpandMore, MdFileUpload } from "react-icons/md";
 import {
     usePaginationContext,
     useTreeContext,
-} from "../../hooks/useContext.tsx";
+} from "../../context/useContext.tsx";
 import { useHandleFilesUpload } from "../../hooks/useFile.tsx";
 import { useHandleFolderUpload } from "../../hooks/useFolder.tsx";
 import { ITEMS_PER_PAGE } from "../../utils/enviromentVariables.ts";
@@ -132,8 +132,8 @@ const ButtonUpload = ({
                         }
 
                         handleFolderUpload(e.target.files).then(() => {
-                             const lenght =
-                                 currentNode.getChildrenValues().length;
+                            const lenght =
+                                currentNode.getChildrenValues().length;
 
                             if (lenght >= totalPages * ITEMS_PER_PAGE) {
                                 const key = currentNode.getId();

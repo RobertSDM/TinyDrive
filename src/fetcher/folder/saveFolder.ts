@@ -16,6 +16,7 @@ const saveFolder = async (
         owner_id: userId,
     };
     try {
+        
         const res = await beAPI.post("/folder/save", body, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -27,7 +28,6 @@ const saveFolder = async (
                 enqueue({
                     level: NotificationLevels.INFO,
                     msg: `saved with success`,
-                    title: "Save",
                     special: res.data.data.name,
                 });
             }
@@ -39,13 +39,11 @@ const saveFolder = async (
             enqueue({
                 level: NotificationLevels.ERROR,
                 msg: err.response.data.msg,
-                title: "Register error",
             });
         } else {
             enqueue({
                 level: NotificationLevels.ERROR,
                 msg: "Error while saving the folder",
-                title: "Error",
             });
         }
         return {} as IFolder;
