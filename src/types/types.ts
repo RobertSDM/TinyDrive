@@ -1,36 +1,15 @@
 import { NotificationLevels } from "./enums.ts";
 
 export interface IFile {
-    name: string;
-    parentId?: string;
-    parent?: IFolder;
-    fileData: IFileData;
-    _type: "FILE";
     id: string;
+    parentId?: string;
+    name: string;
+    parent?: IFolder;
     prefix: string;
     folder?: IFolder;
-    // byteSize_formatted: string;
     extension: string;
     byteSize: number;
 }
-
-interface IFileData {
-    id: string;
-    bytesData: string;
-    fileId?: string;
-    file: IFile[];
-}
-
-/*
-byteSize
-extension
-folder
-folder_id
-fullname
-id
-name
-prefix
-*/
 
 export interface IFolder {
     id: string;
@@ -68,11 +47,11 @@ export type TSeachFile = {
     extension: string;
     byteSize: number;
     prefix: string;
-    [Symbol.iterator]();
+    [Symbol.iterator](): IterableIterator<TSeachFile>;
 };
 
 export type TSearchFolder = {
     id: string;
-    name: str;
-    [Symbol.iterator]();
+    name: string;
+    [Symbol.iterator](): IterableIterator<TSeachFile>;
 };

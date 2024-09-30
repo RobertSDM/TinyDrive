@@ -1,5 +1,5 @@
-import { FileNode } from "../control/TreeWrapper/FileNode.ts";
-import { FolderNode } from "../control/TreeWrapper/FolderNode.ts";
+import { FileNode } from "../model/three/FileNode.ts";
+import { FolderNode } from "../model/three/FolderNode.ts";
 
 export const orderByName = (content: Array<FileNode | FolderNode>) => {
     const newContent = content.sort(

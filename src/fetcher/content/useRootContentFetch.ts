@@ -13,7 +13,7 @@ type TData = {
 };
 
 const useRootContentFetch = () => {
-    const { enqueue } = useNotificationSystemContext();
+    const { addNotif: enqueue } = useNotificationSystemContext();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const { token, user } = useUserContext();
 
@@ -30,6 +30,7 @@ const useRootContentFetch = () => {
                 return {
                     content: res.data.content,
                     totalPages: res.data.totalCount,
+                    page: res.data.page,
                 } as TData;
             } else {
                 setIsLoading(false);

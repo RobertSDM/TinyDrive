@@ -5,7 +5,7 @@ import { beAPI } from "../../utils/enviromentVariables.ts";
 import { useNavigate } from "react-router-dom";
 
 const useRegisterFetch = () => {
-    const { enqueue } = useNotificationSystemContext();
+    const { addNotif: enqueue } = useNotificationSystemContext();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const navigate = useNavigate();
 
@@ -35,7 +35,7 @@ const useRegisterFetch = () => {
                         msg: err.response.data.msg,
                         title: "Register error",
                     });
-                }else{
+                } else {
                     enqueue({
                         level: NotificationLevels.ERROR,
                         msg: "Server error",

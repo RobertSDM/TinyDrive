@@ -7,7 +7,7 @@ import useTitle from "../../hooks/useTitle.tsx";
 import { emailPassVerification } from "../../utils/valitation.ts";
 
 const Login = () => {
-    const { enqueue } = useNotificationSystemContext();
+    const { addNotif: enqueue } = useNotificationSystemContext();
     const [email, setEmail] = useState<string>("");
     const [pass, setPass] = useState<string>("");
     const { login, isLoading } = useLoginFetch();

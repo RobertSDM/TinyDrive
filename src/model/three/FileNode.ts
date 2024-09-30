@@ -1,29 +1,27 @@
 import { FolderNode } from "./FolderNode.ts";
 
 export class FileNode {
-    private name: string;
-    private parentId: string | null;
-    private parent: FolderNode | null;
-    private type: "FILE" = "FILE";
     private id: string;
-
+    private name: string;
+    private parent: FolderNode | null;
+    private parentId: string | null;
     private prefix: string;
     private extension: string;
     private byteSize: number;
 
     constructor(
-        name: string,
-        parentId: string | null,
-        parent: FolderNode | null,
         id: string,
+        name: string,
         prefix: string,
         extension: string,
-        byteSize: number
+        byteSize: number,
+        parentId: string | null,
+        parent: FolderNode | null,
     ) {
-        this.name = name;
-        this.parentId = parentId;
-        this.parent = parent;
         this.id = id;
+        this.name = name;
+        this.parent = parent;
+        this.parentId = parentId;
         this.prefix = prefix;
         this.byteSize = byteSize;
         this.extension = extension;
@@ -74,22 +72,17 @@ export class FileNode {
         this.parentId = parentId;
     }
 
-    // Getter and Setter for parent
+    // Getter and Setter for id
+    public getId(): string {
+        return this.id;
+    }
+
+    // Getter for parent
     public getParent(): FolderNode | null {
         return this.parent;
     }
 
     public setParent(parent: FolderNode | null): void {
         this.parent = parent;
-    }
-
-    // Getter for type
-    public getType(): string {
-        return this.type;
-    }
-
-    // Getter and Setter for id
-    public getId(): string {
-        return this.id;
     }
 }

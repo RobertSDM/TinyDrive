@@ -5,7 +5,7 @@ import { NotificationLevels } from "../../types/enums.ts";
 import { addThreePoints } from "../../utils/dataConvertion.ts";
 
 const Notifications = () => {
-    const { dequeue, currentOne } = useNotificationSystemContext();
+    const { removeNotif: dequeue, currentOne } = useNotificationSystemContext();
 
     const [perc, setPerc] = useState<number>(100);
     const [time, setTime] = useState<number>(4000);
@@ -83,13 +83,12 @@ const Notifications = () => {
                         >
                             {currentOne.special ? (
                                 <>
-                                {" "}
+                                    {" "}
                                     <span className="font-semibold">
                                         "
                                         {addThreePoints(currentOne.special, 30)}
                                         "
-                                    </span>
-                                {" "}
+                                    </span>{" "}
                                     <span>{currentOne.msg}</span>
                                 </>
                             ) : (

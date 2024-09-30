@@ -1,5 +1,5 @@
-import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
-import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
+import { FileNode } from "../../model/three/FileNode.ts";
+import { FolderNode } from "../../model/three/FolderNode.ts";
 import { ITEMS_PER_PAGE } from "../../utils/enviromentVariables.ts";
 import PaginationControls from "../PaginationWrapper/PaginationControls.tsx";
 import ContentRow from "./ContentRow.tsx";

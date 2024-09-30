@@ -1,6 +1,7 @@
+import { FileNode } from "../model/three/FileNode.ts";
+import { FolderNode } from "../model/three/FolderNode.ts";
+import { Tree } from "../model/three/Tree.ts";
 import type { IFile, IFolder } from "../types/types.js";
-import { FolderNode } from "../control/TreeWrapper/FolderNode.ts";
-import { Tree } from "../control/TreeWrapper/Tree.ts";
 
 export const convertArrayBufferToBase64 = (byteData: ArrayBuffer): string => {
     return btoa(
@@ -31,33 +32,35 @@ export const folderToFolderNode = (
 ) => {
     folder = folder as IFolder;
 
-    const folderNode = tree.createFolderNode(
-        folder.name,
-        parent,
-        parent && parent.getId(),
+    const folderNode = new FolderNode(
         folder.id,
-        folder.tray
+        folder.name,
+        parent && parent.getId(),
+        folder.tray,
+        parent
     );
+
+    tree.addNode(folderNode);
 
     if (
         parent.getId() === tree.getRoot().getId() &&
         folderNode.getParentId() === null
     ) {
-        tree.getRoot().addFolder(folderNode);
+        tree.getRoot().addChildren(folderNode);
         folderNode.setParent(tree.getRoot());
     }
 
-    Object.values(tree.getFolderNodes()).forEach((node) => {
+    Object.values(tree.getNodes()).forEach((node) => {
         // Is father?
         if (node.getId() === folderNode.getParentId()) {
-            folderNode.setParent(node);
-            node.addFolder(folderNode);
+            folderNode.setParent(node as FolderNode);
+            (node as FolderNode).addChildren(folderNode);
         }
         // Is child?
         else if (node.getParentId() === folderNode.getId()) {
-            node.getParent()?.removeFolder(folderNode);
+            node.getParent()?.removeChildren(folderNode);
             node.setParent(folderNode);
-            folderNode.addFolder(node);
+            folderNode.addChildren(node);
         }
     });
 };
@@ -78,15 +81,17 @@ export const fileToFileNode = (file: IFile, tree: Tree, parent: FolderNode) => {
         return;
     }
 
-    tree.createFileNode(
-        file.name,
-        parent,
-        parent.getId(),
+    const fileNode = new FileNode(
         file.id,
+        file.name,
         file.prefix,
         file.extension,
-        file.byteSize
+        file.byteSize,
+        parent.getId(),
+        parent
     );
+
+    tree.addNode(fileNode);
 };
 
 export const apiResponseToTreeNodes = (

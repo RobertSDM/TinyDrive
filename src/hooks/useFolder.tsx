@@ -1,6 +1,6 @@
-import { FolderNode } from "../control/TreeWrapper/FolderNode.ts";
 import downloadFolder from "../fetcher/folder/downloadFolder.ts";
 import saveFolder from "../fetcher/folder/saveFolder.ts";
+import { FolderNode } from "../model/three/FolderNode.ts";
 import { NotificationLevels } from "../types/enums.ts";
 import { IFolder } from "../types/types.js";
 import {
@@ -45,7 +45,7 @@ export const useHandleFolderUpload = () => {
         token,
     } = useUserContext();
     const { currentNode: currentFolderNode, setContent } = useTreeContext();
-    const { enqueue } = useNotificationSystemContext();
+    const { addNotif: enqueue } = useNotificationSystemContext();
     const { tree } = useTreeContext();
     const handleFilesUpload = useHandleFilesUpload(false);
 
@@ -116,7 +116,7 @@ export const useHandleFolderUpload = () => {
                         /*
                         Verifies if the actual folder being shown, is the parent of the folder created
                         if it is, it will be added in the tree, and shown on the screen
-                    */
+                        */
                         if (
                             currentFolderNode?.getId() ===
                                 savedFolder.folderC_id ||
@@ -125,12 +125,13 @@ export const useHandleFolderUpload = () => {
                             folderToFolderNode(
                                 savedFolder,
                                 tree,
-                                currentUpdatedFolderNode
-                                    ? currentUpdatedFolderNode
-                                    : tree.getRoot()
+                                currentUpdatedFolderNode?.getId() === ""
+                                    ? tree.getRoot()
+                                    : currentFolderNode
                             );
+
                             currentUpdatedFolderNode =
-                                tree.getFolderNodes()[savedFolder.id];
+                                tree.getNodes()[savedFolder.id] as FolderNode;
                         }
                     } else {
                         parentId = pathsUsed[path];
@@ -155,12 +156,8 @@ export const useHandleFolderUpload = () => {
             });
 
             await Promise.all(filesPromise);
-            setContent(
-                orderByName([
-                    ...currentFolderNode.getFiles(),
-                    ...currentFolderNode.getFolders(),
-                ])
-            );
+            const children = Object.values(currentFolderNode.getChildren());
+            setContent(orderByName(children));
 
             enqueue({
                 level: NotificationLevels.INFO,

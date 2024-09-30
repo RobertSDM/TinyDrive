@@ -19,7 +19,7 @@ type responseLoginAPI = {
 };
 
 const useLoginFetch = () => {
-    const { enqueue } = useNotificationSystemContext();
+    const { addNotif: enqueue } = useNotificationSystemContext();
     const data = useRef<responseLoginAPI>({} as responseLoginAPI);
     const { logUser } = useUserContext();
     const [isLoading, setIsLoading] = useState<boolean>(false);

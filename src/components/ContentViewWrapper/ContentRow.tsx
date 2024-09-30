@@ -1,8 +1,6 @@
 import { useRef, useState } from "react";
 import { FaFile } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
-import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
 import useDeleteFileById from "../../fetcher/file/useDeleteFileById.ts";
 import useDeleteFolderById from "../../fetcher/folder/useDeleteFolderbyId.ts";
 import {
@@ -18,6 +16,8 @@ import EditButton from "../Buttons/EditButton.tsx";
 import ConfirmModal from "../modalWrapper/ConfirmModal.tsx";
 import TextModal from "../modalWrapper/TextModal.tsx";
 import { FaFolderClosed } from "react-icons/fa6";
+import { FolderNode } from "../../model/three/FolderNode.ts";
+import { FileNode } from "../../model/three/FileNode.ts";
 
 const ContentRow = ({
     item,

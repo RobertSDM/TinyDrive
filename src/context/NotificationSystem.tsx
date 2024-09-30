@@ -8,8 +8,8 @@ import {
 import type { INotification } from "../types/types.js";
 
 type context = {
-    enqueue: (notification: INotification) => void;
-    dequeue: () => void;
+    addNotif: (notification: INotification) => void;
+    removeNotif: () => void;
     currentOne: INotification | null;
 };
 
@@ -23,7 +23,7 @@ export const NotificationProvider = ({
     const [notifications, setNotifications] = useState<INotification[]>([]);
     const [currentOne, setCurrentOne] = useState<INotification | null>(null);
 
-    const enqueue = useCallback((notification: INotification) => {
+    const addNotif = useCallback((notification: INotification) => {
         const id = Date.now();
         notification["id"] = id;
         setNotifications((prev) => [...prev, notification]);
@@ -33,7 +33,7 @@ export const NotificationProvider = ({
         return notifications[0];
     }, [notifications]);
 
-    const dequeue = useCallback(() => {
+    const removeNotif = useCallback(() => {
         const notification = getFirst();
         setNotifications((prev) => {
             prev.shift();
@@ -56,7 +56,9 @@ export const NotificationProvider = ({
     }, [notifications]);
 
     return (
-        <NotificationContext.Provider value={{ enqueue, dequeue, currentOne }}>
+        <NotificationContext.Provider
+            value={{ addNotif, removeNotif, currentOne }}
+        >
             {children}
         </NotificationContext.Provider>
     );

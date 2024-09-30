@@ -14,7 +14,7 @@ type TData = {
 };
 
 const useContentByFolderFetch = () => {
-    const { enqueue } = useNotificationSystemContext();
+    const { addNotif: enqueue } = useNotificationSystemContext();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const { token, user } = useUserContext();
 
@@ -47,7 +47,7 @@ const useContentByFolderFetch = () => {
                 title: "Error loading the content",
                 msg: "Error while loading the content. Please try again",
             });
-            return null
+            return null;
         }
     };
 

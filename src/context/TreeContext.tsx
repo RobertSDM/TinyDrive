@@ -1,8 +1,8 @@
 import { ReactElement, createContext, useState } from "react";
-import { Tree } from "../control/TreeWrapper/Tree.ts";
 import type { ITray } from "../types/types.js";
-import { FolderNode } from "../control/TreeWrapper/FolderNode.ts";
-import { FileNode } from "../control/TreeWrapper/FileNode.ts";
+import { FolderNode } from "../model/three/FolderNode.ts";
+import { FileNode } from "../model/three/FileNode.ts";
+import { Tree } from "../model/three/Tree.ts";
 
 interface ITreeContext {
     currentNode: FolderNode;
@@ -10,7 +10,7 @@ interface ITreeContext {
     tree: Tree;
     tray: ITray[];
     content: Array<FileNode | FolderNode>;
-    setContent: (content: Array<FileNode | FolderNode>) => void;
+    setContent: React.Dispatch<React.SetStateAction<(FileNode | FolderNode)[]>>;
 }
 
 export const TreeContext = createContext({} as ITreeContext);

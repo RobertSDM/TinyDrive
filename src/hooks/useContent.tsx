@@ -1,6 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { FileNode } from "../control/TreeWrapper/FileNode.ts";
-import { FolderNode } from "../control/TreeWrapper/FolderNode.ts";
 import updateFileName from "../fetcher/file/updateFileName.ts";
 import updateFolderName from "../fetcher/folder/updateFolderName.ts";
 import { ITEMS_PER_PAGE } from "../utils/enviromentVariables.ts";
@@ -15,6 +13,8 @@ import {
 } from "./useContext.tsx";
 import { useFileDownload } from "./useFile.tsx";
 import { useFolderDownload } from "./useFolder.tsx";
+import { FolderNode } from "../model/three/FolderNode.ts";
+import { FileNode } from "../model/three/FileNode.ts";
 
 export const useDeleteContent = (
     item: FileNode | FolderNode,
@@ -41,44 +41,48 @@ export const useDeleteContent = (
 
         setRowDeleteId("");
 
-        const childNodes = [
-            ...currentNode.getFiles(),
-            ...currentNode.getFolders(),
-        ];
+        let len = currentNode.getChildrenValues().length;
 
-        if (currentNode.getId() === item.getParentId()) {
-            setContent(orderByName(childNodes));
+        if (len < ITEMS_PER_PAGE * totalPages - ITEMS_PER_PAGE) {
+            len += ITEMS_PER_PAGE * (totalPages - 1);
         }
+
+        setContent((prev) => {
+            if (prev[0].getId() !== currentNode.getId()) return prev;
+            return orderByName(currentNode.getChildrenValues());
+        });
 
         const pageCacheKey = currentNode.getId();
 
-        if (childNodes.length <= totalPages * ITEMS_PER_PAGE - ITEMS_PER_PAGE) {
+        if (
+            pagesCache[pageCacheKey]?.totalPages - 1 > 0 &&
+            len <= ITEMS_PER_PAGE * totalPages - ITEMS_PER_PAGE
+        ) {
             setTotalPages((prev) => prev - 1);
+            setPagesCache((prev) => {
+                prev[pageCacheKey].loadedPages.push(page);
 
-            if (
-                pagesCache[pageCacheKey] &&
-                pagesCache[pageCacheKey].totalPages - 1 >= 0
-            ) {
-                setPagesCache((prev) => {
-                    prev[pageCacheKey].loadedPages.push(page);
-
-                    return {
-                        ...prev,
-                        [pageCacheKey]: {
-                            loadedPages: prev[pageCacheKey].loadedPages,
-                            totalPages: totalPages - 1,
-                        },
-                    };
-                });
-            }
-            if (page === totalPages) navigate(`?p=${page - 1}`);
+                return {
+                    ...prev,
+                    [pageCacheKey]: {
+                        loadedPages: prev[pageCacheKey].loadedPages,
+                        totalPages: totalPages - 1,
+                    },
+                };
+            });
+        }
+        if (
+            page === totalPages &&
+            len <= ITEMS_PER_PAGE * totalPages - ITEMS_PER_PAGE
+        ) {
+            navigate(`?p=${page - 1}`);
         }
     };
 };
 
 export const useEditContentName = (item: FileNode | FolderNode) => {
     const { user, token } = useUserContext();
-    const { enqueue } = useNotificationSystemContext();
+    const { addNotif: enqueue } = useNotificationSystemContext();
     const { tree, setContent, content } = useTreeContext();
 
     return (newName: string) => {
@@ -122,10 +126,10 @@ export const useEditContentName = (item: FileNode | FolderNode) => {
                 item.setName(res.name);
                 if (res.tray) {
                     for (let i of Object.keys(res.tray)) {
-                        const folder = tree.getFolderNodes()[i];
+                        const folder = tree.getNodes()[i] as FolderNode;
 
                         if (folder) {
-                            folder.updateTray(res.tray[i]);
+                            folder.createTray(res.tray[i]);
                         }
                         setContent(orderByName([...content]));
                     }

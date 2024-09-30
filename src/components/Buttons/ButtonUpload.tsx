@@ -10,9 +10,11 @@ import { ITEMS_PER_PAGE } from "../../utils/enviromentVariables.ts";
 
 const ButtonUpload = ({
     page,
+    totalPages,
     setTotalPages,
 }: {
     page: number;
+    totalPages: number;
     setTotalPages: React.Dispatch<React.SetStateAction<number>>;
 }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -65,23 +67,25 @@ const ButtonUpload = ({
                         if (!e.target.files) {
                             return;
                         }
+
                         handleFilesUpload(
                             e.target.files,
                             tree.getRoot().getId() === currentNode?.getId()
                                 ? null
                                 : currentNode?.getId()
                         ).then(() => {
-                            const childNodes = [
-                                ...currentNode!.getFiles(),
-                                ...currentNode!.getFolders(),
-                            ];
+                            const lenght =
+                                currentNode.getChildrenValues().length;
 
-                            if (
-                                childNodes.length >=
-                                page * ITEMS_PER_PAGE - ITEMS_PER_PAGE
-                            ) {
+                            if (lenght >= totalPages * ITEMS_PER_PAGE) {
                                 const key = currentNode.getId();
-                                if (pagesCache[key]) {
+
+                                if (
+                                    pagesCache[key] &&
+                                    lenght >=
+                                        ITEMS_PER_PAGE * totalPages -
+                                            ITEMS_PER_PAGE
+                                ) {
                                     setTotalPages(
                                         pagesCache[key].totalPages + 1
                                     );
@@ -99,8 +103,6 @@ const ButtonUpload = ({
                                             },
                                         };
                                     });
-                                } else {
-                                    setTotalPages((prev) => prev + 1);
                                 }
                             }
                         });
@@ -130,17 +132,17 @@ const ButtonUpload = ({
                         }
 
                         handleFolderUpload(e.target.files).then(() => {
-                            const childNodes = [
-                                ...currentNode!.getFiles(),
-                                ...currentNode!.getFolders(),
-                            ];
+                             const lenght =
+                                 currentNode.getChildrenValues().length;
 
-                            if (
-                                childNodes.length >=
-                                page * ITEMS_PER_PAGE - ITEMS_PER_PAGE
-                            ) {
+                            if (lenght >= totalPages * ITEMS_PER_PAGE) {
                                 const key = currentNode.getId();
-                                if (pagesCache[key]) {
+                                if (
+                                    pagesCache[key] &&
+                                    lenght >=
+                                        ITEMS_PER_PAGE * totalPages -
+                                            ITEMS_PER_PAGE
+                                ) {
                                     setTotalPages(
                                         pagesCache[key].totalPages + 1
                                     );
@@ -158,8 +160,6 @@ const ButtonUpload = ({
                                             },
                                         };
                                     });
-                                } else {
-                                    setTotalPages((prev) => prev + 1);
                                 }
                             }
                         });

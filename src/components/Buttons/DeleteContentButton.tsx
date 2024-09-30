@@ -1,8 +1,8 @@
 import { MdOutlineClose } from "react-icons/md";
-import { FileNode } from "../../control/TreeWrapper/FileNode.ts";
-import { FolderNode } from "../../control/TreeWrapper/FolderNode.ts";
 import ConfirmModal from "../modalWrapper/ConfirmModal.tsx";
 import { useState } from "react";
+import { FileNode } from "../../model/three/FileNode.ts";
+import { FolderNode } from "../../model/three/FolderNode.ts";
 
 const DeleteContentButton = ({
     onclick,

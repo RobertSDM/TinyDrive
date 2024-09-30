@@ -9,7 +9,7 @@ import {
 const useDeleteFileById = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const { token, user } = useUserContext();
-    const { enqueue } = useNotificationSystemContext();
+    const { addNotif: enqueue } = useNotificationSystemContext();
 
     async function fetch_(id: string) {
         setIsLoading(true);

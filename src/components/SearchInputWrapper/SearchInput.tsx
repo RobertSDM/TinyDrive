@@ -19,7 +19,7 @@ const SearchInput = () => {
         Math.floor(new Date().getTime() * Math.random()).toString()
     );
     const inputEl = useRef<HTMLInputElement>(null);
-    const [ isInputFocused, setIsInputFocused] = useState<boolean>(false);
+    const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
 
     function restartCounter() {
         clearTimeout(timer.current);

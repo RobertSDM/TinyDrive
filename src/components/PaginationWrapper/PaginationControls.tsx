@@ -10,13 +10,6 @@ const PaginationControls = ({
 }) => {
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     if (page > totalPages) {
-    //         console.log("page", page, totalPages);
-    //         setPage(totalPages);
-    //     }
-    // }, [content]);
-
     return (
         <section className="flex gap-x-2 items-center justify-end">
             <button

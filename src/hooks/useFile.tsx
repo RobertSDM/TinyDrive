@@ -60,7 +60,7 @@ export const useHandleFilesUpload = (
         token,
     } = useUserContext();
     const { currentNode, tree, setContent } = useTreeContext();
-    const { enqueue } = useNotificationSystemContext();
+    const { addNotif: enqueue } = useNotificationSystemContext();
 
     return async (files: FileList, folderId: string | null = null) => {
         try {
@@ -106,22 +106,22 @@ export const useHandleFilesUpload = (
                         userId,
                         token,
                         folderId,
-                        showNotif
+                        showNotif ? files.length === 1 : false
                     );
 
-                    const currentFolderId = currentNode?.getId() === "" && null;
+                    const currentFolderId =
+                        currentNode?.getId() === ""
+                            ? null
+                            : currentNode?.getId();
 
                     if (
                         currentFolderId === folderId ||
                         savedFile.parentId === null
                     ) {
-                        fileToFileNode(savedFile, tree, tree.getRoot());
+                        fileToFileNode(savedFile, tree, currentNode);
 
                         setContent(
-                            orderByName([
-                                ...currentNode.getFiles(),
-                                ...currentNode.getFolders(),
-                            ])
+                            orderByName(currentNode.getChildrenValues())
                         );
                     }
                 } catch (err) {
@@ -130,7 +130,15 @@ export const useHandleFilesUpload = (
                     }
                 }
             });
-            await Promise.all(filePromises);
+            Promise.all(filePromises).then(() => {
+                if (files.length > 1) {
+                    enqueue({
+                        level: NotificationLevels.INFO,
+                        msg: "All fioes have been uploaded",
+                        title: "Upload",
+                    });
+                }
+            });
         } catch (err) {
             if (files.length == 1) {
                 throw err;
