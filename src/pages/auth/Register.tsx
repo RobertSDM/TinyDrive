@@ -18,7 +18,7 @@ const Register = () => {
 
     setTitle("Sign-up | Tiny Drive");
     return (
-        <div className="h-screen pt-10 px-10 space-y-44">
+        <div className="h-screen pt-10 px-10 space-y-36">
             <section className="space-y-2 ">
                 <h1 className="text-3xl md:text-5xl font-semibold text-purple-900">
                     Register
@@ -29,7 +29,7 @@ const Register = () => {
             </section>
             <section className="flex justify-center">
                 <form
-                    className="w-96 space-y-5"
+                    className="w-96 space-y-5 flex justify-center flex-col items-center"
                     onSubmit={async (event) => {
                         event.preventDefault();
 
@@ -75,7 +75,7 @@ const Register = () => {
                         isPass={true}
                     />
 
-                    <section className="space-y-10">
+                    <section className="space-y-10 w-full text-center">
                         <button
                             disabled={isLoading}
                             type="submit"

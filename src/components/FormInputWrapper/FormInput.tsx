@@ -19,11 +19,12 @@ const FormInput = ({
     const [showPass, setShowPass] = useState<boolean>(false);
 
     return (
-        <div>
-            <p>{title}</p>
-            <div className="flex items-center gap-x-2 border border-black/50 px-2 py-1">
+        <div className="w-full">
+            <label htmlFor={`inp_${title}`}>{title}</label>
+            <div className="flex items-center gap-x-2 border border-black/50 px-2 py-1 w-full">
                 <input
-                    className="outline-none flex-grow bg-transparent"
+                    id={`inp_${title}`}
+                    className="outline-none flex-grow bg-transparent "
                     placeholder={title}
                     value={value}
                     onChange={(event) => {
@@ -35,7 +36,10 @@ const FormInput = ({
                     required
                 />
                 {isPass && (
-                    <div onClick={() => setShowPass((prev) => !prev)} className="cursor-pointer">
+                    <div
+                        onClick={() => setShowPass((prev) => !prev)}
+                        className="cursor-pointer"
+                    >
                         {showPass ? <FaRegEyeSlash /> : <FaEye />}
                     </div>
                 )}

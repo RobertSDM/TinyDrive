@@ -15,7 +15,7 @@ const Login = () => {
 
     setTitle("Login | Tiny Drive");
     return (
-        <div className="h-screen pt-10 px-10 mx-auto space-y-64">
+        <div className="h-screen pt-10 px-10 mx-auto space-y-40">
             <section className="space-y-2">
                 <h1 className="text-3xl md:text-5xl font-semibold text-purple-900">
                     Welcome Back
@@ -26,7 +26,7 @@ const Login = () => {
             </section>
             <section className="flex items-center flex-col">
                 <form
-                    className="w-96 space-y-5"
+                    className="w-96 space-y-5 flex justify-center flex-col items-center"
                     onSubmit={(event) => {
                         event.preventDefault();
 
@@ -51,7 +51,7 @@ const Login = () => {
                         title="Senha"
                         isPass={true}
                     />
-                    <section className="">
+                    <section className="space-y-10 w-full">
                         <button
                             disabled={isLoading}
                             type="submit"
@@ -63,16 +63,16 @@ const Login = () => {
                             {isLoading ? "Loading..." : "Login"}
                         </button>
                     </section>
+                    <div className="flex items-center flex-col">
+                        <p>Not signed?</p>
+                        <Link
+                            to={"/register"}
+                            className="text-blue-400 font-semibold"
+                        >
+                            Sign up
+                        </Link>
+                    </div>
                 </form>
-                <div className="flex items-center flex-col mt-10">
-                    <p>Not signed?</p>
-                    <Link
-                        to={"/register"}
-                        className="text-blue-400 font-semibold"
-                    >
-                        Sign up
-                    </Link>
-                </div>
             </section>
         </div>
     );
