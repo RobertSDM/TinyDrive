@@ -42,7 +42,7 @@ const TextModal = ({
             }}
         >
             <div
-                className={`absolute z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white border border-slate-200 p-2 rounded-md space-y-5 w-[18.7rem] h-[10.6rem] flex flex-col items-center`}
+                className={`absolute z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white border border-slate-200 py-2 px-4 rounded-md space-y-5 w-fit h-fit flex flex-col items-center`}
                 onKeyDown={(e) => {
                     if (e.key === "Enter") confirm();
                     if (e.key === "Escape") cancel();

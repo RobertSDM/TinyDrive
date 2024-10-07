@@ -57,7 +57,7 @@ export const useHandleFolderUpload = () => {
             msg: `upload started`,
             type: NotificationTypes.STATIC,
         });
-        
+
         // refers to the created folder returned from the api
         let savedFolder: IFolder;
         // refers to the current folder on the save process
@@ -168,6 +168,43 @@ export const useHandleFolderUpload = () => {
             setContent(orderByName(children));
         } catch (error: Error | any) {
             throw error;
+        }
+    };
+};
+
+export const useHandleFolderCreation = () => {
+    const { token, user } = useUserContext();
+    const { addNotif } = useNotificationSystemContext();
+    const { currentNode, tree, setContent } = useTreeContext();
+
+    return async (name: string) => {
+        name = correctName(name);
+
+        const savedFolder = await saveFolder(
+            name,
+            currentNode.getId() === "" ? null : currentNode.getId(),
+            user.id,
+            token,
+            addNotif
+        );
+
+        /*
+        Verifies if the actual folder being shown, is the parent of the folder created
+        if it is, it will be added in the tree, and shown on the screen
+        */
+
+        if (
+            currentNode?.getId() === savedFolder.folderC_id ||
+            savedFolder?.folderC_id === null
+        ) {
+            folderToFolderNode(
+                savedFolder,
+                tree,
+                currentNode?.getId() === "" ? tree.getRoot() : currentNode
+            );
+
+            const children = Object.values(currentNode.getChildren());
+            setContent(orderByName(children));
         }
     };
 };

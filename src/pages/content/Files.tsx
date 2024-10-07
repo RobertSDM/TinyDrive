@@ -29,7 +29,7 @@ const Folder = () => {
     const { isLoading, fetch_ } = useContentByFolderFetch();
 
     // save the current page + id in a cache having the totalPages as value
-    const [totalPages, setTotalPages] = useState<number>(0);
+    const [totalPages, setTotalPages] = useState<number>(1);
 
     useMemo(() => {
         setTitle(

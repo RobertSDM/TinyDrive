@@ -40,10 +40,8 @@ export const folderToFolderNode = (
         parent
     );
 
-    tree.addNode(folderNode);
-
     if (
-        parent.getId() === tree.getRoot().getId() &&
+        parent.getId() === tree.getRoot().getId() ||
         folderNode.getParentId() === null
     ) {
         tree.getRoot().addChildren(folderNode);
@@ -58,12 +56,14 @@ export const folderToFolderNode = (
         }
         // Is child?
         else if (node.getParentId() === folderNode.getId()) {
+
             node.getParent()?.removeChildren(folderNode);
             node.setParent(folderNode);
             folderNode.addChildren(node);
         }
     });
 };
+
 export function fileArrayToFileList(files: File[]): FileList {
     const dataTransfer = new DataTransfer();
 

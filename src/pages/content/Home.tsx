@@ -22,7 +22,7 @@ function Home() {
 
     const { isLoading, fetch_ } = useRootContentFetch();
 
-    const [totalPages, setTotalPages] = useState<number>(0);
+    const [totalPages, setTotalPages] = useState<number>(1);
     const { pagesCache, setPagesCache } = usePaginationContext();
 
     useMemo(() => {

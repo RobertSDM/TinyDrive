@@ -1,16 +1,13 @@
 import { ChangeEvent, useState } from "react";
-import {
-    MdExpandLess,
-    MdExpandMore,
-    MdAdd,
-} from "react-icons/md";
+import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import {
     usePaginationContext,
-    useTreeContext,
+    useTreeContext
 } from "../../context/useContext.tsx";
 import { useHandleFilesUpload } from "../../hooks/useFile.tsx";
-import { useHandleFolderUpload } from "../../hooks/useFolder.tsx";
+import { useHandleFolderCreation, useHandleFolderUpload } from "../../hooks/useFolder.tsx";
 import { ITEMS_PER_PAGE } from "../../utils/enviromentVariables.ts";
+import TextModal from "../modalWrapper/TextModal.tsx";
 
 const ButtonUpload = ({
     page,
@@ -22,14 +19,25 @@ const ButtonUpload = ({
     setTotalPages: React.Dispatch<React.SetStateAction<number>>;
 }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isFolderNameModalOpen, setIsFolderNameModalOpen] =
+        useState<boolean>(false);
+
     const { currentNode, tree } = useTreeContext();
     const { pagesCache, setPagesCache } = usePaginationContext();
+    const handleFolderCreation = useHandleFolderCreation();
 
     let handleFolderUpload = useHandleFolderUpload();
     let handleFilesUpload = useHandleFilesUpload();
 
     return (
         <div className={`inline relative ${isOpen ? "border-black/30" : ""}`}>
+            <TextModal
+                text={""}
+                isOpen={isFolderNameModalOpen}
+                setIsOpen={setIsFolderNameModalOpen}
+                title="Enter the new folder name"
+                callback={handleFolderCreation}
+            />
             <button
                 className={`items-center gap-x-2 border-purple-500 text-black border hover:bg-purple-500 w-32 hover:text-white p-2 inline-flex cursor-pointer rounded-md ${
                     isOpen && "rounded-b-none"
@@ -41,7 +49,7 @@ const ButtonUpload = ({
                     setIsOpen(false);
                 }}
             >
-                <MdAdd /> New
+                + New
                 {isOpen ? <MdExpandMore /> : <MdExpandLess />}
             </button>
             <div
@@ -154,6 +162,13 @@ const ButtonUpload = ({
                     }}
                     className="hidden"
                 />
+                <hr className="mx-auto border border-1" />
+                <label
+                    onClick={() => setIsFolderNameModalOpen((prev) => !prev)}
+                    className="hover:bg-purple-500 p-2 py-1 hover:text-white cursor-pointer w-full mx-auto inline-block text-sm"
+                >
+                    New Folder
+                </label>
             </div>
         </div>
     );
