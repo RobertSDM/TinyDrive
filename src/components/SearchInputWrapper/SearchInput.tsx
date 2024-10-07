@@ -1,5 +1,3 @@
-// import useSearchHook from "../control/searchHook.ts";
-
 import { useEffect, useRef, useState } from "react";
 import useContentSearchByName from "../../fetcher/content/useContentSeachByName.ts";
 import ButtonType from "../Buttons/ButtonType.tsx";
@@ -55,8 +53,8 @@ const SearchInput = () => {
     return (
         <div
             id={nodeId.current}
-            className={`border border-slate-300 px-4 py-1 rounded-md items-center relative w-1/2 hidden md:flex gap-x-4 min-w-[350px] ${
-                !isInputFocused
+            className={`border-slate-300 px-4 py-1 rounded-md items-center relative w-1/2 hidden md:flex gap-x-4 min-w-[350px] ${
+                searchValue.length <= limitToStartCounting
                     ? "border"
                     : "border border-b-transparent rounded-b-none"
             }`}

@@ -34,7 +34,7 @@ const Folder = () => {
     useMemo(() => {
         setTitle(
             currentNode.getName() !== "/"
-                ? `Tiny Drive | ${addThreePoints(currentNode.getName(), 16)}`
+                ? `${addThreePoints(currentNode.getName(), 16)} | Tiny Drive`
                 : "Tiny Drive"
         );
     }, [currentNode.getName()]);

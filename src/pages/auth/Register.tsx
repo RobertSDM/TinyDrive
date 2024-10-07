@@ -16,21 +16,16 @@ const Register = () => {
     const [confirmPass, setConfirmPass] = useState<string>("");
     const setTitle = useTitle();
 
-    setTitle("Tiny Drive | Sign-up");
+    setTitle("Sign-up | Tiny Drive");
     return (
-        <div className="h-screen px-4 pt-10 space-y-36">
-            <section className="space-y-4">
-                <h1 className="text-3xl md:text-7xl font-bold text-purple-900">
-                    Sign up
+        <div className="h-screen pt-10 px-10 space-y-44">
+            <section className="space-y-2 ">
+                <h1 className="text-3xl md:text-5xl font-semibold text-purple-900">
+                    Register
                 </h1>
-                <section className="pl-5">
-                    <p className="font-medium text-base md:text-xl">
-                        Sign up for the best web app to save files
-                    </p>
-                    <p className="font-medium text-base md:text-xl">
-                        "A simple and fast place to save your information
-                    </p>
-                </section>
+                <p className="text-base md:text-xl">
+                    Sign up today to a simple, secure and always on the go.
+                </p>
             </section>
             <section className="flex justify-center">
                 <form
@@ -39,14 +34,18 @@ const Register = () => {
                         event.preventDefault();
 
                         const isValid = emailPassVerification(
-                            email,
+                            email.trimEnd().toLowerCase(),
                             enqueue,
                             pass,
                             confirmPass
                         );
 
                         if (isValid) {
-                            register(email, pass, userName);
+                            register(
+                                email,
+                                pass,
+                                userName.trimEnd().toLowerCase()
+                            );
                         }
                     }}
                 >

@@ -13,21 +13,16 @@ const Login = () => {
     const { login, isLoading } = useLoginFetch();
     const setTitle = useTitle();
 
-    setTitle("Tiny Drive | Login");
+    setTitle("Login | Tiny Drive");
     return (
-        <div className="h-screen px-4 pt-10 space-y-36">
-            <section className="space-y-4">
-                <h1 className="text-3xl md:text-7xl font-bold text-purple-900">
-                    Already a member? Just log in
+        <div className="h-screen pt-10 px-10 mx-auto space-y-64">
+            <section className="space-y-2">
+                <h1 className="text-3xl md:text-5xl font-semibold text-purple-900">
+                    Welcome Back
                 </h1>
-                <section className="pl-5">
-                    <p className="font-medium text-base md:text-xl">
-                        So you're already part of Tiny Drive
-                    </p>
-                    <p className="font-medium text-base md:text-xl">
-                        Just log in, you remember your password, right?
-                    </p>
-                </section>
+                <p className="text-base md:text-xl">
+                    Just login to access your files anytime, anywhere.
+                </p>
             </section>
             <section className="flex items-center flex-col">
                 <form
@@ -35,7 +30,7 @@ const Login = () => {
                     onSubmit={(event) => {
                         event.preventDefault();
 
-                        setEmail((prev) => prev.trimEnd());
+                        setEmail((prev) => prev.trimEnd().toLowerCase());
 
                         const isValid = emailPassVerification(email, enqueue);
                         if (isValid) {

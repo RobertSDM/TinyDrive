@@ -1,5 +1,9 @@
 import { ChangeEvent, useState } from "react";
-import { MdExpandLess, MdExpandMore, MdFileUpload } from "react-icons/md";
+import {
+    MdExpandLess,
+    MdExpandMore,
+    MdAdd,
+} from "react-icons/md";
 import {
     usePaginationContext,
     useTreeContext,
@@ -25,11 +29,11 @@ const ButtonUpload = ({
     let handleFilesUpload = useHandleFilesUpload();
 
     return (
-        <div className={`inline relative ${isOpen ? "border-black/30" : ""} `}>
+        <div className={`inline relative ${isOpen ? "border-black/30" : ""}`}>
             <button
-                className={`items-center gap-x-2 border-purple-500 text-black border hover:bg-purple-500  hover:text-white p-2 inline-flex cursor-pointer rounded-md ${
+                className={`items-center gap-x-2 border-purple-500 text-black border hover:bg-purple-500 w-32 hover:text-white p-2 inline-flex cursor-pointer rounded-md ${
                     isOpen && "rounded-b-none"
-                }`}
+                } flex justify-around`}
                 onMouseEnter={() => {
                     setIsOpen(true);
                 }}
@@ -37,9 +41,8 @@ const ButtonUpload = ({
                     setIsOpen(false);
                 }}
             >
-                <MdFileUpload />
-                Upload
-                {!isOpen ? <MdExpandLess /> : <MdExpandMore />}
+                <MdAdd /> New
+                {isOpen ? <MdExpandMore /> : <MdExpandLess />}
             </button>
             <div
                 onMouseOver={() => {
@@ -54,9 +57,9 @@ const ButtonUpload = ({
             >
                 <label
                     htmlFor="fileUploadBtn"
-                    className="hover:bg-purple-500 px-2 py-1 hover:text-white cursor-pointer w-full mx-auto inline-block"
+                    className="hover:bg-purple-500 p-2 py-1 hover:text-white cursor-pointer w-full inline-block text-sm"
                 >
-                    File
+                    Upload File
                 </label>
                 <input
                     id="fileUploadBtn"
@@ -104,9 +107,9 @@ const ButtonUpload = ({
                 <hr className="w-4/5 mx-auto" />
                 <label
                     htmlFor="folderUploadBtn"
-                    className="hover:bg-purple-500 px-2 py-1 hover:text-white cursor-pointer w-full mx-auto inline-block"
+                    className="hover:bg-purple-500 p-2 py-1 hover:text-white cursor-pointer w-full mx-auto inline-block text-sm"
                 >
-                    Folder
+                    Upload Folder
                 </label>
                 <input
                     id="folderUploadBtn"
