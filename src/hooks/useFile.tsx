@@ -63,14 +63,14 @@ export const useHandleFilesUpload = (
     const { addNotif: enqueue } = useNotificationSystemContext();
 
     return async (files: FileList, folderId: string | null = null) => {
-        if (files.length > 1) {
+        if (showNotif) {
             enqueue({
                 level: NotificationLevels.INFO,
                 msg: `upload started`,
                 type: NotificationTypes.STATIC,
             });
         }
-        
+
         try {
             const filePromises = Array.from(files).map(async (file) => {
                 let [name, ...rest] = file.name.split(".");
@@ -112,8 +112,7 @@ export const useHandleFilesUpload = (
                         fileReader.total,
                         userId,
                         token,
-                        folderId,
-                        showNotif ? files.length === 1 : false
+                        folderId
                     );
 
                     const currentFolderId =
@@ -138,13 +137,11 @@ export const useHandleFilesUpload = (
                 }
             });
             Promise.all(filePromises).then(() => {
-                if (files.length > 1) {
-                    enqueue({
-                        level: NotificationLevels.INFO,
-                        type: NotificationTypes.STATIC,
-                        msg: "All fioes have been uploaded",
-                    });
-                }
+                enqueue({
+                    level: NotificationLevels.INFO,
+                    type: NotificationTypes.DYNAMIC,
+                    msg: "All fioes have been uploaded",
+                });
             });
         } catch (err) {
             if (files.length == 1) {

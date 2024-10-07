@@ -1,5 +1,5 @@
 import { IFile } from "./../../types/types.js";
-import { NotificationLevels, NotificationTypes } from "../../types/enums.ts";
+import { NotificationLevels } from "../../types/enums.ts";
 import { INotification } from "../../types/types.js";
 import { beAPI } from "../../utils/enviromentVariables.ts";
 
@@ -12,7 +12,6 @@ const saveFile = async (
     userId: string,
     token: string,
     folderId: string | null = null,
-    showNotif: boolean = true
 ): Promise<IFile> => {
     const body = {
         byteData,
@@ -24,30 +23,12 @@ const saveFile = async (
     };
 
     try {
-        if (showNotif) {
-            enqueue({
-                level: NotificationLevels.INFO,
-                msg: `upload started`,
-                type: NotificationTypes.STATIC,
-            });
-        }
-
         const res = await beAPI.post("/file/save", body, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
 
-        if (res.status === 200) {
-            if (showNotif) {
-                enqueue({
-                    level: NotificationLevels.INFO,
-                    msg: `saved with success`,
-                    type: NotificationTypes.STATIC,
-                    special: res.data.data.name,
-                });
-            }
-        }
         return res.data.data;
     } catch (err: any) {
         if (err.response) {
@@ -58,7 +39,8 @@ const saveFile = async (
         } else {
             enqueue({
                 level: NotificationLevels.ERROR,
-                msg: `Error while saving the file`,
+                msg: `error while saving`,
+                special: name
             });
         }
 

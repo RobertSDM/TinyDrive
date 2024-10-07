@@ -76,34 +76,26 @@ const ButtonUpload = ({
                         ).then(() => {
                             const lenght =
                                 currentNode.getChildrenValues().length;
+                            const key = currentNode.getId();
 
-                            if (lenght >= totalPages * ITEMS_PER_PAGE) {
-                                const key = currentNode.getId();
+                            if (
+                                lenght > totalPages * ITEMS_PER_PAGE &&
+                                pagesCache[key]
+                            ) {
+                                setTotalPages(pagesCache[key].totalPages + 1);
 
-                                if (
-                                    pagesCache[key] &&
-                                    lenght >=
-                                        ITEMS_PER_PAGE * totalPages -
-                                            ITEMS_PER_PAGE
-                                ) {
-                                    setTotalPages(
-                                        pagesCache[key].totalPages + 1
-                                    );
+                                setPagesCache((prev) => {
+                                    prev[key].loadedPages.push(page);
 
-                                    setPagesCache((prev) => {
-                                        prev[key].loadedPages.push(page);
-
-                                        return {
-                                            ...prev,
-                                            [key]: {
-                                                loadedPages:
-                                                    prev[key].loadedPages,
-                                                totalPages:
-                                                    prev[key].totalPages + 1,
-                                            },
-                                        };
-                                    });
-                                }
+                                    return {
+                                        ...prev,
+                                        [key]: {
+                                            loadedPages: prev[key].loadedPages,
+                                            totalPages:
+                                                prev[key].totalPages + 1,
+                                        },
+                                    };
+                                });
                             }
                         });
                     }}
@@ -134,33 +126,26 @@ const ButtonUpload = ({
                         handleFolderUpload(e.target.files).then(() => {
                             const lenght =
                                 currentNode.getChildrenValues().length;
+                            const key = currentNode.getId();
 
-                            if (lenght >= totalPages * ITEMS_PER_PAGE) {
-                                const key = currentNode.getId();
-                                if (
-                                    pagesCache[key] &&
-                                    lenght >=
-                                        ITEMS_PER_PAGE * totalPages -
-                                            ITEMS_PER_PAGE
-                                ) {
-                                    setTotalPages(
-                                        pagesCache[key].totalPages + 1
-                                    );
+                            if (
+                                lenght > totalPages * ITEMS_PER_PAGE &&
+                                pagesCache[key]
+                            ) {
+                                setTotalPages(pagesCache[key].totalPages + 1);
 
-                                    setPagesCache((prev) => {
-                                        prev[key].loadedPages.push(page);
+                                setPagesCache((prev) => {
+                                    prev[key].loadedPages.push(page);
 
-                                        return {
-                                            ...prev,
-                                            [key]: {
-                                                loadedPages:
-                                                    prev[key].loadedPages,
-                                                totalPages:
-                                                    prev[key].totalPages + 1,
-                                            },
-                                        };
-                                    });
-                                }
+                                    return {
+                                        ...prev,
+                                        [key]: {
+                                            loadedPages: prev[key].loadedPages,
+                                            totalPages:
+                                                prev[key].totalPages + 1,
+                                        },
+                                    };
+                                });
                             }
                         });
                     }}

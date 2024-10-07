@@ -166,11 +166,6 @@ export const useHandleFolderUpload = () => {
             await Promise.all(filesPromise);
             const children = Object.values(currentFolderNode.getChildren());
             setContent(orderByName(children));
-
-            enqueue({
-                level: NotificationLevels.INFO,
-                msg: "Folder created successfully",
-            });
         } catch (error: Error | any) {
             throw error;
         }
