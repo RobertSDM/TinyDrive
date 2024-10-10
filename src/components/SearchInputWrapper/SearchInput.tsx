@@ -54,7 +54,7 @@ const SearchInput = () => {
         <div
             id={nodeId.current}
             className={`border-slate-300 px-4 py-1 rounded-md items-center relative w-1/2 hidden md:flex gap-x-4 min-w-[350px] ${
-                searchValue.length <= limitToStartCounting
+                searchValue.length <= limitToStartCounting || !isInputFocused
                     ? "border"
                     : "border border-b-transparent rounded-b-none"
             }`}
