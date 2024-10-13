@@ -67,7 +67,7 @@ export const useHandleFilesUpload = (
             enqueue({
                 level: NotificationLevels.INFO,
                 msg: `upload started`,
-                type: NotificationTypes.STATIC,
+                type: NotificationTypes.DYNAMIC,
             });
         }
 
@@ -140,7 +140,7 @@ export const useHandleFilesUpload = (
                 enqueue({
                     level: NotificationLevels.INFO,
                     type: NotificationTypes.DYNAMIC,
-                    msg: "All fioes have been uploaded",
+                    msg: "All files have been uploaded",
                 });
             });
         } catch (err) {

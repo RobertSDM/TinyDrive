@@ -16,7 +16,7 @@ const ButtonType = ({
 
     return (
         <div
-            className={`border px-2 text-center rounded-md border-slate-300 w-20 relative cursor-pointer ${
+            className={`border px-2 text-center rounded-md border-slate-300 w-20 relative cursor-pointer z-[60] ${
                 isOpen && "border-b-transparent rounded-b-none"
             }`}
             onClick={() => setIsOpen((prev) => !prev)}
@@ -35,7 +35,8 @@ const ButtonType = ({
             >
                 <span
                     className="hover:bg-purple-50 cursor-pointer"
-                    onClick={() => {
+                    onClick={(e) => {
+                        e.stopPropagation();
                         changeType(null);
                     }}
                 >

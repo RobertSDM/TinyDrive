@@ -35,6 +35,8 @@ const SearchInput = () => {
                 if (nodeId.current === (e.target as Node).parentElement!.id) {
                     return;
                 }
+
+                
                 inputEl.current?.blur();
                 setIsInputFocused(false);
             });
@@ -97,7 +99,7 @@ const SearchInput = () => {
             />
             <div
                 id={nodeId.current}
-                className={`top-full -left-[1px]  border-slate-300 border rounded-b-md bg-white absolute  ${
+                className={`top-full -left-[1px]  border-slate-300 border rounded-b-md bg-white absolute z-50 space-y-2 py-2 max-h-40 overflow-y-scroll ${
                     isInputFocused && searchValue.length > limitToStartCounting
                         ? "flex"
                         : "hidden"
