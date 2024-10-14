@@ -30,7 +30,7 @@ export const UserProvider = ({ children }: { children: ReactElement }) => {
     }
 
     function save_token(token: string) {
-        const dayToExpire = 1;
+        const dayToExpire = 14;
         const date = new Date();
         date.setTime(date.getTime() + dayToExpire * 24 * 60 * 60 * 1000);
 
