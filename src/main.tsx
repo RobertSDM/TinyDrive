@@ -1,13 +1,9 @@
+import { AuthLayout, Login, Register } from "@auth/auth.ts";
+import { ContentLayout, Folder, Home } from "@drive/drive.ts";
 import ReactDOM from "react-dom/client";
-import Home from "./pages/content/Home.tsx";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import "./index.css";
-import Files from "./pages/content/Files.tsx";
-import AuthLayout from "./pages/layouts/AuthLayout.tsx";
-import Register from "./pages/auth/Register.tsx";
-import ContentLayout from "./pages/layouts/ContentLayout.tsx";
-import Login from "./pages/auth/Login.tsx";
 import { UserProvider } from "./context/UserContext.tsx";
+import "./index.css";
 
 const router = createBrowserRouter([
     {
@@ -23,7 +19,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: "/folder/:id",
-                        element: <Files />,
+                        element: <Folder />,
                     },
                 ],
             },

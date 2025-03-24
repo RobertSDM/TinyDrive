@@ -5,6 +5,12 @@
         "lib": ["ES6", "DOM", "DOM.Iterable",  "ES2021.String"],
         "module": "NodeNext",
         "skipLibCheck": true,
+        "paths": {
+            "@/*": ["./src/*"],
+            "@rootComponents/*": ["./src/components/*"],
+            "@auth/*": ["./src/modules/auth/*"],
+            "@drive/*": ["./src/modules/drive/*"],
+        },
 
         /* Bundler mode */
         "moduleResolution": "NodeNext",

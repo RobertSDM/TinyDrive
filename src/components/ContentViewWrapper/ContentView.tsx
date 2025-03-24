@@ -1,8 +1,8 @@
-import { FileNode } from "../../model/three/FileNode.ts";
-import { FolderNode } from "../../model/three/FolderNode.ts";
 import { ITEMS_PER_PAGE } from "../../utils/enviromentVariables.ts";
-import PaginationControls from "../PaginationWrapper/PaginationControls.tsx";
+import PaginationControls from "../../modules/drive/components/PaginationWrapper/PaginationControls.tsx";
 import ContentRow from "./ContentRow.tsx";
+import { FolderNode } from "../../utils/three/FolderNode.ts";
+import { FileNode } from "../../utils/three/FileNode.ts";
 
 const ContentView = ({
     content,

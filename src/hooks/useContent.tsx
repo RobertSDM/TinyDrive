@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import updateFileName from "../fetcher/file/updateFileName.ts";
-import updateFolderName from "../fetcher/folder/updateFolderName.ts";
+import updateFolderName from "../modules/drive/requests/folder/updateFolderName.ts";
 import { ITEMS_PER_PAGE } from "../utils/enviromentVariables.ts";
 import { orderByName } from "../utils/filterFunctions.ts";
 import isFile from "../utils/isFile.ts";
@@ -11,10 +10,11 @@ import {
     useTreeContext,
     useUserContext,
 } from "../context/useContext.tsx";
-import { useFileDownload } from "./useFile.tsx";
-import { useFolderDownload } from "./useFolder.tsx";
-import { FolderNode } from "../model/three/FolderNode.ts";
-import { FileNode } from "../model/three/FileNode.ts";
+import { useFileDownload } from "../modules/drive/hooks/useFile.tsx";
+import { useFolderDownload } from "../modules/drive/components/ButtonWrapper/useFolder.tsx";
+import { FolderNode } from "../utils/three/FolderNode.ts";
+import { FileNode } from "../utils/three/FileNode.ts";
+import updateFileName from "../modules/drive/requests/file/updateFileName.ts";
 
 export const useDeleteContent = (
     item: FileNode | FolderNode,

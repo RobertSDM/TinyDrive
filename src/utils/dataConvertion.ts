@@ -1,7 +1,7 @@
-import { FileNode } from "../model/three/FileNode.ts";
-import { FolderNode } from "../model/three/FolderNode.ts";
-import { Tree } from "../model/three/Tree.ts";
 import type { IFile, IFolder } from "../types/types.js";
+import { FileNode } from "./three/FileNode.ts";
+import { FolderNode } from "./three/FolderNode.ts";
+import { Tree } from "./three/Tree.ts";
 
 export const convertArrayBufferToBase64 = (byteData: ArrayBuffer): string => {
     return btoa(

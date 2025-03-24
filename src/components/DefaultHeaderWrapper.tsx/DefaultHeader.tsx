@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useUserContext } from "../../context/useContext.tsx";
 import { addThreePoints, toTitleCase } from "../../utils/dataConvertion.ts";
-import SearchInput from "../SearchInputWrapper/SearchInput.tsx";
+import SearchInput from "../../modules/drive/components/SearchInputWrapper/SearchInput.tsx";
 
 const DefaultHeader = () => {
     const { logoutUser, user } = useUserContext();
