@@ -1,23 +1,23 @@
 import { useRef, useState } from "react";
 import { FaFile } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import useDeleteFileById from "../../fetcher/file/useDeleteFileById.ts";
-import useDeleteFolderById from "../../fetcher/folder/useDeleteFolderbyId.ts";
+import useDeleteFolderById from "../../modules/drive/requests/folder/useDeleteFolderbyId.ts";
 import {
     useDeleteContent,
     useDownloadContent,
     useEditContentName,
 } from "../../hooks/useContent.tsx";
 import isFile from "../../utils/isFile.ts";
-import ButtonPopup from "../Buttons/ButtonPopup.tsx";
-import DeleteContentButton from "../Buttons/DeleteContentButton.tsx";
-import DownloadButton from "../Buttons/DownloadButton.tsx";
-import EditButton from "../Buttons/EditButton.tsx";
-import ConfirmModal from "../modalWrapper/ConfirmModal.tsx";
-import TextModal from "../modalWrapper/TextModal.tsx";
+import ButtonPopup from "../ButtonWrapper/ButtonPopup.tsx";
+import DeleteContentButton from "../../modules/drive/components/ButtonWrapper/DeleteContentButton.tsx";
+import DownloadButton from "../../modules/drive/components/ButtonWrapper/DownloadButton.tsx";
+import EditButton from "../../modules/drive/components/ButtonWrapper/EditButton.tsx";
+import ConfirmModal from "../ModalWrapper/ConfirmModal.tsx";
+import TextModal from "../ModalWrapper/TextModal.tsx";
 import { FaFolderClosed } from "react-icons/fa6";
-import { FolderNode } from "../../model/three/FolderNode.ts";
-import { FileNode } from "../../model/three/FileNode.ts";
+import useDeleteFileById from "../../modules/drive/requests/file/useDeleteFileById.ts";
+import { FolderNode } from "../../utils/three/FolderNode.ts";
+import { FileNode } from "../../utils/three/FileNode.ts";
 
 const ContentRow = ({
     item,
