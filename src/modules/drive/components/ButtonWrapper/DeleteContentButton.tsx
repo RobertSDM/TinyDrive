@@ -1,5 +1,5 @@
 import { MdOutlineClose } from "react-icons/md";
-import ConfirmModal from "../../../../components/ModalWrapper/ConfirmModal.tsx";
+import ConfirmModal from "../../../../components/modalWrapper/ConfirmModal.tsx";
 import { useState } from "react";
 import { FolderNode } from "@/utils/three/FolderNode.ts";
 import { FileNode } from "@/utils/three/FileNode.ts";

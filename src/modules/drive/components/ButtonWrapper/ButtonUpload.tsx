@@ -7,11 +7,11 @@ import {
 import { useHandleFilesUpload } from "../../hooks/useFile.tsx";
 
 import { ITEMS_PER_PAGE } from "../../../../utils/enviromentVariables.ts";
-import TextModal from "../../../../components/ModalWrapper/TextModal.tsx";
 import {
     useHandleFolderCreation,
     useHandleFolderUpload,
 } from "./useFolder.tsx";
+import TextModal from "@/components/modalWrapper/TextModal.tsx";
 
 const ButtonUpload = ({
     page,

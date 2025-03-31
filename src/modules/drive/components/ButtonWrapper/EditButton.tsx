@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MdEdit } from "react-icons/md";
-import TextModal from "../../../../components/ModalWrapper/TextModal.tsx";
+import TextModal from "../../../../components/modalWrapper/TextModal.tsx";
 
 const EditButton = ({
     onclick,
