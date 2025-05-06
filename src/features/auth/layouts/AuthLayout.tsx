@@ -2,6 +2,7 @@ import Notifications from "@/shared/components/NotificationsWrapper/Notification
 import { useUserContext } from "@/shared/context/useContext.tsx";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+
 const AuthLayout = () => {
     const { isLogged, getAuthToken: findUserToken } = useUserContext();
     const navigate = useNavigate();

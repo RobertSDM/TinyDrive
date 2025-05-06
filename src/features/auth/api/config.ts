@@ -1,4 +1,4 @@
-import { RequestConfig } from "@/shared/types/types.ts";
+import { RequestConfig } from "@/shared/types/index.ts";
 
 export const registerConfig: RequestConfig = {
     path: "/auth/register",

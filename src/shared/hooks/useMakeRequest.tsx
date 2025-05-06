@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Client, RequestConfig } from "../types/types.ts";
+import { Client, RequestConfig } from "../types/index.ts";
 import { AxiosError } from "axios";
 
 export default function useMakeRequest<T>(

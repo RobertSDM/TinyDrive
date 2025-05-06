@@ -1,11 +1,9 @@
+import Footer from "@/shared/components/FooterWrapper/Footer.tsx";
+import Notifications from "@/shared/components/NotificationsWrapper/Notifications.tsx";
+import { useUserContext } from "@/shared/context/useContext.tsx";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { PaginationProvider } from "../context/paginationSave.tsx";
 import DriveHeader from "../components/DefaultHeaderWrapper.tsx/DriveHeader.tsx";
-import { useUserContext } from "@/shared/context/useContext.tsx";
-import Notifications from "@/shared/components/NotificationsWrapper/Notifications.tsx";
-import { TreeProvider } from "@/shared/context/TreeContext.tsx";
-import Footer from "@/shared/components/FooterWrapper/Footer.tsx";
 
 const DriveLayout = () => {
     const { isLogged, logoutUser, logUser, getAuthToken } = useUserContext();
@@ -31,11 +29,7 @@ const DriveLayout = () => {
         <>
             <Notifications />
             <DriveHeader />
-            <TreeProvider>
-                <PaginationProvider>
-                    <Outlet />
-                </PaginationProvider>
-            </TreeProvider>
+            <Outlet />
             <Footer />
         </>
     );

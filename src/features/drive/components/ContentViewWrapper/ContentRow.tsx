@@ -1,6 +1,6 @@
 import ButtonPopup from "@/shared/components/ButtonWrapper/ButtonPopup.tsx";
 import { ItemType } from "@/shared/types/enums.ts";
-import { Item } from "@/shared/types/types.ts";
+import { Item } from "@/shared/types/index.ts";
 import { useRef, useState } from "react";
 import { FaFile } from "react-icons/fa";
 import { FaFolderClosed } from "react-icons/fa6";
@@ -91,7 +91,7 @@ const ContentRow = ({ item }: { item: Item }) => {
                             <section>
                                 <span className="font-medium text-sm">
                                     - {item.size}
-                                    {item.sizePrefix}
+                                    {item.size_prefix}
                                 </span>
                             </section>
                         )}

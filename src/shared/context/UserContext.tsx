@@ -1,5 +1,5 @@
 import { ReactElement, createContext, useRef, useState } from "react";
-import { User } from "../types/types.ts";
+import { User } from "../types/index.ts";
 import { TOKEN_NAME } from "../utils/globalVariables.ts";
 
 type context = {

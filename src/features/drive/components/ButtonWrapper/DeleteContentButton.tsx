@@ -1,7 +1,5 @@
 import { MdOutlineClose } from "react-icons/md";
 import { useState } from "react";
-import { FolderNode } from "@/shared/utils/three/FolderNode.ts";
-import { FileNode } from "@/shared/utils/three/FileNode.ts";
 import ConfirmModal from "@/shared/components/ModalWrapper/ConfirmModal.tsx";
 
 const DeleteContentButton = ({
@@ -9,7 +7,6 @@ const DeleteContentButton = ({
     className = "",
 }: {
     onclick: () => Promise<void>;
-    item: FileNode | FolderNode;
     className?: string;
 }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);

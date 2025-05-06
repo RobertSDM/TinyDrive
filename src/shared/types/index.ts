@@ -6,7 +6,7 @@ export type Item = {
     name: string;
     extension: string;
     size: number;
-    sizePrefix: number;
+    size_prefix: number;
     type: ItemType;
     path: string;
 };

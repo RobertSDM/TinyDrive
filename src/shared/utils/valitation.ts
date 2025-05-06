@@ -1,5 +1,5 @@
 import { NotificationLevels } from "../types/enums.ts";
-import { INotification } from "../types/types.js";
+import { INotification } from "../types/index.ts";
 import { EMAIL_REGEX } from "./globalVariables.ts";
 
 export const correctName = (name: string) => {

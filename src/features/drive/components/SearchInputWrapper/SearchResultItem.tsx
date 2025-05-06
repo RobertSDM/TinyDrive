@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { FaFile, FaFolderClosed } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import DownloadButton from "../ButtonWrapper/DownloadButton.tsx";
-import { TSeachFile, TSearchFolder } from "@/shared/types/types.ts";
+import { TSeachFile, TSearchFolder } from "@/shared/types/index.ts";
 import { useDownloadContent } from "@/shared/hooks/useContent.tsx";
 
 const isFile = (item: TSeachFile | TSearchFolder) => {

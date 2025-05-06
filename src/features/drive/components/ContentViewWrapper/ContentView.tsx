@@ -1,4 +1,4 @@
-import { Item } from "@/shared/types/types.ts";
+import { Item } from "@/shared/types/index.ts";
 import ContentRow from "./ContentRow.tsx";
 
 type ItemsViewProps = {

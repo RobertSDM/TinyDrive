@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { MdOutlineClose } from "react-icons/md";
 import { useNotificationSystemContext } from "../../context/useContext.tsx";
 import { NotificationLevels, NotificationTypes } from "../../types/enums.ts";
-import { addThreePoints } from "../../utils/dataConvertion.ts";
 
 const Notifications = () => {
     const { removeNotif, currentOne } = useNotificationSystemContext();
@@ -49,11 +48,7 @@ const Notifications = () => {
                         <div>
                             <span className={`text-white space-x-2`}>
                                 {currentOne.special && (
-                                    <span className="font-semibold">
-                                        "
-                                        {addThreePoints(currentOne.special, 30)}
-                                        "
-                                    </span>
+                                    <span className="font-semibold">" "</span>
                                 )}
                             </span>
                             <span className="text-white">

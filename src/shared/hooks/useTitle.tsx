@@ -1,14 +1,9 @@
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 
 const useTitle = () => {
-    const title = useRef<string>("");
-
-    const updateTitle = useCallback((txt: string) => {
-        title.current = txt;
-        document.title = title.current;
+    return useCallback((txt: string) => {
+        document.title = txt;
     }, []);
-
-    return updateTitle;
 };
 
 export default useTitle;
