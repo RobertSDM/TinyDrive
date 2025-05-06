@@ -1,30 +1,27 @@
-import { AuthLayout, Login, Register } from "@auth/auth.ts";
-import { ContentLayout, Folder, Home } from "@drive/drive.ts";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { UserProvider } from "./context/UserContext.tsx";
 import "./index.css";
+import AuthLayout from "./features/auth/layouts/AuthLayout.tsx";
+import Login from "./features/auth/pages/Login.tsx";
+import Register from "./features/auth/pages/Register.tsx";
+import DriveLayout from "./features/drive/layouts/DriveLayout.tsx";
+import Drive from "./features/drive/pages/Drive.tsx";
+import { NotificationProvider } from "./shared/context/NotificationSystem.tsx";
+import { UserProvider } from "./shared/context/UserContext.tsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
         children: [
-            /// Content Layout [START]
             {
-                element: <ContentLayout />,
+                element: <DriveLayout />,
                 children: [
                     {
-                        index: true,
-                        element: <Home />,
-                    },
-                    {
-                        path: "/folder/:id",
-                        element: <Folder />,
+                        path: "/drive",
+                        element: <Drive />,
                     },
                 ],
             },
-            /// Content Layout [END]
-            /// Auth Layout [START]
             {
                 element: <AuthLayout />,
                 children: [
@@ -38,17 +35,18 @@ const router = createBrowserRouter([
                     },
                 ],
             },
-            /// Auth Layout [END]
         ],
     },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     // <React.StrictMode>
-    <UserProvider>
-        <main className="w-[100vw] h-[100dvh]">
-            <RouterProvider router={router} />
-        </main>
-    </UserProvider>
+    <NotificationProvider>
+        <UserProvider>
+            <section className="w-[100vw] h-[100dvh]">
+                <RouterProvider router={router} />
+            </section>
+        </UserProvider>
+    </NotificationProvider>
     // </React.StrictMode>
 );
