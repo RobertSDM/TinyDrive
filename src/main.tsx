@@ -41,12 +41,12 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     // <React.StrictMode>
-    <NotificationProvider>
-        <UserProvider>
-            <section className="w-[100vw] h-[100dvh]">
+    <section className="w-[100vw] h-[100dvh]">
+        <NotificationProvider>
+            <UserProvider>
                 <RouterProvider router={router} />
-            </section>
-        </UserProvider>
-    </NotificationProvider>
+            </UserProvider>
+        </NotificationProvider>
+    </section>
     // </React.StrictMode>
 );

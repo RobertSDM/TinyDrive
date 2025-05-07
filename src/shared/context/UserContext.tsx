@@ -5,7 +5,7 @@ import { TOKEN_NAME } from "../utils/globalVariables.ts";
 type context = {
     isLogged: boolean;
     token: string;
-    logUser: (user: User, token: string) => void;
+    userLogin: (user: User, token: string) => void;
     logoutUser: () => void;
     getAuthToken: () => string | null;
     user: User;
@@ -54,7 +54,7 @@ export const UserProvider = ({ children }: { children: ReactElement }) => {
         document.cookie = `${TOKEN_NAME}=; ${date.toUTCString()};`;
     }
 
-    function logUser(user: User, res_token: string) {
+    function userLogin(user: User, res_token: string) {
         storeToken(res_token);
         saveUser(user);
         storedUser.current = JSON.parse(
@@ -76,7 +76,7 @@ export const UserProvider = ({ children }: { children: ReactElement }) => {
             value={{
                 isLogged,
                 token: token.current,
-                logUser,
+                userLogin,
                 logoutUser,
                 getAuthToken,
                 user: storedUser.current,

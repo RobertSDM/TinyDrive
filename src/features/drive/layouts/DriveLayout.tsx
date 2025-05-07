@@ -6,7 +6,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import DriveHeader from "../components/DefaultHeaderWrapper.tsx/DriveHeader.tsx";
 
 const DriveLayout = () => {
-    const { isLogged, logoutUser, logUser, getAuthToken } = useUserContext();
+    const { isLogged, logoutUser, userLogin, getAuthToken } = useUserContext();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -17,7 +17,7 @@ const DriveLayout = () => {
             logoutUser();
             navigate("/login");
         } else {
-            logUser(JSON.parse(user!), token!);
+            userLogin(JSON.parse(user!), token!);
         }
     }, [isLogged]);
 

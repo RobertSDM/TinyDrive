@@ -1,11 +1,10 @@
 import ButtonPopup from "@/shared/components/ButtonWrapper/ButtonPopup.tsx";
 import { ItemType } from "@/shared/types/enums.ts";
 import { Item } from "@/shared/types/index.ts";
-import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 const ContentRow = ({ item }: { item: Item }) => {
-    const [rowDeleteId, setRowDeleteId] = useState<string>("");
+    // const [rowDeleteId, setRowDeleteId] = useState<string>("");
 
     // const { fetch_: deleteFileById, isLoading: isDeletingFile } =
     //     useDeleteFileById();
@@ -19,7 +18,7 @@ const ContentRow = ({ item }: { item: Item }) => {
     //     deleteFileById,
     //     deleteFolderById
     // );
-    const isDownloading = useRef<boolean>(false);
+    // const isDownloading = useRef<boolean>(false);
     // const downloadContent = useDownloadContent(
     //     item.getId(),
     //     item.getName(),
@@ -27,8 +26,8 @@ const ContentRow = ({ item }: { item: Item }) => {
     //     isFile(item)
     // );
 
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+    // const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    // const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
 
     return (
         <section
@@ -122,13 +121,13 @@ const ContentRow = ({ item }: { item: Item }) => {
                     {
                         name: "Rename",
                         callback: () => {
-                            setIsRenameModalOpen(true);
+                            // setIsRenameModalOpen(true);
                         },
                     },
                     {
                         name: "Delete",
                         callback: () => {
-                            setIsDeleteModalOpen(true);
+                            // setIsDeleteModalOpen(true);
                         },
                     },
                 ]}

@@ -1,4 +1,4 @@
-import { AxiosInstance, RawAxiosRequestHeaders, ResponseType } from "axios";
+import { AxiosInstance } from "axios";
 import {
     HTTPMethods,
     ItemType,
@@ -14,6 +14,14 @@ export type Item = {
     size_prefix: number;
     type: ItemType;
     path: string;
+    update_date: number;
+    creation_data: number;
+};
+
+export type User = {
+    id: string;
+    username: string;
+    email: string;
 };
 
 export type Client = AxiosInstance;
@@ -27,17 +35,28 @@ export type RequestConfig = {
     };
 };
 
-export type RequestParam = {
-    responseType?: ResponseType;
-    params?: [{ param: string }];
-    body?: string | Object;
-    headers?: RawAxiosRequestHeaders;
+export type DefaultResponse = {
+    error?: {
+        message: string;
+    };
+    success: boolean;
 };
 
-export type RequestHookParam = {
-    path: string;
-    method: string;
+export type ListResponse<T> = DefaultResponse & {
+    data: T[] | null;
+    count: number;
 };
+
+export type SingleResponse<T> = DefaultResponse & {
+    data: T | null;
+};
+
+export type AuthResponse = SingleResponse<User> & {
+    token: string;
+};
+
+export type ListItemResponse = ListResponse<Item> & {};
+export type SingleItemResponse = SingleResponse<Item> & {};
 
 export interface INotification {
     level: NotificationLevels;
@@ -46,12 +65,6 @@ export interface INotification {
     msg: string;
     special?: string;
 }
-
-export type User = {
-    id: string;
-    userName: string;
-    email: string;
-};
 
 export type TSeachFile = {
     id: string;

@@ -7,17 +7,24 @@ import { emailPassVerification } from "@/shared/utils/valitation.ts";
 import { NotificationLevels } from "@/shared/types/enums.ts";
 import useMakeRequest from "@/shared/hooks/useMakeRequest.tsx";
 import { registerConfig } from "../api/config.ts";
-import { defaultClient } from "@/shared/api/clients.ts";
+import { DefaultClient } from "@/shared/api/clients.ts";
 
 const Register = () => {
     const { addNotif } = useNotificationSystemContext();
-    const [userName, setUserName] = useState<string>("");
+    const [username, setUsername] = useState<string>("");
     const [email, setEmail] = useState<string>("");
-    const [pass, setPass] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
     const [confirmPass, setConfirmPass] = useState<string>("");
     const { makeRequest, isLoading, error } = useMakeRequest(
-        registerConfig,
-        defaultClient
+        {
+            ...registerConfig,
+            body: {
+                email,
+                password,
+                username,
+            },
+        },
+        DefaultClient
     );
     const navigate = useNavigate();
     const setTitle = useTitle();
@@ -51,16 +58,12 @@ const Register = () => {
                         const isValid = emailPassVerification(
                             email.trimEnd().toLowerCase(),
                             addNotif,
-                            pass,
+                            password,
                             confirmPass
                         );
 
                         if (isValid) {
-                            makeRequest({
-                                email,
-                                password: pass,
-                                username: userName,
-                            }).then((error) => {
+                            makeRequest().then((error) => {
                                 if (!error) {
                                     addNotif({
                                         level: NotificationLevels.INFO,
@@ -73,8 +76,8 @@ const Register = () => {
                     }}
                 >
                     <FormInput
-                        value={userName}
-                        setValue={setUserName}
+                        value={username}
+                        setValue={setUsername}
                         title="Nome Usuário"
                         inputMinLength={4}
                     />
@@ -86,8 +89,8 @@ const Register = () => {
                         inputMinLength={4}
                     />
                     <FormInput
-                        value={pass}
-                        setValue={setPass}
+                        value={password}
+                        setValue={setPassword}
                         title="Senha"
                         isPass={true}
                     />

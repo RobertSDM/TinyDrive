@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import SearchResultItem from "./SearchResultItem.tsx";
-import { DELAY_TO_SEARCH_CONTENT } from "@/shared/utils/globalVariables.ts";
 import ButtonType from "@/shared/components/ButtonWrapper/ButtonType.tsx";
 
 const SearchInput = () => {
@@ -22,11 +20,11 @@ const SearchInput = () => {
         clearTimeout(timer.current);
     }
 
-    async function startCounting(value: string) {
-        timer.current = setTimeout(() => {
-            // fetch_(value, contentType);
-        }, DELAY_TO_SEARCH_CONTENT);
-    }
+    // async function startCounting(value: string) {
+    //     timer.current = setTimeout(() => {
+    //         // fetch_(value, contentType);
+    //     }, DELAY_TO_SEARCH_CONTENT);
+    // }
 
     useEffect(() => {
         if (searchValue.length > limitToStartCounting) {
@@ -76,7 +74,7 @@ const SearchInput = () => {
                     restartCounter();
                     if (e.target.value.length > limitToStartCounting) {
                         // setIsLoading(true);
-                        startCounting(e.target.value);
+                        // startCounting(e.target.value);
                     }
                 }}
                 value={searchValue}

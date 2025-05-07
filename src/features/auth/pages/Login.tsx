@@ -10,38 +10,28 @@ import useTitle from "@/shared/hooks/useTitle.tsx";
 import { emailPassVerification } from "@/shared/utils/valitation.ts";
 import useMakeRequest from "@/shared/hooks/useMakeRequest.tsx";
 import { loginConfig } from "../api/config.ts";
-import { defaultClient } from "@/shared/api/clients.ts";
-
-type responseLoginAPI = {
-    data: {
-        user: {
-            id: string;
-            userName: string;
-            email: string;
-        };
-    };
-    token: string;
-};
+import { DefaultClient } from "@/shared/api/clients.ts";
+import { AuthResponse } from "@/shared/types/index.ts";
 
 const Login = () => {
     const { addNotif } = useNotificationSystemContext();
     const [email, setEmail] = useState<string>("");
-    const [pass, setPass] = useState<string>("");
-    const { isLoading, makeRequest, data } = useMakeRequest<responseLoginAPI>(
+    const [password, setPassword] = useState<string>("");
+    const { isLoading, makeRequest, data } = useMakeRequest<AuthResponse>(
         {
             ...loginConfig,
-            body: { email, password: pass },
+            body: { email, password },
         },
-        defaultClient
+        DefaultClient
     );
     const setTitle = useTitle();
-    const { logUser } = useUserContext();
+    const { userLogin } = useUserContext();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!data) return;
+        if (!data || !data.success) return;
 
-        logUser(data.data.user, data.token);
+        userLogin(data.data!, data.token);
         navigate("/drive");
         sessionStorage.removeItem("contCache");
     }, [data]);
@@ -82,8 +72,8 @@ const Login = () => {
                         inputMinLength={4}
                     />
                     <FormInput
-                        value={pass}
-                        setValue={setPass}
+                        value={password}
+                        setValue={setPassword}
                         title="Senha"
                         isPass={true}
                     />

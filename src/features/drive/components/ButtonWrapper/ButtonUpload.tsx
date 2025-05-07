@@ -141,8 +141,7 @@ function ComboBox({
 
 export default function ButtonUpload() {
     const [isOpen, setIsOpen] = useState(false);
-    const [isFolderNameModalOpen, setIsFolderNameModalOpen] =
-        useState<boolean>(false);
+    const [_, setIsFolderNameModalOpen] = useState<boolean>(false);
 
     // const handleFolderCreation = useHandleFolderCreation();
 
