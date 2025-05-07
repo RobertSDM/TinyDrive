@@ -11,7 +11,11 @@ const Notifications = () => {
     const subAmount = 10;
 
     useEffect(() => {
-        if (perc >= 0 && currentOne && currentOne.type !== "static") {
+        if (
+            perc >= 0 &&
+            currentOne &&
+            currentOne.type !== NotificationTypes.STATIC
+        ) {
             const interval = setInterval(() => {
                 const newTime = time - subAmount;
                 const newPerc = (newTime * perc) / time;
@@ -69,7 +73,7 @@ const Notifications = () => {
                             />
                         </span>
                     </div>
-                    {currentOne.type !== "static" && (
+                    {currentOne.type !== NotificationTypes.STATIC && (
                         <div
                             className={`border border-white`}
                             style={{

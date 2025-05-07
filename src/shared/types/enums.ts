@@ -1,14 +1,21 @@
 export enum NotificationLevels {
-    INFO = "info",
-    ERROR = "error",
+    INFO = "INFO",
+    ERROR = "ERROR",
 }
 
 export enum NotificationTypes {
-    STATIC = "static",
-    DYNAMIC = "dynamic",
+    STATIC = "STATIC",
+    DYNAMIC = "DYNAMIC",
 }
 
 export enum ItemType {
     FOLDER = "FOLDER",
     FILE = "FILE",
+}
+
+export enum HTTPMethods {
+    POST = "POST",
+    GET = "GET",
+    PUT = "PUT",
+    DELETE = "DELETE",
 }

@@ -2,8 +2,6 @@ import ButtonPopup from "@/shared/components/ButtonWrapper/ButtonPopup.tsx";
 import { ItemType } from "@/shared/types/enums.ts";
 import { Item } from "@/shared/types/index.ts";
 import { useRef, useState } from "react";
-import { FaFile } from "react-icons/fa";
-import { FaFolderClosed } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 const ContentRow = ({ item }: { item: Item }) => {

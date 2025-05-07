@@ -28,7 +28,10 @@ const Login = () => {
     const [email, setEmail] = useState<string>("");
     const [pass, setPass] = useState<string>("");
     const { isLoading, makeRequest, data } = useMakeRequest<responseLoginAPI>(
-        loginConfig,
+        {
+            ...loginConfig,
+            body: { email, password: pass },
+        },
         defaultClient
     );
     const setTitle = useTitle();
@@ -67,7 +70,7 @@ const Login = () => {
 
                         const isValid = emailPassVerification(email, addNotif);
                         if (isValid) {
-                            makeRequest({ email, password: pass });
+                            makeRequest();
                         }
                     }}
                 >

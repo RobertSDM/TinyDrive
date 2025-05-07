@@ -11,16 +11,14 @@ export default function useMakeRequest<T>(
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
 
-    async function makeRequest(
-        body: Object | null = null
-    ): Promise<Error | null> {
+    async function makeRequest(): Promise<Error | null> {
         try {
             setIsLoading(true);
             const result = await client({
                 url: config.path,
                 headers: config.headers,
                 method: config.method,
-                data: body,
+                data: config.body,
             });
             setData(result.data);
             return null;

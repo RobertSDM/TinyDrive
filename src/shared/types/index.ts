@@ -1,5 +1,10 @@
 import { AxiosInstance, RawAxiosRequestHeaders, ResponseType } from "axios";
-import { ItemType, NotificationLevels, NotificationTypes } from "./enums.ts";
+import {
+    HTTPMethods,
+    ItemType,
+    NotificationLevels,
+    NotificationTypes,
+} from "./enums.ts";
 
 export type Item = {
     id: string;
@@ -15,7 +20,8 @@ export type Client = AxiosInstance;
 
 export type RequestConfig = {
     path: string;
-    method: "POST" | "GET" | "PUT" | "DELETE";
+    method: HTTPMethods;
+    body?: Object;
     headers?: {
         [key: string]: string;
     };
