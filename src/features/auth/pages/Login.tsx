@@ -1,29 +1,30 @@
-import { useEffect, useState } from "react";
-import FormInput from "../components/FormInputWrapper/FormInput.tsx";
-import { Link, useNavigate } from "react-router-dom";
 import {
     useNotificationSystemContext,
     useUserContext,
 } from "@/shared/context/useContext.tsx";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import FormInput from "../components/FormInputWrapper/FormInput.tsx";
 
-import useTitle from "@/shared/hooks/useTitle.tsx";
-import { emailPassVerification } from "@/shared/utils/valitation.ts";
-import useMakeRequest from "@/shared/hooks/useMakeRequest.tsx";
-import { loginConfig } from "../api/config.ts";
 import { DefaultClient } from "@/shared/api/clients.ts";
+import useFetcher from "@/shared/hooks/useRequest.tsx";
+import useTitle from "@/shared/hooks/useTitle.tsx";
 import { AuthResponse } from "@/shared/types/index.ts";
+import { emailPassVerification } from "@/shared/utils/valitation.ts";
+import { loginConfig } from "../api/config.ts";
 
 const Login = () => {
     const { addNotif } = useNotificationSystemContext();
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const { isLoading, makeRequest, data } = useMakeRequest<AuthResponse>(
+    const { request, data, isLoading } = useFetcher<AuthResponse>(
         {
             ...loginConfig,
             body: { email, password },
         },
         DefaultClient
     );
+
     const setTitle = useTitle();
     const { userLogin } = useUserContext();
     const navigate = useNavigate();
@@ -60,7 +61,7 @@ const Login = () => {
 
                         const isValid = emailPassVerification(email, addNotif);
                         if (isValid) {
-                            makeRequest();
+                            request();
                         }
                     }}
                 >

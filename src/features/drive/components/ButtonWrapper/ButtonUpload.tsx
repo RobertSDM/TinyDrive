@@ -6,17 +6,16 @@ import { useState } from "react";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import transformFileToItem from "../../core/extractFileContent.ts";
 import DropDown, { FileOptionType } from "../DropDownWrapper/DropDown.tsx";
-import saveItem from "../../service/itemService.ts";
+import saveItemService from "../../service/itemService.ts";
 
 export default function ButtonUpload() {
     const [isOpen, setIsOpen] = useState(false);
-    const [_, setIsFolderNameModalOpen] = useState<boolean>(false);
+    const [_, setIsTextModalOpen] = useState<boolean>(false);
     const { parent } = useParentContext();
     const { user } = useUserContext();
 
-    // const handleFolderCreation = useHandleFolderCreation();
     function openModalText() {
-        setIsFolderNameModalOpen(true);
+        setIsTextModalOpen(true);
     }
 
     function open() {
@@ -57,7 +56,7 @@ export default function ButtonUpload() {
                             user.id
                         );
 
-                        saveItem(fileStruct, parent.id!);
+                        saveItemService(fileStruct, parent.id!);
                     }}
                     type={FileOptionType.FILE}
                 />
@@ -68,7 +67,7 @@ export default function ButtonUpload() {
                             filelist,
                             user.id
                         );
-                        saveItem(fileStruct, parent.id!);
+                        saveItemService(fileStruct, parent.id!);
                     }}
                     type={FileOptionType.FOLDER}
                 />

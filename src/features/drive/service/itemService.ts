@@ -1,19 +1,16 @@
-import { Node, SingleItemResponse } from "@/shared/types/index.ts";
-import { makeRequest } from "../../../shared/api/itemRequest.ts";
-import { ItemCreateConfig as ItemSaveConfig } from "../api/config.ts";
 import { DefaultClient } from "@/shared/api/clients.ts";
 import { ItemType } from "@/shared/types/enums.ts";
+import { Node } from "@/shared/types/index.ts";
+import { ItemCreateConfig as ItemSaveConfig } from "../api/config.ts";
 
-export default function saveItem(n: Node, id: number) {
+export default function saveItemService(n: Node, id: number) {
     n.children.forEach(async (c) => {
         c.item.parentid = id;
-        const item = await makeRequest<SingleItemResponse>(
-            { ...ItemSaveConfig, body: c.item },
-            DefaultClient
-        );
+        const res = await DefaultClient({ ...ItemSaveConfig });
+        const item = res.data;
 
         if (c.item.type === ItemType.FILE || !item) return;
 
-        saveItem(c, item.data.id!);
+        saveItemService(c, item.data.id!);
     });
 }

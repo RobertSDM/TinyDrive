@@ -5,9 +5,9 @@ import { useNotificationSystemContext } from "@/shared/context/useContext.tsx";
 import useTitle from "@/shared/hooks/useTitle.tsx";
 import { emailPassVerification } from "@/shared/utils/valitation.ts";
 import { NotificationLevels } from "@/shared/types/enums.ts";
-import useMakeRequest from "@/shared/hooks/useMakeRequest.tsx";
 import { registerConfig } from "../api/config.ts";
 import { DefaultClient } from "@/shared/api/clients.ts";
+import useFetcher from "@/shared/hooks/useRequest.tsx";
 
 const Register = () => {
     const { addNotif } = useNotificationSystemContext();
@@ -15,7 +15,7 @@ const Register = () => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [confirmPass, setConfirmPass] = useState<string>("");
-    const { makeRequest, isLoading, error } = useMakeRequest(
+    const { request, isLoading } = useFetcher<void>(
         {
             ...registerConfig,
             body: {
@@ -24,16 +24,22 @@ const Register = () => {
                 username,
             },
         },
-        DefaultClient
+        DefaultClient,
+        false,
+        () => {
+            addNotif({
+                level: NotificationLevels.INFO,
+                msg: `Registred with success`,
+            });
+            navigate("/login");
+        },
+        (err) => {
+            console.log(err);
+            return err;
+        }
     );
     const navigate = useNavigate();
     const setTitle = useTitle();
-
-    useEffect(() => {
-        if (error) {
-            console.log(error);
-        }
-    }, [error]);
 
     useEffect(() => {
         setTitle("Register | Tiny Drive");
@@ -63,14 +69,7 @@ const Register = () => {
                         );
 
                         if (isValid) {
-                            makeRequest().then((data) => {
-                                if (!data) return;
-                                addNotif({
-                                    level: NotificationLevels.INFO,
-                                    msg: `Registred with success`,
-                                });
-                                navigate("/login");
-                            });
+                            request();
                         }
                     }}
                 >
