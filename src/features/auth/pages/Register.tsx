@@ -63,14 +63,13 @@ const Register = () => {
                         );
 
                         if (isValid) {
-                            makeRequest().then((error) => {
-                                if (!error) {
-                                    addNotif({
-                                        level: NotificationLevels.INFO,
-                                        msg: `Registred with success`,
-                                    });
-                                    navigate("/login");
-                                }
+                            makeRequest().then((data) => {
+                                if (!data) return;
+                                addNotif({
+                                    level: NotificationLevels.INFO,
+                                    msg: `Registred with success`,
+                                });
+                                navigate("/login");
                             });
                         }
                     }}

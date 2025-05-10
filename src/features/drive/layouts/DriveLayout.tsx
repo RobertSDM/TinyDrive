@@ -4,6 +4,7 @@ import { useUserContext } from "@/shared/context/useContext.tsx";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import DriveHeader from "../components/DefaultHeaderWrapper.tsx/DriveHeader.tsx";
+import { ParentItemProvider } from "../context/ParentItemContext.tsx";
 
 const DriveLayout = () => {
     const { isLogged, logoutUser, userLogin, getAuthToken } = useUserContext();
@@ -26,12 +27,14 @@ const DriveLayout = () => {
     }
 
     return (
-        <>
+        <ParentItemProvider>
             <Notifications />
             <DriveHeader />
-            <Outlet />
+            <section className="max-w-7xl m-auto">
+                <Outlet />
+            </section>
             <Footer />
-        </>
+        </ParentItemProvider>
     );
 };
 

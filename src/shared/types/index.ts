@@ -7,19 +7,29 @@ import {
 } from "./enums.ts";
 
 export type Item = {
-    id: string;
+    id: number | null;
     name: string;
     extension: string;
     size: number;
-    size_prefix: number;
+    size_prefix: string;
     type: ItemType;
     path: string;
     update_date: number;
     creation_data: number;
 };
 
+export type ItemData = {
+    name: string;
+    extension: string;
+    size: number;
+    type: string;
+    path: string;
+    ownerid: number;
+    parentid: number | null;
+};
+
 export type User = {
-    id: string;
+    id: number;
     username: string;
     email: string;
 };
@@ -29,10 +39,16 @@ export type Client = AxiosInstance;
 export type RequestConfig = {
     path: string;
     method: HTTPMethods;
-    body?: Object;
+    body?: Object | Object[];
     headers?: {
         [key: string]: string;
     };
+};
+
+export type Node = {
+    item: ItemData;
+    children: Node[];
+    buffer: Promise<ArrayBuffer> | null;
 };
 
 export type DefaultResponse = {
@@ -48,7 +64,7 @@ export type ListResponse<T> = DefaultResponse & {
 };
 
 export type SingleResponse<T> = DefaultResponse & {
-    data: T | null;
+    data: T;
 };
 
 export type AuthResponse = SingleResponse<User> & {

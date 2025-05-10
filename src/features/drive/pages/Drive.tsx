@@ -2,9 +2,9 @@ import useTitle from "@/shared/hooks/useTitle.tsx";
 import { Item, ListItemResponse } from "@/shared/types/index.ts";
 import { useEffect, useState } from "react";
 import ButtonUpload from "../components/ButtonWrapper/ButtonUpload.tsx";
-import ItemsView from "../components/ContentViewWrapper/ContentView.tsx";
+import ItemsView from "../components/ContentViewWrapper/ItemsView.tsx";
 import useMakeRequest from "@/shared/hooks/useMakeRequest.tsx";
-import { ItemConfig } from "../api/config.ts";
+import { ItemRootAllConfig } from "../api/config.ts";
 import { DefaultClient as DefaultClient } from "@/shared/api/clients.ts";
 import { useUserContext } from "@/shared/context/useContext.tsx";
 
@@ -14,8 +14,8 @@ function Drive() {
     const { user } = useUserContext();
     const { isLoading, data } = useMakeRequest<ListItemResponse>(
         {
-            method: ItemConfig.method,
-            path: ItemConfig.path + user.id,
+            ...ItemRootAllConfig,
+            path: ItemRootAllConfig.path + user.id,
         },
         DefaultClient,
         true

@@ -11,7 +11,7 @@ export default function useMakeRequest<T>(
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
 
-    async function makeRequest(): Promise<Error | null> {
+    async function makeRequest(): Promise<T | null> {
         try {
             setIsLoading(true);
             const result = await client({
@@ -21,14 +21,14 @@ export default function useMakeRequest<T>(
                 data: config.body,
             });
             setData(result.data);
-            return null;
+            return result.data;
         } catch (err: any) {
             setError(
                 err instanceof AxiosError
                     ? err
                     : new Error("Error fetching the data")
             );
-            return err as Error;
+            return null;
         } finally {
             setIsLoading(false);
         }
