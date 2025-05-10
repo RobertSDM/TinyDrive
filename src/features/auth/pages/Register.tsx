@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import FormInput from "../components/FormInputWrapper/FormInput.tsx";
 import { useNotificationSystemContext } from "@/shared/context/useContext.tsx";
 import useTitle from "@/shared/hooks/useTitle.tsx";
 import { emailPassVerification } from "@/shared/utils/valitation.ts";
@@ -8,6 +7,7 @@ import { NotificationLevels } from "@/shared/types/enums.ts";
 import { registerConfig } from "../api/config.ts";
 import { DefaultClient } from "@/shared/api/clients.ts";
 import useFetcher from "@/shared/hooks/useRequest.tsx";
+import AuthForm from "../components/FormWrapper/AuthForm.tsx";
 
 const Register = () => {
     const { addNotif } = useNotificationSystemContext();
@@ -55,10 +55,10 @@ const Register = () => {
                     Sign up today to a simple, secure and always on the go.
                 </p>
             </section>
-            <section className="flex justify-center">
-                <form
-                    className="w-96 space-y-5 flex justify-center flex-col items-center"
-                    onSubmit={(event) => {
+            <section className="flex items-center flex-col">
+                <AuthForm
+                    style="w-96 space-y-5 flex justify-center flex-col items-center"
+                    onsubmit={(event) => {
                         event.preventDefault();
 
                         const isValid = emailPassVerification(
@@ -73,56 +73,48 @@ const Register = () => {
                         }
                     }}
                 >
-                    <FormInput
+                    <AuthForm.Input
                         value={username}
                         setValue={setUsername}
                         title="Nome Usuário"
-                        inputMinLength={4}
+                        minLength={4}
                     />
-                    <FormInput
+                    <AuthForm.Input
                         value={email}
                         setValue={setEmail}
                         title="Email"
-                        inputMaxLength={100}
-                        inputMinLength={4}
+                        maxLength={100}
+                        minLength={4}
                     />
-                    <FormInput
+                    <AuthForm.PasswordInput
                         value={password}
                         setValue={setPassword}
                         title="Senha"
-                        isPass={true}
                     />
-                    <FormInput
+                    <AuthForm.PasswordInput
                         value={confirmPass}
                         setValue={setConfirmPass}
                         title="Confirmar Senha"
-                        isPass={true}
                     />
 
                     <section className="space-y-10 w-full text-center">
-                        <button
+                        <AuthForm.Button
                             disabled={isLoading}
-                            type="submit"
-                            className="px-4 py-2 w-full bg-purple-500 text-white font-semibold hover:bg-white hover:border hover:border-purple-500 hover:text-purple-500
-                            
-                            disabled:bg-slate-500 disabled:text-slate-300 disabled:hover:bg-slate-500 disabled:hover:border-transparent disabled:hover:text-slate-300
-                            "
-                        >
-                            {isLoading ? "Loading..." : "Register"}
-                        </button>
-                        <div className="flex items-center flex-col">
-                            <div className="text-center">
-                                <p>Already Signed?</p>
-                                <Link
-                                    to={"/login"}
-                                    className="text-blue-400 font-semibold"
-                                >
-                                    Login
-                                </Link>
-                            </div>
-                        </div>
+                            text={isLoading ? "Loading" : "Register"}
+                        />
                     </section>
-                </form>
+                    <div className="flex items-center flex-col">
+                        <div className="text-center">
+                            <p>Already Signed?</p>
+                            <Link
+                                to={"/login"}
+                                className="text-blue-400 font-semibold"
+                            >
+                                Login
+                            </Link>
+                        </div>
+                    </div>
+                </AuthForm>
             </section>
         </div>
     );

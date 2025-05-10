@@ -4,14 +4,14 @@ import {
 } from "@/shared/context/useContext.tsx";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import FormInput from "../components/FormInputWrapper/FormInput.tsx";
 
 import { DefaultClient } from "@/shared/api/clients.ts";
 import useFetcher from "@/shared/hooks/useRequest.tsx";
 import useTitle from "@/shared/hooks/useTitle.tsx";
 import { AuthResponse } from "@/shared/types/index.ts";
-import { emailPassVerification } from "@/shared/utils/valitation.ts";
 import { loginConfig } from "../api/config.ts";
+import AuthForm from "../components/FormWrapper/AuthForm.tsx";
+import { emailPassVerification } from "@/shared/utils/valitation.ts";
 
 const Login = () => {
     const { addNotif } = useNotificationSystemContext();
@@ -52,9 +52,9 @@ const Login = () => {
                 </p>
             </section>
             <section className="flex items-center flex-col">
-                <form
-                    className="w-96 space-y-5 flex justify-center flex-col items-center"
-                    onSubmit={(event) => {
+                <AuthForm
+                    style="w-96 space-y-5 flex justify-center flex-col items-center"
+                    onsubmit={(event) => {
                         event.preventDefault();
 
                         setEmail((prev) => prev.trimEnd().toLowerCase());
@@ -65,21 +65,20 @@ const Login = () => {
                         }
                     }}
                 >
-                    <FormInput
+                    <AuthForm.Input
                         value={email}
                         setValue={setEmail}
                         title="Email"
-                        inputMaxLength={100}
-                        inputMinLength={4}
+                        maxLength={100}
+                        minLength={4}
                     />
-                    <FormInput
+                    <AuthForm.PasswordInput
                         value={password}
                         setValue={setPassword}
                         title="Senha"
-                        isPass={true}
                     />
                     <section className="space-y-10 w-full">
-                        <button
+                        {/* <button
                             disabled={isLoading}
                             type="submit"
                             className="px-4 py-2 w-full bg-purple-500 text-white font-semibold hover:bg-white hover:border hover:border-purple-500 hover:text-purple-500
@@ -88,7 +87,11 @@ const Login = () => {
                             "
                         >
                             {isLoading ? "Loading..." : "Login"}
-                        </button>
+                        </button> */}
+                        <AuthForm.Button
+                            disabled={isLoading}
+                            text={isLoading ? "Loading" : "Login"}
+                        />
                     </section>
                     <div className="flex items-center flex-col">
                         <p>Not signed?</p>
@@ -99,7 +102,7 @@ const Login = () => {
                             Sign up
                         </Link>
                     </div>
-                </form>
+                </AuthForm>
             </section>
         </div>
     );

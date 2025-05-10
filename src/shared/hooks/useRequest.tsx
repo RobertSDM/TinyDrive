@@ -2,10 +2,7 @@ import { useEffect, useState } from "react";
 import { Client, RequestConfig } from "../types/index.ts";
 import { DefaultClient } from "../api/clients.ts";
 import { AxiosResponse } from "axios";
-import {
-    DefaultErrorTransformer,
-    DefaultResponseTransformer,
-} from "../utils/utils.ts";
+import { DefaultErrorTransformer, DefaultResponseTransformer } from "../api/responseTransformers.ts";
 
 export default function useFetcher<T>(
     config: RequestConfig,
