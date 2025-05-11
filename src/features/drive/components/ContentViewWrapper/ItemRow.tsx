@@ -1,8 +1,12 @@
 import { ItemType } from "@/shared/types/enums.ts";
-import { Item } from "@/shared/types/index.ts";
+import { Item, SingleItemResponse } from "@/shared/types/index.ts";
 import { FaFile } from "react-icons/fa";
 import { FaFolderClosed } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import ButtonAction from "../ButtonWrapper/ButtonAction.tsx";
+import useFetcher from "@/shared/hooks/useRequest.tsx";
+import { ItemDeleteConfig } from "../../api/config.ts";
+import { useUserContext } from "@/shared/context/useContext.tsx";
 
 type ItemRowProps = {
     item: Item;
@@ -67,28 +71,37 @@ function ItemRow({ item }: ItemRowProps) {
     //     isDownloading,
     //     isFile(item)
     // );
+    const { user } = useUserContext();
+    const { request: delete_ } = useFetcher<SingleItemResponse>({
+        ...ItemDeleteConfig,
+        path: `${ItemDeleteConfig.path}/${user.id}/${item.id}`,
+    });
 
     return (
         <section
-            className={`border flex-1 justify-between hover:bg-purple-100 rounded-lg items-center h-12 max-h-12 p-2`}
+            className={`border flex-1 justify-between hover:bg-purple-100 rounded-lg items-center h-12 max-h-12 p-2 flex`}
         >
             {item.type === ItemType.FILE ? (
                 <FileItem {...{ item }} />
             ) : (
                 <FolderItem {...{ item }} />
             )}
-            <section className={`pr-2 py-2 hidden md:flex`}>
-                <section className="flex gap-x-3">
-                    {/* <DownloadButton onclick={downloadContent} />
-                            <EditButton
-                                text={item.getName()}
-                                onclick={editName}
-                            />
-                            <DeleteContentButton
-                                onclick={deleteContent}
-                                item={item}
-                            /> */}
-                </section>
+            <section className={`pr-2 py-2 hidden md:flex `}>
+                <ButtonAction
+                    onclick={() => {
+                        delete_();
+                    }}
+                    style="border rounded-md border-red-500 px-2 text-red-500 hover:bg-red-500 hover:text-white active:scale-[0.9]"
+                >
+                    x
+                </ButtonAction>
+                {/* 
+                    <DownloadButton onclick={downloadContent} />
+                    <EditButton
+                        text={item.getName()}
+                        onclick={editName}
+                    />
+                */}
             </section>
         </section>
     );

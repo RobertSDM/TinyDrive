@@ -15,7 +15,7 @@ function Drive() {
     const { isLoading, data } = useFetcher<ListItemResponse>(
         {
             ...ItemRootAllConfig,
-            path: ItemRootAllConfig.path + user.id,
+            path: `${ItemRootAllConfig.path}/${user.id}`,
         },
         DefaultClient,
         true

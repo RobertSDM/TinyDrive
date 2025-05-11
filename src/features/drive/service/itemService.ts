@@ -6,7 +6,11 @@ import { ItemCreateConfig as ItemSaveConfig } from "../api/config.ts";
 export default function saveItemService(n: Node, id: number) {
     n.children.forEach(async (c) => {
         c.item.parentid = id;
-        const res = await DefaultClient({ ...ItemSaveConfig });
+        const res = await DefaultClient({
+            ...ItemSaveConfig,
+            data: c.item,
+            url: ItemSaveConfig.path,
+        });
         const item = res.data;
 
         if (c.item.type === ItemType.FILE || !item) return;
