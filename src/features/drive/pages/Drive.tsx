@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { ItemRootAllConfig } from "../api/config.ts";
 import ButtonUpload from "../components/ButtonWrapper/ButtonUpload.tsx";
 import ItemsView from "../components/ContentViewWrapper/ItemsView.tsx";
+import ModalProvider from "@/shared/context/ModalContext.tsx";
 
 function Drive() {
     const [items, setItems] = useState<Item[]>([]);
@@ -37,7 +38,9 @@ function Drive() {
                 <Tray />
             </nav> */}
             <ButtonUpload />
-            <ItemsView {...{ items, isLoading }} />
+            <ModalProvider>
+                <ItemsView {...{ items, isLoading }} />
+            </ModalProvider>
         </main>
     );
 }

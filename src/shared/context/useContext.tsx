@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { UserContext } from "./UserContext.tsx";
 import { NotificationContext } from "./NotificationSystem.tsx";
 import { ParentItemContext } from "@/features/drive/context/ParentItemContext.tsx";
+import { ModalContext } from "./ModalContext.tsx";
 
 export const useUserContext = () => {
     return useContext(UserContext);
@@ -13,4 +14,7 @@ export const useNotificationSystemContext = () => {
 
 export const useParentContext = () => {
     return useContext(ParentItemContext);
+};
+export const useModalContext = () => {
+    return useContext(ModalContext);
 };
