@@ -1,7 +1,7 @@
 import { DefaultClient } from "@/shared/api/clients.ts";
 import { ItemType } from "@/shared/types/enums.ts";
 import { Node } from "@/shared/types/index.ts";
-import { ItemCreateConfig as ItemSaveConfig } from "../api/config.ts";
+import { ItemSaveConfig } from "../api/config.ts";
 
 export default function saveItemService(n: Node, id: number) {
     n.children.forEach(async (c) => {

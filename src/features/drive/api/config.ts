@@ -7,7 +7,7 @@ export const ItemRootAllConfig: RequestConfig = {
     params: ["ownerid"],
 };
 
-export const ItemCreateConfig: RequestConfig = {
+export const ItemSaveConfig: RequestConfig = {
     path: "/item/save",
     method: HTTPMethods.POST,
 };
