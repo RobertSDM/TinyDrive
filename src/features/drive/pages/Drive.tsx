@@ -8,6 +8,7 @@ import { ItemRootAllConfig } from "../api/config.ts";
 import ButtonUpload from "../components/ButtonWrapper/ButtonUpload.tsx";
 import ItemsView from "../components/ContentViewWrapper/ItemsView.tsx";
 import ModalProvider from "@/shared/context/ModalContext.tsx";
+import ActionBar from "../components/ActionsBarWrapper/ActionBar.tsx";
 
 function Drive() {
     const [items, setItems] = useState<Item[]>([]);
@@ -21,6 +22,20 @@ function Drive() {
         DefaultClient,
         true
     );
+    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+
+    function changeSelectedItem(item: Item) {
+        if (item.id === selectedItem?.id) {
+            setSelectedItem(null);
+            return;
+        }
+        setSelectedItem(item);
+    }
+
+    useEffect(() => {
+        if (!selectedItem) return;
+        console.log(selectedItem.name);
+    }, [selectedItem]);
 
     useEffect(() => {
         if (!data || !data.success) return;
@@ -37,9 +52,17 @@ function Drive() {
             {/* <nav className="text-xl text-black/50">
                 <Tray />
             </nav> */}
-            <ButtonUpload />
             <ModalProvider>
-                <ItemsView {...{ items, isLoading }} />
+                <ButtonUpload />
+                <ActionBar item={selectedItem} />
+                <ItemsView
+                    {...{
+                        items,
+                        isLoading,
+                        changeSelectedItem,
+                        selectedItem,
+                    }}
+                />
             </ModalProvider>
         </main>
     );

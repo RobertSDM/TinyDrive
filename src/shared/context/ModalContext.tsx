@@ -1,19 +1,19 @@
-import { createContext, ReactElement, useState } from "react";
+import { createContext, ReactElement, ReactNode, useState } from "react";
 
 type ModalContext = {
-    openModal: (modal: ReactElement, backdropStyle?: string) => void;
+    openModal: (modal: ReactNode, backdropStyle?: string) => void;
     closeModal: () => void;
     isOpen: boolean;
 };
 export const ModalContext = createContext<ModalContext>({} as ModalContext);
 
-type ModalProviderProps = { children: ReactElement };
+type ModalProviderProps = { children: ReactNode };
 export default function ModalProvider({ children }: ModalProviderProps) {
-    const [modal, setModal] = useState<ReactElement | null>(null);
+    const [modal, setModal] = useState<ReactNode | null>(null);
     const [backdropStyle, setBackdropStyle] = useState<string>("");
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
-    function openModal(modal: ReactElement, backdropStyle?: string) {
+    function openModal(modal: ReactNode, backdropStyle?: string) {
         setModal(modal);
         setBackdropStyle(backdropStyle ?? "");
     }

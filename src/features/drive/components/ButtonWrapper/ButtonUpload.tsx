@@ -1,4 +1,5 @@
 import {
+    useModalContext,
     useParentContext,
     useUserContext,
 } from "@/shared/context/useContext.tsx";
@@ -7,16 +8,14 @@ import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import transformFileToItem from "../../core/extractFileContent.ts";
 import DropDown, { FileOptionType } from "../DropDownWrapper/DropDown.tsx";
 import saveItemService from "../../service/itemService.ts";
+import TextModal from "@/shared/components/ModalWrapper/TextModal.tsx";
 
 export default function ButtonUpload() {
     const [isOpen, setIsOpen] = useState(false);
-    const [_, setIsTextModalOpen] = useState<boolean>(false);
+
     const { parent } = useParentContext();
     const { user } = useUserContext();
-
-    function openModalText() {
-        setIsTextModalOpen(true);
-    }
+    const { openModal, closeModal, isOpen: isModalOpen } = useModalContext();
 
     function open() {
         setIsOpen(true);
@@ -32,13 +31,6 @@ export default function ButtonUpload() {
             onMouseEnter={open}
             onMouseLeave={close}
         >
-            {/* <TextModal
-                text={""}
-                isOpen={isFolderNameModalOpen}
-                setIsOpen={setIsFolderNameModalOpen}
-                title="Enter the new folder name"
-                callback={handleFolderCreation}
-            /> */}
             <span
                 className={`items-center gap-x-2 border-purple-500 text-black border hover:bg-purple-500 w-32 hover:text-white  inline-flex cursor-pointer rounded-md justify-around p-2 ${
                     isOpen && "rounded-b-none"
@@ -71,7 +63,18 @@ export default function ButtonUpload() {
                     }}
                     type={FileOptionType.FOLDER}
                 />
-                <DropDown.Option onclick={openModalText} text="New Folder" />
+                <DropDown.Option
+                    onclick={() =>
+                        openModal(
+                            <TextModal
+                                callback={(text) => console.log(text)}
+                                close={closeModal}
+                                isOpen={isModalOpen}
+                            />
+                        )
+                    }
+                    text="New Folder"
+                />
             </DropDown>
         </div>
     );

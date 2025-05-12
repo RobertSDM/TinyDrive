@@ -1,32 +1,22 @@
-import {
-    useUserContext
-} from "@/shared/context/useContext.tsx";
-import useFetcher from "@/shared/hooks/useRequest.tsx";
 import { ItemType } from "@/shared/types/enums.ts";
-import { Item, SingleItemResponse } from "@/shared/types/index.ts";
+import { Item } from "@/shared/types/index.ts";
 import { FaFile } from "react-icons/fa";
 import { FaFolderClosed } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import { ItemDeleteConfig } from "../../api/config.ts";
-import ButtonAction from "../ButtonWrapper/ButtonAction.tsx";
 
-type ItemRowProps = {
-    item: Item;
-};
-type FileItemProps = {
-    item: Item;
-    isLoading?: boolean;
-};
 type FolderItemProps = {
     item: Item;
     isLoading?: boolean;
+    isSelected?: boolean;
 };
 
-function FolderItem({ item }: FolderItemProps) {
+function FolderItem({ item, isSelected }: FolderItemProps) {
     return (
         <Link to={"/drive"} className={`flex items-center h-full w-full`}>
             <FaFolderClosed
-                className={` mr-2 min-h-4 min-w-4 text-slate-500`}
+                className={` mr-2 min-h-4 min-w-4 text-slate-500 ${
+                    isSelected && "text-white"
+                }`}
             />
             <span className={`whitespace-nowrap text-ellipsis overflow-hidden`}>
                 {item.name}
@@ -34,77 +24,54 @@ function FolderItem({ item }: FolderItemProps) {
         </Link>
     );
 }
-function FileItem({ item }: FileItemProps) {
+type FileItemProps = {
+    item: Item;
+    isLoading?: boolean;
+    isSelected?: boolean;
+};
+function FileItem({ item, isSelected }: FileItemProps) {
     return (
         <div className={`flex items-center h-full w-full`}>
-            <FaFile className={` mr-2 min-h-4 min-w-4 text-slate-500`} />
+            <FaFile
+                className={` mr-2 min-h-4 min-w-4 text-slate-500 ${
+                    isSelected && "text-white"
+                }`}
+            />
             <span className={`whitespace-nowrap text-ellipsis overflow-hidden`}>
                 {item.name}
             </span>
-            <div className="flex gap-x-2">
+            <div className="flex gap-x-2 items-center">
                 <span>{`.${item.extension}`}</span>
-                <section className={`text-slate-400 text-nowrap`}>
-                    <span className="font-medium text-sm">
-                        {`- ${item.size}${item.size_prefix}`}
-                    </span>
+                <section
+                    className={`text-slate-400 ${
+                        isSelected && "text-white"
+                    } text-nowrap font-medium text-sm`}
+                >
+                    {`- ${item.size}${item.size_prefix}`}
                 </section>
             </div>
         </div>
     );
 }
+type ItemRowProps = {
+    item: Item;
+    onclick?: () => void;
+    isSelected?: boolean;
+};
 
-function ItemRow({ item }: ItemRowProps) {
-    // const { fetch_: deleteFileById, isLoading: isDeletingFile } =
-    //     useDeleteFileById();
-    // const { fetch_: deleteFolderById, isLoading: isDeletingFolder } =
-    //     useDeleteFolderById();
-
-    // const editName = useEditContentName(item);
-    // const deleteContent = useDeleteContent(
-    //     item,
-    //     setRowDeleteId,
-    //     deleteFileById,
-    //     deleteFolderById
-    // );
-    // const isDownloading = useRef<boolean>(false);
-    // const downloadContent = useDownloadContent(
-    //     item.getId(),
-    //     item.getName(),
-    //     isDownloading,
-    //     isFile(item)
-    // );
-    const { user } = useUserContext();
-    const { request: delete_ } = useFetcher<SingleItemResponse>({
-        ...ItemDeleteConfig,
-        path: `${ItemDeleteConfig.path}/${user.id}/${item.id}`,
-    });
-
+function ItemRow({ item, onclick, isSelected }: ItemRowProps) {
     return (
         <section
-            className={`border flex-1 justify-between hover:bg-purple-100 rounded-lg items-center h-12 max-h-12 p-2 flex`}
+            onClick={onclick}
+            className={`border flex-1 justify-between hover:bg-purple-100 rounded-lg items-center h-12 max-h-12 p-2 flex ${
+                isSelected && "bg-purple-400 hover:bg-purple-500 text-white"
+            }`}
         >
             {item.type === ItemType.FILE ? (
-                <FileItem {...{ item }} />
+                <FileItem {...{ item, isSelected }} />
             ) : (
-                <FolderItem {...{ item }} />
+                <FolderItem {...{ item, isSelected }} />
             )}
-            <section className={`pr-2 py-2 hidden md:flex `}>
-                <ButtonAction
-                    onclick={() => {
-                        delete_();
-                    }}
-                    style="border rounded-md border-red-500 px-2 text-red-500 hover:bg-red-500 hover:text-white active:scale-[0.9]"
-                >
-                    x
-                </ButtonAction>
-                {/* 
-                    <DownloadButton onclick={downloadContent} />
-                    <EditButton
-                        text={item.getName()}
-                        onclick={editName}
-                    />
-                */}
-            </section>
         </section>
     );
 }

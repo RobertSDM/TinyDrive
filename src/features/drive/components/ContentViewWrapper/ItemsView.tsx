@@ -4,9 +4,16 @@ import ItemRow from "./ItemRow.tsx";
 type ItemsViewProps = {
     items: Item[];
     isLoading: boolean;
+    changeSelectedItem: (item: Item) => void;
+    selectedItem: Item | null;
 };
 
-const ItemsView = ({ items, isLoading }: ItemsViewProps) => {
+const ItemsView = ({
+    items,
+    isLoading,
+    changeSelectedItem,
+    selectedItem,
+}: ItemsViewProps) => {
     return (
         <div className="mt-2 mx-auto space-y-4">
             {items.length > 0 ? (
@@ -18,7 +25,15 @@ const ItemsView = ({ items, isLoading }: ItemsViewProps) => {
                     </section>
                     <section className="flex gap-y-2 flex-col">
                         {items.map((item) => (
-                            <ItemRow key={item.id} item={item} />
+                            <ItemRow
+                                onclick={() => changeSelectedItem(item)}
+                                key={item.id}
+                                item={item}
+                                isSelected={
+                                    selectedItem !== null &&
+                                    selectedItem.id === item.id
+                                }
+                            />
                         ))}
                     </section>
                 </section>

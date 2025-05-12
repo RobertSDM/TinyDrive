@@ -1,21 +1,18 @@
-import { LegacyRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const TextModal = ({
     callback,
     isOpen,
-    setIsOpen,
-    title = "Type the text",
-    text,
+    close,
+    title = "Enter a text",
 }: {
     callback: (text: string) => void;
     isOpen: boolean;
-    setIsOpen: (isOpen: boolean) => void;
+    close: () => void;
     title?: string;
-    text: string;
 }) => {
-
-    const [modalText, setModalText] = useState<string>(text);
-    const inputRef: LegacyRef<HTMLInputElement> = useRef(null);
+    const [text, setText] = useState<string>("");
+    const inputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
         inputRef.current!.focus();
@@ -23,23 +20,18 @@ const TextModal = ({
     }, [isOpen]);
 
     function confirm() {
-        setIsOpen(false);
-        callback(modalText);
+        close();
+        callback(text);
     }
 
     function cancel() {
-        setIsOpen(false);
-        setModalText(text);
+        close();
     }
 
     return (
         <div
-            className={`w-full h-full fixed top-0 left-0 bg-transparent ${
-                isOpen ? "" : "hidden"
-            }`}
-            onClick={(e) => {
-                if (e.target === e.currentTarget) cancel();
-            }}
+            className={`w-full h-full fixed top-0 left-0 bg-transparent`}
+            hidden={!isOpen}
         >
             <div
                 className={`absolute z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white border border-slate-200 py-2 px-4 rounded-md space-y-5 w-fit h-fit flex flex-col items-center`}
@@ -54,9 +46,9 @@ const TextModal = ({
                 <input
                     ref={inputRef}
                     type="text"
-                    placeholder="New name"
-                    value={modalText}
-                    onChange={(e) => setModalText(e.target.value)}
+                    placeholder={title}
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
                     className="border border-slate-300 px-4 py-2 outline-none"
                 />
                 <div className="flex justify-end gap-x-4 mt-2">
