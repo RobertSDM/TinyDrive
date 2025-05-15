@@ -8,6 +8,7 @@ import useFetcher from "@/shared/hooks/useRequest.tsx";
 import { Item, SingleItemResponse } from "@/shared/types/index.ts";
 import { ItemDeleteConfig, ItemUpdateNameConfig } from "../../api/config.ts";
 import { DefaultClient } from "@/shared/api/clients.ts";
+import { useEffect } from "react";
 
 type ActionBarProps = {
     item?: Item | null;
@@ -37,6 +38,31 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
         }
     );
     const { closeModal, openModal } = useModalContext();
+
+    useEffect(() => {
+        function action(e: KeyboardEvent) {
+            if (!item) return;
+
+            if (e.key === "Delete") {
+                e.stopPropagation();
+                e.preventDefault();
+
+                if (
+                    !confirm(
+                        "Are you sure? All the data from the folder will be lost"
+                    )
+                )
+                    return;
+                _delete();
+            }
+        }
+
+        window.addEventListener("keydown", action);
+
+        return () => {
+            window.removeEventListener("keydown", action);
+        };
+    }, [item]);
 
     return (
         <div
