@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { Client, RequestConfig } from "../types/index.ts";
 import { DefaultClient } from "../api/clients.ts";
 import { AxiosResponse } from "axios";
-import { DefaultErrorTransformer, DefaultResponseTransformer } from "../api/responseTransformers.ts";
+import {
+    DefaultErrorTransformer,
+    DefaultResponseTransformer,
+} from "../api/responseTransformers.ts";
 
 export default function useFetcher<T>(
     config: RequestConfig,
@@ -17,14 +20,13 @@ export default function useFetcher<T>(
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
 
-    async function request(): Promise<void> {
+    async function request(body?: Object | Object[]): Promise<void> {
         try {
             setIsLoading(true);
             const response = await client({
                 url: config.path,
-                headers: config.headers,
-                method: config.method,
-                data: config.body,
+                data: body ? body : config.body,
+                ...config,
             });
             const result = responseTransformer(response);
             setData(result);

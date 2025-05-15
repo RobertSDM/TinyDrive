@@ -1,11 +1,17 @@
 import { HTTPMethods } from "@/shared/types/enums.ts";
 import { RequestConfig } from "@/shared/types/index.ts";
 
-export const ItemRootAllConfig: RequestConfig = {
-    path: "/item/root/all",
-    method: HTTPMethods.GET,
-    params: ["ownerid"],
-};
+// export const ItemRootAllConfig: RequestConfig = {
+//     path: "/item/all",
+//     method: HTTPMethods.GET,
+// };
+
+export function ItemUpdateNameConfig(id: number): RequestConfig {
+    return {
+        path: `/item/update/${id}/name`,
+        method: HTTPMethods.PUT,
+    };
+}
 
 export const ItemSaveConfig: RequestConfig = {
     path: "/item/save",
@@ -15,5 +21,14 @@ export const ItemSaveConfig: RequestConfig = {
 export const ItemDeleteConfig: RequestConfig = {
     path: "item/delete",
     method: HTTPMethods.DELETE,
-    params: ["ownerid", "id"],
+};
+
+export const ItemAllFromFolder: RequestConfig = {
+    path: "/item/all",
+    method: HTTPMethods.GET,
+};
+
+export const ItemById: RequestConfig = {
+    path: "/item",
+    method: HTTPMethods.GET,
 };

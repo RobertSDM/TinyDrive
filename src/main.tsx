@@ -17,7 +17,7 @@ const router = createBrowserRouter([
                 element: <DriveLayout />,
                 children: [
                     {
-                        path: "/drive",
+                        path: "/drive?/:parentid",
                         element: <Drive />,
                     },
                 ],

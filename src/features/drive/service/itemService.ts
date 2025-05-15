@@ -3,7 +3,7 @@ import { ItemType } from "@/shared/types/enums.ts";
 import { Node } from "@/shared/types/index.ts";
 import { ItemSaveConfig } from "../api/config.ts";
 
-export default function saveItemService(n: Node, id: number) {
+export function saveItemService(n: Node, id: number) {
     n.children.forEach(async (c) => {
         c.item.parentid = id;
         const res = await DefaultClient({

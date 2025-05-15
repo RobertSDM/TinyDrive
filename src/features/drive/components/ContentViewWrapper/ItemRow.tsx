@@ -12,7 +12,7 @@ type FolderItemProps = {
 
 function FolderItem({ item, isSelected }: FolderItemProps) {
     return (
-        <Link to={"/drive"} className={`flex items-center h-full w-full`}>
+        <Link to={`/${item.id}`} className={`flex items-center h-full`}>
             <FaFolderClosed
                 className={` mr-2 min-h-4 min-w-4 text-slate-500 ${
                     isSelected && "text-white"

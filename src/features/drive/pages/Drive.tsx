@@ -1,27 +1,45 @@
-import { DefaultClient } from "@/shared/api/clients.ts";
-import { useUserContext } from "@/shared/context/useContext.tsx";
+import ModalProvider from "@/shared/context/ModalContext.tsx";
+import {
+    useParentContext,
+    useUserContext,
+} from "@/shared/context/useContext.tsx";
 import useFetcher from "@/shared/hooks/useRequest.tsx";
 import useTitle from "@/shared/hooks/useTitle.tsx";
-import { Item, ListItemResponse } from "@/shared/types/index.ts";
+import {
+    Item,
+    ListItemResponse,
+    SingleItemResponse,
+} from "@/shared/types/index.ts";
 import { useEffect, useState } from "react";
-import { ItemRootAllConfig } from "../api/config.ts";
+import { useParams } from "react-router-dom";
+import { ItemAllFromFolder, ItemById } from "../api/config.ts";
+import ActionBar from "../components/ActionsBarWrapper/ActionBar.tsx";
 import ButtonUpload from "../components/ButtonWrapper/ButtonUpload.tsx";
 import ItemsView from "../components/ContentViewWrapper/ItemsView.tsx";
-import ModalProvider from "@/shared/context/ModalContext.tsx";
-import ActionBar from "../components/ActionsBarWrapper/ActionBar.tsx";
+import { DefaultClient } from "@/shared/api/clients.ts";
 
 function Drive() {
+    let { parentid } = useParams();
     const [items, setItems] = useState<Item[]>([]);
     const title = useTitle();
     const { user } = useUserContext();
-    const { isLoading, data } = useFetcher<ListItemResponse>(
+    const { changeParent } = useParentContext();
+    const { isLoading, data, request } = useFetcher<ListItemResponse>(
         {
-            ...ItemRootAllConfig,
-            path: `${ItemRootAllConfig.path}/${user.id}`,
+            ...ItemAllFromFolder,
+            path: `${ItemAllFromFolder.path}/${user.id}${
+                parentid === "drive" ? "" : "/" + parentid
+            }`,
         },
-        DefaultClient,
-        true
+        DefaultClient
     );
+    const { request: parentRequest, data: parentData } =
+        useFetcher<SingleItemResponse>({
+            ...ItemById,
+            path: `${ItemById.path}/${user.id}${
+                parentid === "drive" ? "" : "/" + parentid
+            }`,
+        });
     const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
     function changeSelectedItem(item: Item) {
@@ -32,10 +50,9 @@ function Drive() {
         setSelectedItem(item);
     }
 
-    useEffect(() => {
-        if (!selectedItem) return;
-        console.log(selectedItem.name);
-    }, [selectedItem]);
+    function changeSelectedItemToNull() {
+        setSelectedItem(null);
+    }
 
     useEffect(() => {
         if (!data || !data.success) return;
@@ -46,6 +63,18 @@ function Drive() {
     useEffect(() => {
         title("Tiny Drive");
     }, []);
+
+    useEffect(() => {
+        changeSelectedItemToNull();
+        parentRequest();
+        request();
+    }, [parentid]);
+
+    useEffect(() => {
+        if (!parentData || !parentData.success) return;
+
+        changeParent(parentData.data);
+    }, [parentData]);
 
     return (
         <main className="mt-10  px-10 mx-auto mb-20">

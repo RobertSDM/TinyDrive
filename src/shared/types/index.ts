@@ -43,7 +43,9 @@ export type RequestConfig = {
     headers?: {
         [key: string]: string;
     };
-    params?: string[];
+    params?: {
+        [key: string]: string
+    };
 };
 
 export type Node = {

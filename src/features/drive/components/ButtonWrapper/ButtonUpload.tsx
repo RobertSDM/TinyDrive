@@ -10,7 +10,7 @@ import { ItemData } from "@/shared/types/index.ts";
 import { useState } from "react";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import transformFileToItem from "../../core/extractFileContent.ts";
-import saveItemService from "../../service/itemService.ts";
+import { saveItemService } from "../../service/itemService.ts";
 import DropDown, { FileOptionType } from "../DropDownWrapper/DropDown.tsx";
 import { ItemSaveConfig } from "../../api/config.ts";
 

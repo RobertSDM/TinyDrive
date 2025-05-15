@@ -14,6 +14,7 @@ export default function ModalProvider({ children }: ModalProviderProps) {
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
     function openModal(modal: ReactNode, backdropStyle?: string) {
+        setIsOpen(true);
         setModal(modal);
         setBackdropStyle(backdropStyle ?? "");
     }

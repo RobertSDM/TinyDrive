@@ -8,7 +8,7 @@ export default () => {
     return (
         <div className="border">
             <header className="flex max-w-[85%] mx-auto py-4 items-center justify-between h-20 min-w-[364px]">
-                <Link to={"/"} className="cursor-pointer">
+                <Link to={"/drive"} className="cursor-pointer">
                     <img
                         src="/imgs/tiny-drive-logo.svg"
                         className="aspect-square h-10"

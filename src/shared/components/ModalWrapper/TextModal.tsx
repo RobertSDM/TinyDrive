@@ -17,6 +17,8 @@ const TextModal = ({
     useEffect(() => {
         inputRef.current!.focus();
         inputRef.current!.select();
+
+        console.log(isOpen)
     }, [isOpen]);
 
     function confirm() {

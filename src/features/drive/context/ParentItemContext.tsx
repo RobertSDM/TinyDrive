@@ -1,6 +1,6 @@
 import { ItemType } from "@/shared/types/enums.ts";
 import { Item } from "@/shared/types/index.ts";
-import { createContext, ReactElement, useRef } from "react";
+import { createContext, ReactElement, useRef, useState } from "react";
 
 type ParentItemProviderProps = { children: ReactElement[] };
 type ParentItemContextProps = {
@@ -15,7 +15,7 @@ export const ParentItemContext = createContext<ParentItemContextProps>(
 
 export function ParentItemProvider({ children }: ParentItemProviderProps) {
     const root = createRootItem();
-    const parent = useRef<Item>(root);
+    const [parent, setParent] = useState<Item>(root);
 
     function createRootItem(): Item {
         return {
@@ -32,16 +32,16 @@ export function ParentItemProvider({ children }: ParentItemProviderProps) {
     }
 
     function changeParent(newParent: Item) {
-        parent.current = newParent;
+        setParent(newParent);
     }
 
     function changeParentToRoot() {
-        parent.current = root;
+        setParent(root);
     }
 
     return (
         <ParentItemContext.Provider
-            value={{ parent: parent.current, changeParent, changeParentToRoot }}
+            value={{ parent: parent, changeParent, changeParentToRoot }}
         >
             {children}
         </ParentItemContext.Provider>
