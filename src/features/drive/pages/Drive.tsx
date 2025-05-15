@@ -1,5 +1,6 @@
 import ModalProvider from "@/shared/context/ModalContext.tsx";
 import {
+    useDriveItemsContext,
     useParentContext,
     useUserContext,
 } from "@/shared/context/useContext.tsx";
@@ -20,26 +21,18 @@ import { DefaultClient } from "@/shared/api/clients.ts";
 
 function Drive() {
     let { parentid } = useParams();
-    const [items, setItems] = useState<Item[]>([]);
+    const { items, updateItems } = useDriveItemsContext();
     const title = useTitle();
     const { user } = useUserContext();
     const { changeParent } = useParentContext();
     const { isLoading, data, request } = useFetcher<ListItemResponse>(
-        {
-            ...ItemAllFromFolder,
-            path: `${ItemAllFromFolder.path}/${user.id}${
-                parentid === "drive" ? "" : "/" + parentid
-            }`,
-        },
+        ItemAllFromFolder(user.id, parentid === "drive" ? "" : parentid!),
         DefaultClient
     );
     const { request: parentRequest, data: parentData } =
-        useFetcher<SingleItemResponse>({
-            ...ItemById,
-            path: `${ItemById.path}/${user.id}${
-                parentid === "drive" ? "" : "/" + parentid
-            }`,
-        });
+        useFetcher<SingleItemResponse>(
+            ItemById(user.id, parentid === "drive" ? "" : parentid!)
+        );
     const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
     function changeSelectedItem(item: Item) {
@@ -57,7 +50,7 @@ function Drive() {
     useEffect(() => {
         if (!data || !data.success) return;
 
-        setItems(data.data!);
+        updateItems(data.data!);
     }, [data]);
 
     useEffect(() => {
@@ -83,7 +76,10 @@ function Drive() {
             </nav> */}
             <ModalProvider>
                 <ButtonUpload />
-                <ActionBar item={selectedItem} />
+                <ActionBar
+                    item={selectedItem}
+                    closeActionBar={changeSelectedItemToNull}
+                />
                 <ItemsView
                     {...{
                         items,

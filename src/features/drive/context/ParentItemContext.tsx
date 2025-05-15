@@ -1,8 +1,7 @@
 import { ItemType } from "@/shared/types/enums.ts";
 import { Item } from "@/shared/types/index.ts";
-import { createContext, ReactElement, useRef, useState } from "react";
+import { createContext, ReactNode, useState } from "react";
 
-type ParentItemProviderProps = { children: ReactElement[] };
 type ParentItemContextProps = {
     parent: Item;
     changeParent: (parent: Item) => void;
@@ -13,6 +12,7 @@ export const ParentItemContext = createContext<ParentItemContextProps>(
     {} as ParentItemContextProps
 );
 
+type ParentItemProviderProps = { children: ReactNode };
 export function ParentItemProvider({ children }: ParentItemProviderProps) {
     const root = createRootItem();
     const [parent, setParent] = useState<Item>(root);
@@ -25,6 +25,7 @@ export function ParentItemProvider({ children }: ParentItemProviderProps) {
             path: "/",
             type: ItemType.FOLDER,
             size: 0,
+            parentid: null,
             size_prefix: "",
             creation_data: 0,
             update_date: 0,

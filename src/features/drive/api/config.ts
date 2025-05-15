@@ -1,34 +1,34 @@
 import { HTTPMethods } from "@/shared/types/enums.ts";
 import { RequestConfig } from "@/shared/types/index.ts";
 
-// export const ItemRootAllConfig: RequestConfig = {
-//     path: "/item/all",
-//     method: HTTPMethods.GET,
-// };
-
-export function ItemUpdateNameConfig(id: number): RequestConfig {
+export function ItemUpdateNameConfig(id: string): RequestConfig {
     return {
         path: `/item/update/${id}/name`,
         method: HTTPMethods.PUT,
     };
 }
 
-export const ItemSaveConfig: RequestConfig = {
-    path: "/item/save",
-    method: HTTPMethods.POST,
-};
+export function ItemSaveConfig(): RequestConfig {
+    return { path: "/item/save", method: HTTPMethods.POST };
+}
 
-export const ItemDeleteConfig: RequestConfig = {
-    path: "item/delete",
-    method: HTTPMethods.DELETE,
-};
+export function ItemDeleteConfig(ownerid: string, id: string): RequestConfig {
+    return { path: `item/delete/${ownerid}/${id}`, method: HTTPMethods.DELETE };
+}
 
-export const ItemAllFromFolder: RequestConfig = {
-    path: "/item/all",
-    method: HTTPMethods.GET,
-};
+export function ItemAllFromFolder(
+    ownerid: string,
+    parentid: string | null
+): RequestConfig {
+    return {
+        path: `/item/all/${ownerid}/${parentid}`,
+        method: HTTPMethods.GET,
+    };
+}
 
-export const ItemById: RequestConfig = {
-    path: "/item",
-    method: HTTPMethods.GET,
-};
+export function ItemById(userid: string, id: string): RequestConfig {
+    return {
+        path: `/item/${userid}/${id}`,
+        method: HTTPMethods.GET,
+    };
+}

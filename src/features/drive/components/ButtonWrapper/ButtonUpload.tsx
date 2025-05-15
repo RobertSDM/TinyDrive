@@ -1,25 +1,38 @@
-import { DefaultClient } from "@/shared/api/clients.ts";
 import TextModal from "@/shared/components/ModalWrapper/TextModal.tsx";
 import {
+    useDriveItemsContext,
     useModalContext,
     useParentContext,
     useUserContext,
 } from "@/shared/context/useContext.tsx";
 import { ItemType } from "@/shared/types/enums.ts";
-import { ItemData } from "@/shared/types/index.ts";
+import { ItemData, SingleItemResponse } from "@/shared/types/index.ts";
 import { useState } from "react";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import transformFileToItem from "../../core/extractFileContent.ts";
 import { saveItemService } from "../../service/itemService.ts";
 import DropDown, { FileOptionType } from "../DropDownWrapper/DropDown.tsx";
 import { ItemSaveConfig } from "../../api/config.ts";
+import useFetcher from "@/shared/hooks/useRequest.tsx";
+import { DefaultClient } from "@/shared/api/clients.ts";
 
 export default function ButtonUpload() {
     const [isOpen, setIsOpen] = useState(false);
+    const { addItem } = useDriveItemsContext();
 
     const { parent } = useParentContext();
     const { user } = useUserContext();
-    const { openModal, closeModal, isOpen: isModalOpen } = useModalContext();
+    const { openModal, closeModal } = useModalContext();
+    const { request } = useFetcher<SingleItemResponse>(
+        ItemSaveConfig(),
+        DefaultClient,
+        false,
+        (resp) => {
+            addItem(resp.data.data);
+
+            return resp.data;
+        }
+    );
 
     function open() {
         setIsOpen(true);
@@ -46,24 +59,35 @@ export default function ButtonUpload() {
             <DropDown {...{ isOpen }}>
                 <DropDown.FileOption
                     text="Upload File"
-                    onchange={(filelist: FileList) => {
+                    onchange={async (filelist: FileList) => {
                         const fileStruct = transformFileToItem(
                             filelist,
                             user.id
                         );
 
-                        saveItemService(fileStruct, parent.id!);
+                        for await (const item of saveItemService(
+                            fileStruct,
+                            parent.id!
+                        )) {
+                            addItem(item);
+                        }
                     }}
                     type={FileOptionType.FILE}
                 />
                 <DropDown.FileOption
                     text="Upload Folder"
-                    onchange={(filelist: FileList) => {
+                    onchange={async (filelist: FileList) => {
                         const fileStruct = transformFileToItem(
                             filelist,
                             user.id
                         );
-                        saveItemService(fileStruct, parent.id!);
+
+                        for await (const item of saveItemService(
+                            fileStruct,
+                            parent.id!
+                        )) {
+                            if (item.parentid === parent.id) addItem(item);
+                        }
                     }}
                     type={FileOptionType.FOLDER}
                 />
@@ -81,14 +105,10 @@ export default function ButtonUpload() {
                                         size: 0,
                                         type: ItemType.FOLDER,
                                     };
-                                    DefaultClient({
-                                        ...ItemSaveConfig,
-                                        data: item,
-                                        url: ItemSaveConfig.path,
-                                    });
+                                    request(item);
                                 }}
                                 close={closeModal}
-                                isOpen={isModalOpen}
+                                isOpen={true}
                             />
                         )
                     }

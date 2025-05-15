@@ -1,38 +1,59 @@
 import TextModal from "@/shared/components/ModalWrapper/TextModal.tsx";
 import {
+    useDriveItemsContext,
     useModalContext,
     useUserContext,
 } from "@/shared/context/useContext.tsx";
 import useFetcher from "@/shared/hooks/useRequest.tsx";
-import { Item } from "@/shared/types/index.ts";
+import { Item, SingleItemResponse } from "@/shared/types/index.ts";
 import { ItemDeleteConfig, ItemUpdateNameConfig } from "../../api/config.ts";
+import { DefaultClient } from "@/shared/api/clients.ts";
 
 type ActionBarProps = {
     item?: Item | null;
+    closeActionBar: () => void;
 };
-export default function ActionBar({ item }: ActionBarProps) {
+export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
     const { user } = useUserContext();
-    const { request: _delete } = useFetcher({
-        ...ItemDeleteConfig,
-        path: `${ItemDeleteConfig.path}/${user.id}/${item?.id}`,
-    });
-    const { request: update } = useFetcher(
-        ItemUpdateNameConfig(item?.id! ?? 0)
+    const { removeItem, reloadItems } = useDriveItemsContext();
+    const { request: _delete } = useFetcher(
+        ItemDeleteConfig(user.id, item?.id ?? ""),
+        DefaultClient,
+        false,
+        (resp) => {
+            removeItem(item!);
+            closeActionBar();
+            return resp.data;
+        }
+    );
+    const { request: update } = useFetcher<SingleItemResponse>(
+        ItemUpdateNameConfig(item?.id! ?? ""),
+        DefaultClient,
+        false,
+        (resp) => {
+            item!.name = resp.data.data.name;
+            reloadItems();
+            return resp.data;
+        }
     );
     const { closeModal, openModal } = useModalContext();
 
     return (
         <div
-            className={`h-10  px-1 rounded-md my-2 flex items-center gap-x-2 ${
-                !item ? "bg-white" : "bg-slate-50"
-            }`}
+            className={`h-10  px-1 rounded-md my-2 flex items-center gap-x-2  "bg-white"
+            `}
         >
             {item && (
                 <>
                     <button
                         className="hover:bg-red-400 bg-red-200 px-2 py-1 rounded-md hover:text-white"
                         onClick={() => {
-                            if (!confirm("Confirm to delete")) return;
+                            if (
+                                !confirm(
+                                    "Are you sure? All the data from the folder will be lost"
+                                )
+                            )
+                                return;
 
                             _delete();
                         }}

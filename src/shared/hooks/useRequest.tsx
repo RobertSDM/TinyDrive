@@ -12,7 +12,7 @@ export default function useFetcher<T>(
     client: Client = DefaultClient,
     autofetch: boolean = false,
     responseTransformer: (
-        resp: AxiosResponse
+        resp: AxiosResponse<T>
     ) => T = DefaultResponseTransformer,
     errorTransformer: (error: any) => Error = DefaultErrorTransformer
 ) {

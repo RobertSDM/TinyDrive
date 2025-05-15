@@ -17,7 +17,7 @@ const Register = () => {
     const [confirmPass, setConfirmPass] = useState<string>("");
     const { request, isLoading } = useFetcher<void>(
         {
-            ...registerConfig,
+            ...registerConfig(),
             body: {
                 email,
                 password,

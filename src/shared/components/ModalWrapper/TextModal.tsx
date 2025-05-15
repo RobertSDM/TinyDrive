@@ -16,13 +16,13 @@ const TextModal = ({
 
     useEffect(() => {
         inputRef.current!.focus();
-    }, []);
+    }, [isOpen]);
 
     function confirm() {
         close();
         callback(text);
     }
-
+    
     function cancel() {
         close();
     }

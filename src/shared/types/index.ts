@@ -7,13 +7,14 @@ import {
 } from "./enums.ts";
 
 export type Item = {
-    id: number | null;
+    id: string;
     name: string;
     extension: string;
     size: number;
     size_prefix: string;
     type: ItemType;
     path: string;
+    parentid: string | null;
     update_date: number;
     creation_data: number;
 };
@@ -24,12 +25,12 @@ export type ItemData = {
     size: number;
     type: string;
     path: string;
-    ownerid: number;
-    parentid: number | null;
+    ownerid: string;
+    parentid: string | null;
 };
 
 export type User = {
-    id: number;
+    id: string;
     username: string;
     email: string;
 };
@@ -44,7 +45,7 @@ export type RequestConfig = {
         [key: string]: string;
     };
     params?: {
-        [key: string]: string
+        [key: string]: string;
     };
 };
 

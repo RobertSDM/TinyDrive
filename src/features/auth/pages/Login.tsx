@@ -19,7 +19,7 @@ const Login = () => {
     const [password, setPassword] = useState<string>("");
     const { request, data, isLoading } = useFetcher<AuthResponse>(
         {
-            ...loginConfig,
+            ...loginConfig(),
             body: { email, password },
         },
         DefaultClient

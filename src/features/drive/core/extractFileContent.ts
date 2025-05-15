@@ -1,8 +1,6 @@
 import { ItemType } from "@/shared/types/enums.ts";
 import { ItemData, Node } from "@/shared/types/index.ts";
 
-
-
 function findPlaceToInsert(
     node: Node,
     path: string[],
@@ -21,7 +19,7 @@ function findPlaceToInsert(
     return [node, depth];
 }
 
-function makeFileStructure(file: File, ownerid: number, startNode: Node) {
+function makeFileStructure(file: File, ownerid: string, startNode: Node) {
     let wholePath: string = file.webkitRelativePath;
     if (wholePath.length === 0) wholePath = file.name;
 
@@ -31,9 +29,9 @@ function makeFileStructure(file: File, ownerid: number, startNode: Node) {
     let [node, depth] = findPlaceToInsert(startNode, folders);
 
     node = folders.slice(depth).reduce((acc, f, i) => {
-        const folderItem = {
+        const folderItem: ItemData = {
             extension: "",
-            parentid: 0,
+            parentid: null,
             size: 0,
             type: ItemType.FOLDER,
             name: f,
@@ -73,13 +71,13 @@ function makeFileStructure(file: File, ownerid: number, startNode: Node) {
 
 export default function transformFileToItem(
     filelist: FileList,
-    ownerid: number
+    ownerid: string
 ): Node {
-    const defaultItemData = {
+    const defaultItemData: ItemData = {
         extension: "",
         name: "",
-        ownerid: 0,
-        parentid: 0,
+        ownerid: ownerid,
+        parentid: null,
         path: "",
         size: 0,
         type: ItemType.FOLDER,

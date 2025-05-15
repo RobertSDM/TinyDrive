@@ -1,20 +1,29 @@
 import { DefaultClient } from "@/shared/api/clients.ts";
 import { ItemType } from "@/shared/types/enums.ts";
-import { Node } from "@/shared/types/index.ts";
+import { Item, Node, SingleItemResponse } from "@/shared/types/index.ts";
 import { ItemSaveConfig } from "../api/config.ts";
 
-export function saveItemService(n: Node, id: number) {
-    n.children.forEach(async (c) => {
+export async function* saveItemService(
+    n: Node,
+    id: string
+): AsyncGenerator<Item, void, unknown> {
+    for (let i = 0; i < n.children.length; i++) {
+        const c = n.children[i];
+
         c.item.parentid = id;
+        const config = ItemSaveConfig();
         const res = await DefaultClient({
-            ...ItemSaveConfig,
+            ...config,
             data: c.item,
-            url: ItemSaveConfig.path,
+            url: config.path,
         });
-        const item = res.data;
+        const item: SingleItemResponse = res.data;
+        if (!item.data) continue;
 
-        if (c.item.type === ItemType.FILE || !item) return;
+        yield item.data;
 
-        saveItemService(c, item.data.id!);
-    });
+        if (c.item.type === ItemType.FILE) continue;
+
+        yield* saveItemService(c, item.data.id!);
+    }
 }
