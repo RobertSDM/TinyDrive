@@ -19,18 +19,18 @@ export default function ActionBar({ item }: ActionBarProps) {
     const { request: update } = useFetcher(
         ItemUpdateNameConfig(item?.id! ?? 0)
     );
-    const { closeModal, openModal, isOpen } = useModalContext();
+    const { closeModal, openModal } = useModalContext();
 
     return (
         <div
-            className={`h-10  px-1 rounded-md my-2 flex items-center ${
-                !item ? "bg-white" : "bg-slate-200"
+            className={`h-10  px-1 rounded-md my-2 flex items-center gap-x-2 ${
+                !item ? "bg-white" : "bg-slate-50"
             }`}
         >
             {item && (
                 <>
                     <button
-                        className="hover:bg-red-500 px-2 py-1 rounded-md hover:text-white"
+                        className="hover:bg-red-400 bg-red-200 px-2 py-1 rounded-md hover:text-white"
                         onClick={() => {
                             if (!confirm("Confirm to delete")) return;
 
@@ -40,7 +40,7 @@ export default function ActionBar({ item }: ActionBarProps) {
                         Delete
                     </button>
                     <button
-                        className="hover:bg-slate-500 px-2 py-1 rounded-md hover:text-white"
+                        className="hover:bg-slate-400 bg-slate-200 px-2 py-1 rounded-md hover:text-white"
                         onClick={() => {
                             openModal(
                                 <TextModal
@@ -50,7 +50,7 @@ export default function ActionBar({ item }: ActionBarProps) {
                                             name,
                                         });
                                     }}
-                                    isOpen={isOpen}
+                                    isOpen={true}
                                 />
                             );
                         }}
