@@ -1,8 +1,8 @@
 import TextModal from "@/shared/components/ModalWrapper/TextModal.tsx";
 import {
+    useAuthContext,
     useDriveItemsContext,
     useModalContext,
-    useUserContext,
 } from "@/shared/context/useContext.tsx";
 import useFetcher from "@/shared/hooks/useRequest.tsx";
 import { Item, SingleItemResponse } from "@/shared/types/index.ts";
@@ -15,10 +15,10 @@ type ActionBarProps = {
     closeActionBar: () => void;
 };
 export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
-    const { user } = useUserContext();
     const { removeItem, reloadItems } = useDriveItemsContext();
+    const { account } = useAuthContext();
     const { request: _delete } = useFetcher(
-        ItemDeleteConfig(user.id, item?.id ?? ""),
+        ItemDeleteConfig(account!.id, item?.id ?? ""),
         DefaultClient,
         false,
         (resp) => {
@@ -27,6 +27,7 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
             return resp.data;
         }
     );
+
     const { request: update } = useFetcher<SingleItemResponse>(
         ItemUpdateNameConfig(item?.id! ?? ""),
         DefaultClient,

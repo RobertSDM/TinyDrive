@@ -1,9 +1,9 @@
-import { useCallback } from "react";
+import { useEffect } from "react";
 
-const useTitle = () => {
-    return useCallback((txt: string) => {
-        document.title = txt;
-    }, []);
+const useTitle = (title: string) => {
+  useEffect(() => {
+    document.title = title;
+  }, []);
 };
 
 export default useTitle;

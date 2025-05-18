@@ -1,6 +1,9 @@
 // Enviroment variables
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
+export const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+export const supabaseKey = import.meta.env.VITE_SUPABASE_KEY
+
 // JWT Token
 export const TOKEN_NAME = import.meta.env.VITE_TOKEN_NAME;
 

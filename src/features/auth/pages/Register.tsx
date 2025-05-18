@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useNotificationSystemContext } from "@/shared/context/useContext.tsx";
+import {
+    useNotificationSystemContext
+} from "@/shared/context/useContext.tsx";
+import useFetcher from "@/shared/hooks/useRequest.tsx";
 import useTitle from "@/shared/hooks/useTitle.tsx";
 import { emailPassVerification } from "@/shared/utils/valitation.ts";
-import { NotificationLevels } from "@/shared/types/enums.ts";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { registerConfig } from "../api/config.ts";
-import { DefaultClient } from "@/shared/api/clients.ts";
-import useFetcher from "@/shared/hooks/useRequest.tsx";
 import AuthForm from "../components/FormWrapper/AuthForm.tsx";
 
 const Register = () => {
@@ -15,35 +15,16 @@ const Register = () => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [confirmPass, setConfirmPass] = useState<string>("");
-    const { request, isLoading } = useFetcher<void>(
-        {
-            ...registerConfig(),
-            body: {
-                email,
-                password,
-                username,
-            },
+    const { request, isLoading } = useFetcher<void>({
+        ...registerConfig(),
+        body: {
+            email,
+            password,
+            username,
         },
-        DefaultClient,
-        false,
-        () => {
-            addNotif({
-                level: NotificationLevels.INFO,
-                msg: `Registred with success`,
-            });
-            navigate("/login");
-        },
-        (err) => {
-            console.log(err);
-            return err;
-        }
-    );
+    });
     const navigate = useNavigate();
-    const setTitle = useTitle();
-
-    useEffect(() => {
-        setTitle("Register | Tiny Drive");
-    }, []);
+    useTitle("Register | Tiny Drive");
 
     return (
         <div className="h-screen pt-10 px-10 space-y-36">
@@ -69,7 +50,9 @@ const Register = () => {
                         );
 
                         if (isValid) {
-                            request();
+                            request().then(() => {
+                                navigate("/login");
+                            });
                         }
                     }}
                 >

@@ -1,45 +1,27 @@
-import {
-    useNotificationSystemContext,
-    useUserContext,
-} from "@/shared/context/useContext.tsx";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { DefaultClient } from "@/shared/api/clients.ts";
-import useFetcher from "@/shared/hooks/useRequest.tsx";
+import { useAuthContext } from "@/shared/context/useContext.tsx";
 import useTitle from "@/shared/hooks/useTitle.tsx";
-import { AuthResponse } from "@/shared/types/index.ts";
-import { loginConfig } from "../api/config.ts";
 import AuthForm from "../components/FormWrapper/AuthForm.tsx";
-import { emailPassVerification } from "@/shared/utils/valitation.ts";
 
 const Login = () => {
-    const { addNotif } = useNotificationSystemContext();
+    // const { addNotif } = useNotificationSystemContext();
+    const { logIn } = useAuthContext();
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const { request, data, isLoading } = useFetcher<AuthResponse>(
-        {
-            ...loginConfig(),
-            body: { email, password },
-        },
-        DefaultClient
-    );
-
-    const setTitle = useTitle();
-    const { userLogin } = useUserContext();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!data || !data.success) return;
+    useTitle("Login | Tiny Drive");
+    // const { userLogin } = useUserContext();
 
-        userLogin(data.data!, data.token);
-        navigate("/drive");
-        sessionStorage.removeItem("contCache");
-    }, [data]);
+    // useEffect(() => {
+    //     if (!data || !data.success) return;
 
-    useEffect(() => {
-        setTitle("Login | Tiny Drive");
-    }, []);
+    //     // userLogin(data.data!, data.token);
+    //     navigate("/drive");
+    //     sessionStorage.removeItem("contCache");
+    // }, [data]);
 
     return (
         <div className="h-screen pt-10 px-10 mx-auto space-y-40">
@@ -54,20 +36,18 @@ const Login = () => {
             <section className="flex items-center flex-col">
                 <AuthForm
                     style="w-96 space-y-5 flex justify-center flex-col items-center"
-                    onsubmit={(event) => {
+                    onsubmit={async (event) => {
                         event.preventDefault();
 
-                        setEmail((prev) => prev.trimEnd().toLowerCase());
-
-                        const isValid = emailPassVerification(email, addNotif);
-                        if (isValid) {
-                            request();
-                        }
+                        logIn(email, password);
+                        navigate("/drive");
                     }}
                 >
                     <AuthForm.Input
                         value={email}
-                        setValue={setEmail}
+                        setValue={(email: string) => {
+                            setEmail(email.trimEnd().toLowerCase());
+                        }}
                         title="Email"
                         maxLength={100}
                         minLength={4}
@@ -89,8 +69,8 @@ const Login = () => {
                             {isLoading ? "Loading..." : "Login"}
                         </button> */}
                         <AuthForm.Button
-                            disabled={isLoading}
-                            text={isLoading ? "Loading" : "Login"}
+                            disabled={false}
+                            text={false ? "Loading" : "Login"}
                         />
                     </section>
                     <div className="flex items-center flex-col">

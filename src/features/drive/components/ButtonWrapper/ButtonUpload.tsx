@@ -1,9 +1,9 @@
 import TextModal from "@/shared/components/ModalWrapper/TextModal.tsx";
 import {
+    useAuthContext,
     useDriveItemsContext,
     useModalContext,
     useParentContext,
-    useUserContext,
 } from "@/shared/context/useContext.tsx";
 import { ItemType } from "@/shared/types/enums.ts";
 import { ItemData, SingleItemResponse } from "@/shared/types/index.ts";
@@ -21,7 +21,7 @@ export default function ButtonUpload() {
     const { addItem } = useDriveItemsContext();
 
     const { parent } = useParentContext();
-    const { user } = useUserContext();
+    const { account } = useAuthContext();
     const { openModal, closeModal } = useModalContext();
     const { request } = useFetcher<SingleItemResponse>(
         ItemSaveConfig(),
@@ -62,7 +62,7 @@ export default function ButtonUpload() {
                     onchange={async (filelist: FileList) => {
                         const fileStruct = transformFileToItem(
                             filelist,
-                            user.id
+                            account!.id
                         );
 
                         for await (const item of saveItemService(
@@ -79,7 +79,7 @@ export default function ButtonUpload() {
                     onchange={async (filelist: FileList) => {
                         const fileStruct = transformFileToItem(
                             filelist,
-                            user.id
+                            account!.id
                         );
 
                         for await (const item of saveItemService(
@@ -99,7 +99,7 @@ export default function ButtonUpload() {
                                     const item: ItemData = {
                                         extension: "",
                                         name: text,
-                                        ownerid: user.id,
+                                        ownerid: account!.id,
                                         parentid: parent.id,
                                         path: text,
                                         size: 0,

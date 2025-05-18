@@ -31,6 +31,7 @@
         "vite": "^5.1.6"
     },
     "dependencies": {
+        "@supabase/supabase-js": "^2.49.4",
         "axios": "^1.7.2"
     }
 }

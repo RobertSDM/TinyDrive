@@ -1,16 +1,16 @@
 import { useContext } from "react";
-import { UserContext } from "./UserContext.tsx";
 import { NotificationContext } from "./NotificationSystem.tsx";
 import { ParentItemContext } from "@/features/drive/context/ParentItemContext.tsx";
 import { ModalContext } from "./ModalContext.tsx";
 import { DriveItemsContext } from "@/features/drive/context/DriveItemsContext.tsx";
-
-export const useUserContext = () => {
-    return useContext(UserContext);
-};
+import { AuthContext } from "./AuthContext.tsx";
 
 export const useNotificationSystemContext = () => {
     return useContext(NotificationContext);
+};
+
+export const useAuthContext = () => {
+    return useContext(AuthContext);
 };
 
 export const useParentContext = () => {

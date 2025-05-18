@@ -7,7 +7,7 @@ import {
 } from "./enums.ts";
 
 export type Item = {
-    id: string;
+    id: string | null;
     name: string;
     extension: string;
     size: number;
@@ -33,6 +33,13 @@ export type User = {
     id: string;
     username: string;
     email: string;
+};
+
+export type Account = {
+    id: string;
+    username: string;
+    email: string;
+    creation_date: string;
 };
 
 export type Client = AxiosInstance;
