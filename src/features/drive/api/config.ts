@@ -18,17 +18,28 @@ export function ItemDeleteConfig(ownerid: string, id: string): RequestConfig {
 
 export function ItemAllFromFolder(
     ownerid: string,
-    parentid: string | null
+    parentid: string | null,
+    accessToken: string
 ): RequestConfig {
     return {
         path: `/item/all/${ownerid}/${parentid}`,
         method: HTTPMethods.GET,
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
     };
 }
 
-export function ItemById(userid: string, id: string): RequestConfig {
+export function ItemById(
+    userid: string,
+    id: string,
+    accessToken: string
+): RequestConfig {
     return {
         path: `/item/${userid}/${id}`,
         method: HTTPMethods.GET,
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
     };
 }

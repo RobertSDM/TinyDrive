@@ -10,5 +10,7 @@ export default function ProtectedRoute() {
         if (!isLogged && !isLoading) navigate("/login");
     }, [isLogged, isLoading]);
 
+    if (isLoading) return <p>Loading...</p>;
+
     return <Outlet />;
 }

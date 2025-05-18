@@ -6,7 +6,7 @@ export function AccountGet(id: string, accessToken: string): RequestConfig {
         path: `account/${id}`,
         method: HTTPMethods.GET,
         headers: {
-            Authentication: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
         },
     };
 }

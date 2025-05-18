@@ -1,16 +1,16 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
-import authClient from "../clients/supabase/authClient.ts";
 import { Session, User } from "@supabase/supabase-js";
-import useFetcher from "../hooks/useRequest.tsx";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { AccountGet } from "../api/config.ts";
+import authClient from "../clients/supabase/authClient.ts";
+import useFetcher from "../hooks/useRequest.tsx";
 import { Account, SingleResponse } from "../types/index.ts";
-import { useNavigate } from "react-router-dom";
 
 type AuthContext = {
     user: User | null;
     logOut: () => void;
     logIn: (email: string, password: string) => void;
     isLogged: boolean;
+    session: Session | null;
     isLoading: boolean;
     account: Account | null;
 };
@@ -29,23 +29,21 @@ export default function AuthProvider({ children: chidren }: AuthProviderProps) {
 
     useEffect(() => {
         if (!session?.access_token) return;
-
         request();
     }, [session]);
 
     useEffect(() => {
         if (!data) return;
+        setIsLoading(false);
         setAccount(data.data);
     }, [data]);
 
     useEffect(() => {
-        setIsLoading(true);
         authClient.getSession().then((resp) => {
             if (resp.error) return;
             setUser(resp.data.session?.user ?? null);
             setSession(resp.data.session);
             setIsLogged(true);
-            setIsLoading(false);
         });
     }, []);
 
@@ -58,19 +56,25 @@ export default function AuthProvider({ children: chidren }: AuthProviderProps) {
     }
 
     function logOut() {
-        setIsLoading(true);
         authClient.logOut().then(() => {
             setIsLoading(false);
             setUser(null);
             setSession(null);
             setAccount(null);
-            setIsLogged(false);
         });
     }
 
     return (
         <AuthContext.Provider
-            value={{ user, logOut, isLogged, logIn, account, isLoading }}
+            value={{
+                user,
+                logOut,
+                isLogged,
+                logIn,
+                account,
+                isLoading,
+                session,
+            }}
         >
             {chidren}
         </AuthContext.Provider>

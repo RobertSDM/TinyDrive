@@ -18,7 +18,7 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
     const { removeItem, reloadItems } = useDriveItemsContext();
     const { account } = useAuthContext();
     const { request: _delete } = useFetcher(
-        ItemDeleteConfig(account!.id, item?.id ?? ""),
+        ItemDeleteConfig(account?.id ?? "", item?.id ?? ""),
         DefaultClient,
         false,
         (resp) => {
