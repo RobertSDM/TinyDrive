@@ -5,8 +5,16 @@ import {
     useModalContext,
 } from "@/shared/context/useContext.tsx";
 import useFetcher from "@/shared/hooks/useRequest.tsx";
-import { Item, SingleItemResponse } from "@/shared/types/index.ts";
-import { ItemDeleteConfig, ItemUpdateNameConfig } from "../../api/config.ts";
+import {
+    Item,
+    SingleItemResponse,
+    SingleResponse,
+} from "@/shared/types/index.ts";
+import {
+    ItemDeleteConfig,
+    ItemDownload as ItemDownloadConfig,
+    ItemUpdateNameConfig,
+} from "../../api/config.ts";
 import { DefaultClient } from "@/shared/api/clients.ts";
 import { useEffect } from "react";
 
@@ -16,9 +24,9 @@ type ActionBarProps = {
 };
 export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
     const { removeItem, reloadItems } = useDriveItemsContext();
-    const { account } = useAuthContext();
+    const { account, session } = useAuthContext();
     const { request: _delete } = useFetcher(
-        ItemDeleteConfig(account?.id ?? "", item?.id ?? ""),
+        ItemDeleteConfig(account!.id!, item?.id ?? "", session!.access_token),
         DefaultClient,
         false,
         (resp) => {
@@ -29,12 +37,32 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
     );
 
     const { request: update } = useFetcher<SingleItemResponse>(
-        ItemUpdateNameConfig(item?.id! ?? ""),
+        ItemUpdateNameConfig(
+            item?.id! ?? "",
+            account!.id,
+            session!.access_token
+        ),
         DefaultClient,
         false,
         (resp) => {
             item!.name = resp.data.data.name;
             reloadItems();
+            return resp.data;
+        }
+    );
+
+    const { request: download } = useFetcher<SingleResponse<string>>(
+        ItemDownloadConfig(account!.id, item?.id! ?? "", session!.access_token),
+        DefaultClient,
+        false,
+        (resp) => {
+            const $a = document.createElement("a");
+            $a.download = "";
+            $a.href = resp.data.data;
+
+            $a.click();
+            $a.remove();
+
             return resp.data;
         }
     );
@@ -104,6 +132,14 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
                         }}
                     >
                         Rename
+                    </button>
+                    <button
+                        className="hover:bg-slate-400 bg-slate-200 px-2 py-1 rounded-md hover:text-white"
+                        onClick={() => {
+                            download();
+                        }}
+                    >
+                        Download
                     </button>
                 </>
             )}

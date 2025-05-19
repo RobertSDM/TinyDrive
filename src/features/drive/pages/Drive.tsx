@@ -61,7 +61,7 @@ function Drive() {
 
     useEffect(() => {
         changeSelectedItemToNull();
-        parentRequest();
+        if (parentid !== "drive") parentRequest();
         request();
     }, [parentid]);
 
