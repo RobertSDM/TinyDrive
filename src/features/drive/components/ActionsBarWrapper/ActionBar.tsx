@@ -27,8 +27,6 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
     const { account, session } = useAuthContext();
     const { request: _delete } = useFetcher(
         ItemDeleteConfig(account!.id!, item?.id ?? "", session!.access_token),
-        DefaultClient,
-        false,
         (resp) => {
             removeItem(item!);
             closeActionBar();
@@ -42,8 +40,6 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
             account!.id,
             session!.access_token
         ),
-        DefaultClient,
-        false,
         (resp) => {
             item!.name = resp.data.data.name;
             reloadItems();
@@ -53,8 +49,6 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
 
     const { request: download } = useFetcher<SingleResponse<string>>(
         ItemDownloadConfig(account!.id, item?.id! ?? "", session!.access_token),
-        DefaultClient,
-        false,
         (resp) => {
             const $a = document.createElement("a");
             $a.download = "";

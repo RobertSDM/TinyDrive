@@ -22,8 +22,6 @@ export default function ButtonUpload() {
     const { openModal, closeModal } = useModalContext();
     const { request: fileRequest } = useFetcher<SingleItemResponse>(
         ItemSaveConfig(session!.access_token),
-        DefaultClient,
-        false,
         (resp) => {
             const item = resp.data.data;
             if (item.parentid === parent.id) addItem(resp.data.data);
@@ -33,8 +31,6 @@ export default function ButtonUpload() {
     );
     const { request: folderRequest } = useFetcher<SingleItemResponse>(
         ItemSaveFolderConfig(session!.access_token),
-        DefaultClient,
-        false,
         (resp) => {
             addItem(resp.data.data);
 

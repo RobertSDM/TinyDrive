@@ -9,12 +9,12 @@ import {
 
 export default function useFetcher<T>(
     config: RequestConfig,
-    client: Client = DefaultClient,
-    autofetch: boolean = false,
     responseTransformer: (
         resp: AxiosResponse<T>
     ) => T = DefaultResponseTransformer,
-    errorTransformer: (error: any) => Error = DefaultErrorTransformer
+    errorTransformer: (error: any) => Error = DefaultErrorTransformer,
+    client: Client = DefaultClient,
+    autofetch: boolean = false
 ) {
     const [data, setData] = useState<T | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
