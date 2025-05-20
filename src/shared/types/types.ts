@@ -19,22 +19,6 @@ export type Item = {
     creation_data: number;
 };
 
-export type ItemData = {
-    name: string;
-    extension: string;
-    size: number;
-    type: string;
-    path: string;
-    ownerid: string;
-    parentid: string | null;
-};
-
-export type User = {
-    id: string;
-    username: string;
-    email: string;
-};
-
 export type Account = {
     id: string;
     username: string;
@@ -51,15 +35,12 @@ export type RequestConfig = {
     headers?: {
         [key: string]: string;
     };
-    params?: {
-        [key: string]: string;
-    };
 };
 
-export type Node = {
-    item: ItemData;
-    children: Node[];
-    buffer: Promise<ArrayBuffer> | null;
+export type AuthResult = {
+    accessToken: string;
+    refreshToken: string;
+    userid: string;
 };
 
 export type DefaultResponse = {
@@ -76,10 +57,6 @@ export type ListResponse<T> = DefaultResponse & {
 
 export type SingleResponse<T> = DefaultResponse & {
     data: T;
-};
-
-export type AuthResponse = SingleResponse<User> & {
-    token: string;
 };
 
 export type ListItemResponse = ListResponse<Item> & {};

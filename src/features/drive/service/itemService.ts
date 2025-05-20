@@ -1,7 +1,7 @@
-import { DefaultClient } from "@/shared/api/clients.ts";
+import { ServerClient } from "@/shared/api/requestClients.ts";
 import { ItemType } from "@/shared/types/enums.ts";
-import { Item, Node, SingleItemResponse } from "@/shared/types/index.ts";
-import { ItemSaveConfig } from "../api/config.ts";
+import { Item, Node, SingleItemResponse } from "@/shared/types/types.ts";
+import { ItemSaveConfig } from "../api/requestConfig.ts";
 
 export async function* saveItemService(
     n: Node,
@@ -12,7 +12,7 @@ export async function* saveItemService(
 
         c.item.parentid = id;
         const config = ItemSaveConfig();
-        const res = await DefaultClient({
+        const res = await ServerClient({
             ...config,
             data: c.item,
             url: config.path,

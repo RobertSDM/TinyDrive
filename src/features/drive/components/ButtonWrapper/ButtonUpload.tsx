@@ -5,13 +5,16 @@ import {
     useModalContext,
     useParentContext,
 } from "@/shared/context/useContext.tsx";
-import useFetcher from "@/shared/hooks/useRequest.tsx";
+import useRequest from "@/shared/hooks/useRequest.tsx";
+import { SingleItemResponse } from "@/shared/types/types.ts";
 import { useState } from "react";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
-import { ItemSaveConfig, ItemSaveFolderConfig } from "../../api/config.ts";
+
 import DropDown, { FileOptionType } from "../DropDownWrapper/DropDown.tsx";
-import { SingleItemResponse } from "@/shared/types/index.ts";
-import { DefaultClient } from "@/shared/api/clients.ts";
+import {
+    ItemSaveConfig,
+    ItemSaveFolderConfig,
+} from "../../api/requestConfig.ts";
 
 export default function ButtonUpload() {
     const [isOpen, setIsOpen] = useState(false);
@@ -20,8 +23,8 @@ export default function ButtonUpload() {
     const { parent } = useParentContext();
     const { account, session } = useAuthContext();
     const { openModal, closeModal } = useModalContext();
-    const { request: fileRequest } = useFetcher<SingleItemResponse>(
-        ItemSaveConfig(session!.access_token),
+    const { request: fileRequest } = useRequest<SingleItemResponse>(
+        ItemSaveConfig(session!.accessToken),
         (resp) => {
             const item = resp.data.data;
             if (item.parentid === parent.id) addItem(resp.data.data);
@@ -29,8 +32,8 @@ export default function ButtonUpload() {
             return resp.data;
         }
     );
-    const { request: folderRequest } = useFetcher<SingleItemResponse>(
-        ItemSaveFolderConfig(session!.access_token),
+    const { request: folderRequest } = useRequest<SingleItemResponse>(
+        ItemSaveFolderConfig(session!.accessToken),
         (resp) => {
             addItem(resp.data.data);
 

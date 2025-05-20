@@ -1,5 +1,5 @@
 import { ItemType } from "@/shared/types/enums.ts";
-import { Item } from "@/shared/types/index.ts";
+import { Item } from "@/shared/types/types.ts";
 import { useEffect } from "react";
 import { FaFile } from "react-icons/fa";
 import { FaFolderClosed } from "react-icons/fa6";

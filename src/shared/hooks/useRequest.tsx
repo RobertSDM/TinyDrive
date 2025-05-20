@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
-import { Client, RequestConfig } from "../types/index.ts";
-import { DefaultClient } from "../api/clients.ts";
+import { Client, RequestConfig } from "../types/types.ts";
+import { ServerClient } from "../api/requestClients.ts";
 import { AxiosResponse } from "axios";
 import {
-    DefaultErrorTransformer,
-    DefaultResponseTransformer,
-} from "../api/responseTransformers.ts";
+    DefaultErrorCallback,
+    DefaultResponseCallback,
+} from "../api/responsesCallbacks.ts";
 
-export default function useFetcher<T>(
+export default function useRequest<T>(
     config: RequestConfig,
     responseTransformer: (
         resp: AxiosResponse<T>
-    ) => T = DefaultResponseTransformer,
-    errorTransformer: (error: any) => Error = DefaultErrorTransformer,
-    client: Client = DefaultClient,
+    ) => T = DefaultResponseCallback,
+    errorTransformer: (error: any) => Error = DefaultErrorCallback,
+    client: Client = ServerClient,
     autofetch: boolean = false
 ) {
     const [data, setData] = useState<T | null>(null);

@@ -1,6 +1,6 @@
 import { FaFile, FaFolderClosed } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import { TSeachFile, TSearchFolder } from "@/shared/types/index.ts";
+import { TSeachFile, TSearchFolder } from "@/shared/types/types.ts";
 
 const isFile = (item: TSeachFile | TSearchFolder) => {
     return (item as TSeachFile)?.byteSize !== undefined;

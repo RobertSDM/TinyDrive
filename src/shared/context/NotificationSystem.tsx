@@ -5,7 +5,7 @@ import {
     useEffect,
     useState,
 } from "react";
-import type { INotification } from "../types/index.ts";
+import type { INotification } from "../types/types.ts";
 
 type context = {
     addNotif: (notification: INotification) => void;

@@ -8,15 +8,14 @@ import DriveLayout from "./features/drive/layouts/DriveLayout.tsx";
 import Drive from "./features/drive/pages/Drive.tsx";
 import { NotificationProvider } from "./shared/context/NotificationSystem.tsx";
 import AuthProvider from "./shared/context/AuthContext.tsx";
-import AllowedRoute from "./shared/components/RouteWrapper/AllowedRoute.tsx";
-import ProtectedRoute from "./shared/components/RouteWrapper/ProtectedRoute.tsx";
+import ProtectedPage from "./shared/components/RouteWrapper/ProtectedRoute.tsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
         children: [
             {
-                element: <ProtectedRoute />,
+                element: <ProtectedPage />,
                 children: [
                     {
                         element: <DriveLayout />,
@@ -30,20 +29,15 @@ const router = createBrowserRouter([
                 ],
             },
             {
-                element: <AllowedRoute />,
+                element: <AuthLayout />,
                 children: [
                     {
-                        element: <AuthLayout />,
-                        children: [
-                            {
-                                path: "/register",
-                                element: <Register />,
-                            },
-                            {
-                                path: "/login",
-                                element: <Login />,
-                            },
-                        ],
+                        path: "/register",
+                        element: <Register />,
+                    },
+                    {
+                        path: "/login",
+                        element: <Login />,
                     },
                 ],
             },

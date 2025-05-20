@@ -1,5 +1,5 @@
 import { HTTPMethods } from "@/shared/types/enums.ts";
-import { RequestConfig } from "@/shared/types/index.ts";
+import { RequestConfig } from "@/shared/types/types.ts";
 
 export function ItemDownload(
     ownerid: string,

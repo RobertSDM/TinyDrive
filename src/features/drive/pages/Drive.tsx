@@ -9,34 +9,33 @@ import {
     Item,
     ListItemResponse,
     SingleItemResponse,
-} from "@/shared/types/index.ts";
+} from "@/shared/types/types.ts";
 import { useEffect, useState } from "react";
 import ButtonUpload from "../components/ButtonWrapper/ButtonUpload.tsx";
 import ItemsView from "../components/ContentViewWrapper/ItemsView.tsx";
-import { ItemAllFromFolder, ItemById } from "../api/config.ts";
-import useFetcher from "@/shared/hooks/useRequest.tsx";
+import { ItemAllFromFolder, ItemById } from "../api/requestConfig.ts";
+import useRequest from "@/shared/hooks/useRequest.tsx";
 import { useParams } from "react-router-dom";
 import ActionBar from "../components/ActionsBarWrapper/ActionBar.tsx";
 
 function Drive() {
     let { parentid } = useParams();
     const { items, updateItems } = useDriveItemsContext();
-    useTitle("Tiny Drive");
     const { account, session } = useAuthContext();
     const { changeParent } = useParentContext();
-    const { isLoading, data, request } = useFetcher<ListItemResponse>(
+    const { isLoading, data, request } = useRequest<ListItemResponse>(
         ItemAllFromFolder(
             account!.id,
             parentid === "drive" ? "" : parentid!,
-            session?.access_token ?? ""
+            session!.accessToken ?? ""
         )
     );
     const { request: parentRequest, data: parentData } =
-        useFetcher<SingleItemResponse>(
+        useRequest<SingleItemResponse>(
             ItemById(
                 account!.id,
                 parentid === "drive" ? "" : parentid!,
-                session?.access_token ?? ""
+                session!.accessToken ?? ""
             )
         );
     const [selectedItem, setSelectedItem] = useState<Item | null>(null);
@@ -53,6 +52,7 @@ function Drive() {
         setSelectedItem(null);
     }
 
+    useTitle("Tiny Drive");
     useEffect(() => {
         if (!data || !data.success) return;
 
