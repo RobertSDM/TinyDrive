@@ -34,11 +34,15 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     }, [session]);
 
     useEffect(() => {
-        if (!error && !data) return;
-        setIsLoading(false);
         if (!data) return;
+        setIsLoading(false);
         setAccount(data.data);
-    }, [data, error]);
+    }, [data]);
+
+    useEffect(() => {
+        if (!error) return;
+        setIsLoading(false);
+    }, [error]);
 
     useEffect(() => {
         authClient

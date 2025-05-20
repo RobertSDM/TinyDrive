@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance, AxiosRequestConfig } from "axios";
 import {
     HTTPMethods,
     ItemType,
@@ -35,6 +35,7 @@ export type RequestConfig = {
     headers?: {
         [key: string]: string;
     };
+    blob?: boolean
 };
 
 export type AuthResult = {

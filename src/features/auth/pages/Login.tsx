@@ -13,10 +13,6 @@ const Login = () => {
 
     useTitle("Login | Tiny Drive");
 
-    useEffect(()=>{
-        console.log("on login");
-    },[])
-
     return (
         <div className="h-screen pt-10 px-10 mx-auto space-y-40">
             <section className="space-y-2">

@@ -15,6 +15,21 @@ export function ItemDownload(
     };
 }
 
+export function ItemDownloadFolder(
+    ownerid: string,
+    parentid: string,
+    accessToken: string
+): RequestConfig {
+    return {
+        path: `item/download/folder/${ownerid}/${parentid}`,
+        method: HTTPMethods.GET,
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+        blob: true,
+    };
+}
+
 export function ItemSaveFolderConfig(accessToken: string): RequestConfig {
     return {
         path: "/item/save/folder",

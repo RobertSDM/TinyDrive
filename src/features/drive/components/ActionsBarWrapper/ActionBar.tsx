@@ -5,17 +5,19 @@ import {
     useModalContext,
 } from "@/shared/context/useContext.tsx";
 import useRequest from "@/shared/hooks/useRequest.tsx";
+import { ItemType } from "@/shared/types/enums.ts";
 import {
     Item,
     SingleItemResponse,
     SingleResponse,
 } from "@/shared/types/types.ts";
+import { useEffect } from "react";
 import {
     ItemDeleteConfig,
     ItemDownload as ItemDownloadConfig,
+    ItemDownloadFolder as ItemDownloadFolderConfig,
     ItemUpdateNameConfig,
 } from "../../api/requestConfig.ts";
-import { useEffect } from "react";
 
 type ActionBarProps = {
     item?: Item | null;
@@ -42,6 +44,25 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
         (resp) => {
             item!.name = resp.data.data.name;
             reloadItems();
+            return resp.data;
+        }
+    );
+
+    const { request: downloadFolder } = useRequest<Blob>(
+        ItemDownloadFolderConfig(
+            account!.id,
+            item?.id! ?? "",
+            session!.accessToken
+        ),
+        (resp) => {
+            const bloburl = URL.createObjectURL(resp.data);
+            const $a = document.createElement("a");
+            $a.download = "";
+            $a.href = bloburl;
+
+            $a.click();
+            $a.remove();
+
             return resp.data;
         }
     );
@@ -129,7 +150,11 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
                     <button
                         className="hover:bg-slate-400 bg-slate-200 px-2 py-1 rounded-md hover:text-white active:scale-95"
                         onClick={() => {
-                            download();
+                            if (item.type === ItemType.FILE) {
+                                download();
+                            } else {
+                                downloadFolder();
+                            }
                         }}
                     >
                         Download

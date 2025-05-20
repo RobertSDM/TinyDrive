@@ -52,11 +52,12 @@ export default function ButtonUpload() {
     return (
         <div
             className={`inline relative ${isOpen ? "border-black/30" : ""}`}
+            onClick={() => (isOpen ? close() : open())}
             onMouseEnter={open}
             onMouseLeave={close}
         >
             <span
-                className={`items-center gap-x-2 border-purple-500 text-black border hover:bg-purple-500 w-32 hover:text-white  inline-flex cursor-pointer rounded-md justify-around p-2 ${
+                className={`items-center gap-x-2 border-purple-500 text-black border hover:bg-purple-500 active:bg-purple-500 w-32 hover:text-white  inline-flex cursor-pointer rounded-md justify-around p-2 ${
                     isOpen && "rounded-b-none"
                 }`}
             >

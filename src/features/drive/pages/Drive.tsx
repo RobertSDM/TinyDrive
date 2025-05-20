@@ -12,7 +12,7 @@ import {
 } from "@/shared/types/types.ts";
 import { useEffect, useState } from "react";
 import ButtonUpload from "../components/ButtonWrapper/ButtonUpload.tsx";
-import ItemsView from "../components/ContentViewWrapper/ItemsView.tsx";
+import ItemsView from "../components/ItemViewWrapper/ItemsView.tsx";
 import { ItemAllFromFolder, ItemById } from "../api/requestConfig.ts";
 import useRequest from "@/shared/hooks/useRequest.tsx";
 import { useParams } from "react-router-dom";
