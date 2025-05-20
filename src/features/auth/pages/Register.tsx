@@ -1,9 +1,7 @@
-import {
-    useNotificationSystemContext
-} from "@/shared/context/useContext.tsx";
-import useFetcher from "@/shared/hooks/useRequest.tsx";
+import { useNotificationSystemContext } from "@/shared/context/useContext.tsx";
+import useRequest from "@/shared/hooks/useRequest.tsx";
 import useTitle from "@/shared/hooks/useTitle.tsx";
-import { emailPassVerification } from "@/shared/utils/valitation.ts";
+import { emailPassVerification } from "@/shared/utils/valitations.ts";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerConfig } from "../api/config.ts";
@@ -15,7 +13,7 @@ const Register = () => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [confirmPass, setConfirmPass] = useState<string>("");
-    const { request, isLoading } = useFetcher<void>({
+    const { request, isLoading } = useRequest<void>({
         ...registerConfig(),
         body: {
             email,

@@ -4,11 +4,20 @@ import {
     useDriveItemsContext,
     useModalContext,
 } from "@/shared/context/useContext.tsx";
-import useFetcher from "@/shared/hooks/useRequest.tsx";
-import { Item, SingleItemResponse } from "@/shared/types/index.ts";
-import { ItemDeleteConfig, ItemUpdateNameConfig } from "../../api/config.ts";
-import { DefaultClient } from "@/shared/api/clients.ts";
+import useRequest from "@/shared/hooks/useRequest.tsx";
+import { ItemType } from "@/shared/types/enums.ts";
+import {
+    Item,
+    SingleItemResponse,
+    SingleResponse,
+} from "@/shared/types/types.ts";
 import { useEffect } from "react";
+import {
+    ItemDeleteConfig,
+    ItemDownload as ItemDownloadConfig,
+    ItemDownloadFolder as ItemDownloadFolderConfig,
+    ItemUpdateNameConfig,
+} from "../../api/requestConfig.ts";
 
 type ActionBarProps = {
     item?: Item | null;
@@ -16,11 +25,9 @@ type ActionBarProps = {
 };
 export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
     const { removeItem, reloadItems } = useDriveItemsContext();
-    const { account } = useAuthContext();
-    const { request: _delete } = useFetcher(
-        ItemDeleteConfig(account?.id ?? "", item?.id ?? ""),
-        DefaultClient,
-        false,
+    const { account, session } = useAuthContext();
+    const { request: _delete } = useRequest(
+        ItemDeleteConfig(account!.id!, item?.id ?? "", session!.accessToken),
         (resp) => {
             removeItem(item!);
             closeActionBar();
@@ -28,13 +35,48 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
         }
     );
 
-    const { request: update } = useFetcher<SingleItemResponse>(
-        ItemUpdateNameConfig(item?.id! ?? ""),
-        DefaultClient,
-        false,
+    const { request: update } = useRequest<SingleItemResponse>(
+        ItemUpdateNameConfig(
+            item?.id! ?? "",
+            account!.id,
+            session!.accessToken
+        ),
         (resp) => {
             item!.name = resp.data.data.name;
             reloadItems();
+            return resp.data;
+        }
+    );
+
+    const { request: downloadFolder } = useRequest<Blob>(
+        ItemDownloadFolderConfig(
+            account!.id,
+            item?.id! ?? "",
+            session!.accessToken
+        ),
+        (resp) => {
+            const bloburl = URL.createObjectURL(resp.data);
+            const $a = document.createElement("a");
+            $a.download = "";
+            $a.href = bloburl;
+
+            $a.click();
+            $a.remove();
+
+            return resp.data;
+        }
+    );
+
+    const { request: download } = useRequest<SingleResponse<string>>(
+        ItemDownloadConfig(account!.id, item?.id! ?? "", session!.accessToken),
+        (resp) => {
+            const $a = document.createElement("a");
+            $a.download = "";
+            $a.href = resp.data.data;
+
+            $a.click();
+            $a.remove();
+
             return resp.data;
         }
     );
@@ -73,7 +115,7 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
             {item && (
                 <>
                     <button
-                        className="hover:bg-red-400 bg-red-200 px-2 py-1 rounded-md hover:text-white"
+                        className="hover:bg-red-400 bg-red-200 px-2 py-1 rounded-md hover:text-white active:scale-95"
                         onClick={() => {
                             if (
                                 !confirm(
@@ -88,7 +130,7 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
                         Delete
                     </button>
                     <button
-                        className="hover:bg-slate-400 bg-slate-200 px-2 py-1 rounded-md hover:text-white"
+                        className="hover:bg-slate-400 bg-slate-200 px-2 py-1 rounded-md hover:text-white active:scale-95"
                         onClick={() => {
                             openModal(
                                 <TextModal
@@ -104,6 +146,18 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
                         }}
                     >
                         Rename
+                    </button>
+                    <button
+                        className="hover:bg-slate-400 bg-slate-200 px-2 py-1 rounded-md hover:text-white active:scale-95"
+                        onClick={() => {
+                            if (item.type === ItemType.FILE) {
+                                download();
+                            } else {
+                                downloadFolder();
+                            }
+                        }}
+                    >
+                        Download
                     </button>
                 </>
             )}

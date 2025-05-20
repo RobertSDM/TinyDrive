@@ -5,28 +5,35 @@ import {
     useModalContext,
     useParentContext,
 } from "@/shared/context/useContext.tsx";
-import { ItemType } from "@/shared/types/enums.ts";
-import { ItemData, SingleItemResponse } from "@/shared/types/index.ts";
+import useRequest from "@/shared/hooks/useRequest.tsx";
+import { SingleItemResponse } from "@/shared/types/types.ts";
 import { useState } from "react";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
-import transformFileToItem from "../../core/extractFileContent.ts";
-import { saveItemService } from "../../service/itemService.ts";
+
 import DropDown, { FileOptionType } from "../DropDownWrapper/DropDown.tsx";
-import { ItemSaveConfig } from "../../api/config.ts";
-import useFetcher from "@/shared/hooks/useRequest.tsx";
-import { DefaultClient } from "@/shared/api/clients.ts";
+import {
+    ItemSaveConfig,
+    ItemSaveFolderConfig,
+} from "../../api/requestConfig.ts";
 
 export default function ButtonUpload() {
     const [isOpen, setIsOpen] = useState(false);
     const { addItem } = useDriveItemsContext();
 
     const { parent } = useParentContext();
-    const { account } = useAuthContext();
+    const { account, session } = useAuthContext();
     const { openModal, closeModal } = useModalContext();
-    const { request } = useFetcher<SingleItemResponse>(
-        ItemSaveConfig(),
-        DefaultClient,
-        false,
+    const { request: fileRequest } = useRequest<SingleItemResponse>(
+        ItemSaveConfig(session!.accessToken),
+        (resp) => {
+            const item = resp.data.data;
+            if (item.parentid === parent.id) addItem(resp.data.data);
+
+            return resp.data;
+        }
+    );
+    const { request: folderRequest } = useRequest<SingleItemResponse>(
+        ItemSaveFolderConfig(session!.accessToken),
         (resp) => {
             addItem(resp.data.data);
 
@@ -45,11 +52,12 @@ export default function ButtonUpload() {
     return (
         <div
             className={`inline relative ${isOpen ? "border-black/30" : ""}`}
+            onClick={() => (isOpen ? close() : open())}
             onMouseEnter={open}
             onMouseLeave={close}
         >
             <span
-                className={`items-center gap-x-2 border-purple-500 text-black border hover:bg-purple-500 w-32 hover:text-white  inline-flex cursor-pointer rounded-md justify-around p-2 ${
+                className={`items-center gap-x-2 border-purple-500 text-black border hover:bg-purple-500 active:bg-purple-500 w-32 hover:text-white  inline-flex cursor-pointer rounded-md justify-around p-2 ${
                     isOpen && "rounded-b-none"
                 }`}
             >
@@ -60,16 +68,12 @@ export default function ButtonUpload() {
                 <DropDown.FileOption
                     text="Upload File"
                     onchange={async (filelist: FileList) => {
-                        const fileStruct = transformFileToItem(
-                            filelist,
-                            account!.id
-                        );
-
-                        for await (const item of saveItemService(
-                            fileStruct,
-                            parent.id!
-                        )) {
-                            addItem(item);
+                        for (let i = 0; i < filelist.length; i++) {
+                            const form = new FormData();
+                            form.append("file", filelist[i]);
+                            form.append("parentid", parent.id || "");
+                            form.append("ownerid", account!.id);
+                            await fileRequest(form);
                         }
                     }}
                     type={FileOptionType.FILE}
@@ -77,16 +81,12 @@ export default function ButtonUpload() {
                 <DropDown.FileOption
                     text="Upload Folder"
                     onchange={async (filelist: FileList) => {
-                        const fileStruct = transformFileToItem(
-                            filelist,
-                            account!.id
-                        );
-
-                        for await (const item of saveItemService(
-                            fileStruct,
-                            parent.id!
-                        )) {
-                            if (item.parentid === parent.id) addItem(item);
+                        for (let i = 0; i < filelist.length; i++) {
+                            const form = new FormData();
+                            form.append("file", filelist[i]);
+                            form.append("parentid", parent.id || "");
+                            form.append("ownerid", account!.id);
+                            await fileRequest(form);
                         }
                     }}
                     type={FileOptionType.FOLDER}
@@ -96,16 +96,11 @@ export default function ButtonUpload() {
                         openModal(
                             <TextModal
                                 callback={(text) => {
-                                    const item: ItemData = {
-                                        extension: "",
+                                    folderRequest({
                                         name: text,
-                                        ownerid: account!.id,
                                         parentid: parent.id,
-                                        path: text,
-                                        size: 0,
-                                        type: ItemType.FOLDER,
-                                    };
-                                    request(item);
+                                        ownerid: account!.id,
+                                    });
                                 }}
                                 close={closeModal}
                                 isOpen={true}

@@ -1,5 +1,5 @@
 import { ItemType } from "@/shared/types/enums.ts";
-import { Item } from "@/shared/types/index.ts";
+import { Item } from "@/shared/types/types.ts";
 import { createContext, ReactNode, useState } from "react";
 
 type ParentItemContextProps = {

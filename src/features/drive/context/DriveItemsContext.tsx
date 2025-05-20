@@ -1,4 +1,4 @@
-import { Item } from "@/shared/types/index.ts";
+import { Item } from "@/shared/types/types.ts";
 import { createContext, ReactNode, useState } from "react";
 type DriveItemsContext = {
     items: Item[];
@@ -16,7 +16,7 @@ export function DriveItemsProvider({ children }: DriveItemsProviderProps) {
     const [items, setItems] = useState<Item[]>([]);
 
     function reloadItems() {
-        setItems(prev => [...prev])
+        setItems((prev) => [...prev]);
     }
 
     function updateItems(items: Item[]) {
