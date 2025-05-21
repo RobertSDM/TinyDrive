@@ -1,3 +1,5 @@
+import Preview from "@/shared/components/ModalWrapper/Preview.tsx";
+import { useModalContext } from "@/shared/context/useContext.tsx";
 import { ItemType } from "@/shared/types/enums.ts";
 import { Item } from "@/shared/types/types.ts";
 import { FaFile } from "react-icons/fa";
@@ -41,7 +43,7 @@ function FileItem({ item, isSelected }: FileItemProps) {
                 {item.name}
             </span>
             <div className="flex gap-x-2 items-center">
-                <span>{`.${item.extension}`}</span>
+                <span>{item.extension} </span>
                 <section
                     className={`text-slate-400 ${
                         isSelected && "text-white"
@@ -60,9 +62,17 @@ type ItemRowProps = {
 };
 
 function ItemRow({ item, onclick, isSelected }: ItemRowProps) {
+    const { openModal, isOpen, closeModal } = useModalContext();
+
     return (
         <section
             onClick={onclick}
+            onDoubleClick={(e) => {
+                e.preventDefault();
+                openModal(
+                    <Preview close={closeModal} isOpen={isOpen} item={item} />
+                );
+            }}
             className={`border flex-1 justify-between hover:bg-purple-100 rounded-lg items-center h-12 max-h-12 p-2 flex ${
                 isSelected && "bg-purple-400 hover:bg-purple-500 text-white"
             }`}
