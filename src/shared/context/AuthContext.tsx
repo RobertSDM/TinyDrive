@@ -2,7 +2,7 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 import { GetAccount } from "../api/requestConfig.ts";
 import useRequest from "../hooks/useRequest.tsx";
 import { Account, AuthResult, SingleResponse } from "../types/types.ts";
-import authClient from "../clients/supabase/AuthClient.ts";
+import authClient from "../clients/supabase/authClient.ts";
 
 type AuthContext = {
     logOut: () => void;

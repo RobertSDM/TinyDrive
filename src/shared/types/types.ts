@@ -52,7 +52,7 @@ export type DefaultResponse = {
 };
 
 export type ListResponse<T> = DefaultResponse & {
-    data: T[] | null;
+    data: T[];
     count: number;
 };
 

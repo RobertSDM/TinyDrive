@@ -18,7 +18,7 @@ export default function ModalProvider({ children }: ModalProviderProps) {
         setModal(modal);
         setBackdropStyle(backdropStyle ?? "");
     }
-
+    
     function closeModal() {
         setIsOpen(false);
         setModal(null);
@@ -27,7 +27,6 @@ export default function ModalProvider({ children }: ModalProviderProps) {
 
     return (
         <ModalContext.Provider value={{ openModal, closeModal, isOpen }}>
-            {children}
             {modal && (
                 <div
                     className={`flex flex-1 items-center justify-center w-full h-full absolute top-0 left-0 bg-black/10 z-50 ${backdropStyle}`}
@@ -42,6 +41,7 @@ export default function ModalProvider({ children }: ModalProviderProps) {
                     <div onClick={(e) => e.stopPropagation()}>{modal}</div>
                 </div>
             )}
+            {children}
         </ModalContext.Provider>
     );
 }

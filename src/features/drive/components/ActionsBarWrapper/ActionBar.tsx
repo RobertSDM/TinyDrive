@@ -14,7 +14,7 @@ import {
 import { useEffect } from "react";
 import {
     ItemDeleteConfig,
-    ItemDownload as ItemDownloadConfig,
+    ItemDownloadConfig,
     ItemDownloadFolder as ItemDownloadFolderConfig,
     ItemUpdateNameConfig,
 } from "../../api/requestConfig.ts";
