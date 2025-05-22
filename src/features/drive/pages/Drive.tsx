@@ -1,9 +1,10 @@
-import ModalProvider from "@/shared/context/ModalContext.tsx";
 import {
     useAuthContext,
     useDriveItemsContext,
+    useModalContext,
     useParentContext,
 } from "@/shared/context/useContext.tsx";
+import useRequest from "@/shared/hooks/useRequest.tsx";
 import useTitle from "@/shared/hooks/useTitle.tsx";
 import {
     Item,
@@ -11,15 +12,16 @@ import {
     SingleItemResponse,
 } from "@/shared/types/types.ts";
 import { useEffect, useState } from "react";
-import ButtonUpload from "../components/ButtonWrapper/ButtonUpload.tsx";
-import ItemsView from "../components/ItemViewWrapper/ItemsView.tsx";
-import { ItemAllFromFolder, ItemById } from "../api/requestConfig.ts";
-import useRequest from "@/shared/hooks/useRequest.tsx";
 import { useParams } from "react-router-dom";
+import { ItemAllFromFolder, ItemById } from "../api/requestConfig.ts";
 import ActionBar from "../components/ActionsBarWrapper/ActionBar.tsx";
+import ButtonUpload from "../components/ButtonWrapper/ButtonUpload.tsx";
+import DragAndDropModal from "../components/DragAndDropWrapper/DragAndDropModal.tsx";
+import ItemsView from "../components/ItemViewWrapper/ItemsView.tsx";
 
 function Drive() {
     let { parentid } = useParams();
+    const { closeModal, isOpen, openModal } = useModalContext();
     const { items, updateItems } = useDriveItemsContext();
     const { account, session } = useAuthContext();
     const { changeParent } = useParentContext();
@@ -72,25 +74,29 @@ function Drive() {
     }, [parentData]);
 
     return (
-        <main className="mt-10  px-10 mx-auto mb-20">
-            {/* <nav className="text-xl text-black/50">
-                <Tray />
-            </nav> */}
-            <ModalProvider>
-                <ButtonUpload />
-                <ActionBar
-                    item={selectedItem}
-                    closeActionBar={changeSelectedItemToNull}
-                />
-                <ItemsView
-                    {...{
-                        items,
-                        isLoading,
-                        changeSelectedItem,
-                        selectedItem,
-                    }}
-                />
-            </ModalProvider>
+        <main
+            className="max-w-7xl mx-auto mb-20 px-10 w-full flex-1"
+            onDragEnter={(e) => {
+                if (e.dataTransfer.types.includes("Files")) {
+                    openModal(
+                        <DragAndDropModal close={closeModal} isOpen={isOpen} />
+                    );
+                }
+            }}
+        >
+            <ButtonUpload />
+            <ActionBar
+                item={selectedItem}
+                closeActionBar={changeSelectedItemToNull}
+            />
+            <ItemsView
+                {...{
+                    items,
+                    isLoading,
+                    changeSelectedItem,
+                    selectedItem,
+                }}
+            />
         </main>
     );
 }

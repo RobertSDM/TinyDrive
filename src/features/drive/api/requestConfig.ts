@@ -1,13 +1,42 @@
 import { HTTPMethods } from "@/shared/types/enums.ts";
 import { RequestConfig } from "@/shared/types/types.ts";
 
-export function ItemDownload(
+export function ItemDownloadConfig(
     ownerid: string,
     id: string,
     accessToken: string
 ): RequestConfig {
     return {
         path: `item/download/${ownerid}/${id}`,
+        method: HTTPMethods.GET,
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    };
+}
+
+export function ItemImagePreviewConfig(
+    ownerid: string,
+    id: string,
+    accessToken: string
+): RequestConfig {
+    return {
+        path: `item/img/preview/${ownerid}/${id}`,
+        method: HTTPMethods.GET,
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    };
+}
+
+export function ItemSearch(
+    ownerid: string,
+    query: string,
+    accessToken: string,
+    type: string | null
+): RequestConfig {
+    return {
+        path: `item/search/${ownerid}?q=${query}&${type ? `type=${type}` : ""}`,
         method: HTTPMethods.GET,
         headers: {
             Authorization: `Bearer ${accessToken}`,
