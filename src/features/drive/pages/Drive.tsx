@@ -18,13 +18,14 @@ import ActionBar from "../components/ActionsBarWrapper/ActionBar.tsx";
 import ButtonUpload from "../components/ButtonWrapper/ButtonUpload.tsx";
 import DragAndDropModal from "../components/DragAndDropWrapper/DragAndDropModal.tsx";
 import ItemsView from "../components/ItemViewWrapper/ItemsView.tsx";
+import Breadcrumb from "../components/BreadcrumbWrapper/Breadcrumb.tsx";
 
 function Drive() {
     let { parentid } = useParams();
     const { closeModal, isOpen, openModal } = useModalContext();
     const { items, updateItems } = useDriveItemsContext();
     const { account, session } = useAuthContext();
-    const { changeParent } = useParentContext();
+    const { changeParent, changeParentToRoot } = useParentContext();
     const { isLoading, data, request } = useRequest<ListItemResponse>(
         ItemAllFromFolder(
             account!.id,
@@ -63,7 +64,10 @@ function Drive() {
 
     useEffect(() => {
         changeSelectedItemToNull();
+
         if (parentid !== "drive") parentRequest();
+        else changeParentToRoot();
+
         request();
     }, [parentid]);
 
@@ -84,6 +88,7 @@ function Drive() {
                 }
             }}
         >
+            <Breadcrumb />
             <ButtonUpload />
             <ActionBar
                 item={selectedItem}
