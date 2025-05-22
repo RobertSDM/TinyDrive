@@ -21,7 +21,7 @@ export function ItemImagePreviewConfig(
     accessToken: string
 ): RequestConfig {
     return {
-        path: `item/img/preview/${ownerid}/${id}`,
+        path: `item/preview/img/${ownerid}/${id}`,
         method: HTTPMethods.GET,
         headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -96,11 +96,10 @@ export function ItemSaveConfig(accessToken: string): RequestConfig {
 
 export function ItemDeleteConfig(
     ownerid: string,
-    id: string,
     accessToken: string
 ): RequestConfig {
     return {
-        path: `item/delete/${ownerid}/${id}`,
+        path: `item/delete/${ownerid}`,
         method: HTTPMethods.DELETE,
         headers: {
             Authorization: `Bearer ${accessToken}`,

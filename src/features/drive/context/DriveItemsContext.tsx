@@ -2,7 +2,7 @@ import { Item } from "@/shared/types/types.ts";
 import { createContext, ReactNode, useState } from "react";
 type DriveItemsContext = {
     items: Item[];
-    removeItem: (item: Item) => void;
+    removeItem: (itemid: string) => void;
     addItem: (item: Item) => void;
     updateItems: (items: Item[]) => void;
     reloadItems: () => void;
@@ -27,8 +27,8 @@ export function DriveItemsProvider({ children }: DriveItemsProviderProps) {
         setItems((prev) => [...prev, item]);
     }
 
-    function removeItem(item: Item) {
-        setItems((prev) => prev.filter((it) => it.id !== item.id));
+    function removeItem(itemid: string) {
+        setItems((prev) => prev.filter((it) => it.id !== itemid));
     }
 
     return (
