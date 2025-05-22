@@ -26,6 +26,7 @@ export function ParentItemProvider({ children }: ParentItemProviderProps) {
             type: ItemType.FOLDER,
             size: 0,
             parentid: null,
+            content_type: "",
             size_prefix: "",
             creation_date: 0,
             update_date: 0,
