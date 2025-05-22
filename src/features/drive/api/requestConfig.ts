@@ -7,7 +7,21 @@ export function ItemDownloadConfig(
     accessToken: string
 ): RequestConfig {
     return {
-        path: `item/download/${ownerid}/${id}`,
+        path: `/item/download/${ownerid}/${id}`,
+        method: HTTPMethods.GET,
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    };
+}
+
+export function BreadcrumbConfig(
+    ownerid: string,
+    parentid: string,
+    accessToken: string
+): RequestConfig {
+    return {
+        path: `/item/breadcrumb/${ownerid}/${parentid}`,
         method: HTTPMethods.GET,
         headers: {
             Authorization: `Bearer ${accessToken}`,
