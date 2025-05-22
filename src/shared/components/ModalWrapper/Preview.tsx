@@ -1,4 +1,7 @@
-import { ItemImagePreviewConfig } from "@/features/drive/api/requestConfig.ts";
+import {
+    ItemDownloadConfig,
+    ItemImagePreviewConfig,
+} from "@/features/drive/api/requestConfig.ts";
 import { useAuthContext } from "@/shared/context/useContext.tsx";
 import TimedCache from "@/shared/core/TimedCache.ts";
 import useRequest from "@/shared/hooks/useRequest.tsx";
@@ -12,13 +15,37 @@ type PreviewProps = {
 };
 export default function Preview({ item, isOpen, close }: PreviewProps) {
     const [cache, setCache] = useState<TimedCache | null>(null);
-    const time = 5 * 60 * 1000;
+    const { account, session } = useAuthContext();
+    const time = 55 * 60 * 1000;
 
     function addToCache(key: string, value: string) {
         const newCache = Object.assign(new TimedCache(time), cache);
         newCache.add(key, value);
         setCache(newCache);
     }
+
+    const { request: download } = useRequest<SingleResponse<string>>(
+        ItemDownloadConfig(account!.id, item?.id! ?? "", session!.accessToken),
+        (resp) => {
+            const $a = document.createElement("a");
+            $a.download = "";
+            $a.href = resp.data.data;
+
+            $a.click();
+            $a.remove();
+
+            return resp.data;
+        }
+    );
+
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+        window.onpopstate = close;
+
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, []);
 
     useEffect(() => {
         const previewCache = sessionStorage.getItem("preview-cache");
@@ -41,21 +68,54 @@ export default function Preview({ item, isOpen, close }: PreviewProps) {
 
     return (
         <div
-            className="absolute top-0 left-0 flex items-center w-full h-full bg-black/60 z-50 flex-col p-4 gap-y-4"
+            className="fixed top-0 left-0 flex items-center w-full h-full bg-black/80 z-50 flex-col px-4 py-4 gap-y-4"
             hidden={isOpen}
             onClick={close}
+            onScroll={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }}
+            onWheel={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }}
         >
             <header
-                className=" text-white items-center flex gap-x-2"
-                onClick={(e) => e.stopPropagation()}
+                className=" text-white items-center flex  w-full justify-center"
+                onClick={close}
             >
-                <p className="bg-black px-4 py-1">
+                <p
+                    className=" bg-black py-1 pl-4 whitespace-nowrap text-ellipsis overflow-hidden"
+                    onClick={(e) => e.stopPropagation()}
+                >
                     {item.name}
-                    {item.extension}
                 </p>
-                <p className="bg-black px-4 py-1">Download</p>
+                <section
+                    className="bg-black py-1 pr-4"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <p>{item.extension}</p>
+                </section>
+                <button
+                    className="bg-black px-4 ml-4 py-1"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        download();
+                    }}
+                >
+                    Download
+                </button>
             </header>
-            <ImagePreview item={item} cache={cache} addToCache={addToCache} />
+
+            {item.content_type.startsWith("image") ? (
+                <ImagePreview
+                    item={item}
+                    cache={cache}
+                    addToCache={addToCache}
+                />
+            ) : (
+                <p className="font-semibold text-slate-400">Soon</p>
+            )}
         </div>
     );
 }
@@ -67,7 +127,7 @@ type ImagePreviewProps = {
 };
 function ImagePreview({ item, cache, addToCache }: ImagePreviewProps) {
     const { account, session } = useAuthContext();
-    const { data, request } = useRequest<SingleResponse<string>>(
+    const { data, request, isLoading } = useRequest<SingleResponse<string>>(
         ItemImagePreviewConfig(account!.id, item.id!, session!.accessToken)
     );
     const [url, setUrl] = useState<string>("");
@@ -89,12 +149,17 @@ function ImagePreview({ item, cache, addToCache }: ImagePreviewProps) {
     }, [cache]);
 
     return (
-        <section className="w-full h-full flex items-center justify-center">
-            <img
-                onClick={(e) => e.stopPropagation()}
-                src={url}
-                className="contain aspect-auto w-[500px] max-w-1/2 max-h-1/2"
-            />
+        <section className="flex-1 flex items-center justify-center">
+            {isLoading ? (
+                <p className="font-semibold text-slate-400">Loading...</p>
+            ) : (
+                <img
+                    key={url}
+                    onClick={(e) => e.stopPropagation()}
+                    src={url}
+                    className="w-full h-auto max-h-[80vh] object-scale-down"
+                />
+            )}
         </section>
     );
 }

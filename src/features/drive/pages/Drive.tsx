@@ -16,7 +16,7 @@ import { useParams } from "react-router-dom";
 import { ItemAllFromFolder, ItemById } from "../api/requestConfig.ts";
 import ActionBar from "../components/ActionsBarWrapper/ActionBar.tsx";
 import ButtonUpload from "../components/ButtonWrapper/ButtonUpload.tsx";
-import DragOverModal from "../components/DragOverModalWrapper/DragOverModal.tsx";
+import DragAndDropModal from "../components/DragAndDropWrapper/DragAndDropModal.tsx";
 import ItemsView from "../components/ItemViewWrapper/ItemsView.tsx";
 
 function Drive() {
@@ -75,9 +75,13 @@ function Drive() {
 
     return (
         <main
-            className="max-w-7xl mx-auto flex-1 w-full mb-20 px-10"
-            onDragEnter={() => {
-                openModal(<DragOverModal close={closeModal} isOpen={isOpen} />);
+            className="max-w-7xl mx-auto mb-20 px-10 w-full flex-1"
+            onDragEnter={(e) => {
+                if (e.dataTransfer.types.includes("Files")) {
+                    openModal(
+                        <DragAndDropModal close={closeModal} isOpen={isOpen} />
+                    );
+                }
             }}
         >
             <ButtonUpload />

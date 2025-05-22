@@ -15,15 +15,11 @@ const ItemsView = ({
     selectedItem,
 }: ItemsViewProps) => {
     return (
-        <div className="mt-2 mx-auto space-y-4">
+        <div className="mt-2 mx-auto space-y-4 min-w-80">
             {items.length > 0 ? (
-                <section className="grid grid-flow-row gap-y-2">
-                    <section className="grid grid-flow-col grid-cols-contentView">
-                        <span className="font-semibold text-slate-500">
-                            Name
-                        </span>
-                    </section>
-                    <section className="flex gap-y-2 flex-col">
+                <section>
+                    <span className="font-semibold text-slate-500">Name</span>
+                    <section className="flex gap-y-2 flex-col ">
                         {items.map((item) => (
                             <ItemRow
                                 onclick={() => changeSelectedItem(item)}

@@ -1,4 +1,4 @@
-import { AxiosInstance, AxiosRequestConfig } from "axios";
+import { AxiosInstance } from "axios";
 import {
     HTTPMethods,
     ItemType,
@@ -12,6 +12,7 @@ export type Item = {
     extension: string;
     size: number;
     size_prefix: string;
+    content_type: string;
     type: ItemType;
     path: string;
     parentid: string | null;

@@ -5,14 +5,16 @@ import {
 } from "@/shared/context/useContext.tsx";
 import useRequest from "@/shared/hooks/useRequest.tsx";
 import { SingleItemResponse } from "@/shared/types/types.ts";
-import { useEffect } from "react";
 import { ItemSaveConfig } from "../../api/requestConfig.ts";
 
 type DragOverModalProps = {
     close: () => void;
     isOpen: boolean;
 };
-export default function DragOverModal({ close, isOpen }: DragOverModalProps) {
+export default function DragAndDropModal({
+    close,
+    isOpen,
+}: DragOverModalProps) {
     const { parent } = useParentContext();
     const { session, account } = useAuthContext();
     const { addItem } = useDriveItemsContext();
@@ -28,7 +30,7 @@ export default function DragOverModal({ close, isOpen }: DragOverModalProps) {
 
     return (
         <div
-            className={`absolute flex bg-purple-400/50 w-full h-full top-0 left-0 items-center justify-center z-50`}
+            className={`fixed flex bg-purple-400/50 w-full h-full top-0 left-0 items-center justify-center z-50`}
             onDragEnter={(e) => e.stopPropagation()}
             onDragLeave={(e) => {
                 e.stopPropagation();

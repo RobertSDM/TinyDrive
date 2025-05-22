@@ -1,5 +1,5 @@
 import useRequest from "@/shared/hooks/useRequest.tsx";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ItemSearch as ItemSearchConfig } from "../../api/requestConfig.ts";
 import { useAuthContext } from "@/shared/context/useContext.tsx";
 import { Item, ListItemResponse } from "@/shared/types/types.ts";
@@ -13,6 +13,7 @@ const SearchInput = () => {
     const types = ["all", ItemType.FILE, ItemType.FOLDER];
     const [type, setType] = useState<number>(0);
     const [items, setItems] = useState<Item[]>([]);
+    const $search = useRef<HTMLElement | null>(null);
     const navigate = useNavigate();
     const {
         data,
@@ -65,9 +66,38 @@ const SearchInput = () => {
         setItems(data.data);
     }, [data]);
 
+    useEffect(() => {
+        function action(e: KeyboardEvent) {
+            if (e.key == "Escape") {
+                e.preventDefault();
+                e.stopPropagation();
+                close();
+            }
+        }
+
+        document.addEventListener("keydown", action);
+
+        return () => document.removeEventListener("keydown", action);
+    }, []);
+
+    useEffect(() => {
+        function action(e: MouseEvent) {
+            if (
+                $search.current &&
+                $search.current.contains(e.target as Element)
+            ) {
+                open();
+            } else close();
+        }
+
+        document.addEventListener("click", action);
+        return () => document.removeEventListener("click", action);
+    });
+
     return (
         <section
-            className={`border px-2 py-1 rounded-md items-center relative w-1/2 hidden md:flex gap-x-4 min-w-[350px]`}
+            className={`border px-2 py-1 rounded-md items-center relative w-1/2 hidden md:flex gap-x-4 min-w-[350px] border-slate-300`}
+            ref={$search}
         >
             <input
                 className={`outline-none w-full`}
@@ -77,7 +107,6 @@ const SearchInput = () => {
                 onKeyDown={(e) => {
                     if (e.key === "Escape") {
                         e.preventDefault();
-                        e.stopPropagation();
                         e.currentTarget.blur();
                     } else if (e.key === "Enter") {
                         e.preventDefault();
@@ -87,7 +116,7 @@ const SearchInput = () => {
                 }}
             />
             <button
-                className="w-20 px-2 border rounded-md"
+                className="w-20 px-2 border rounded-md border-slate-300"
                 onClick={changeType}
             >
                 {types[type].toLowerCase()}
