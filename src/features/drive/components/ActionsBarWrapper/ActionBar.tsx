@@ -7,6 +7,7 @@ import {
 import useRequest from "@/shared/hooks/useRequest.tsx";
 import { ItemType } from "@/shared/types/enums.ts";
 import {
+    FailuresAndSuccesses,
     Item,
     SingleItemResponse,
     SingleResponse,
@@ -20,20 +21,21 @@ import {
 } from "../../api/requestConfig.ts";
 
 type ActionBarProps = {
-    item?: Item | null;
+    item: Item | null;
     closeActionBar: () => void;
 };
 export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
     const { removeItem, reloadItems } = useDriveItemsContext();
     const { account, session } = useAuthContext();
-    const { request: _delete } = useRequest(
-        ItemDeleteConfig(account!.id!, item?.id ?? "", session!.accessToken),
-        (resp) => {
-            removeItem(item!);
-            closeActionBar();
-            return resp.data;
-        }
-    );
+    const { request: _delete } = useRequest<
+        SingleResponse<FailuresAndSuccesses>
+    >(ItemDeleteConfig(account!.id!, session!.accessToken), (resp) => {
+        resp.data.data.successes.forEach((id) => {
+            removeItem(id);
+        });
+        closeActionBar();
+        return resp.data;
+    });
 
     const { request: update } = useRequest<SingleItemResponse>(
         ItemUpdateNameConfig(
@@ -124,7 +126,9 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
                             )
                                 return;
 
-                            _delete();
+                            _delete({
+                                itemids: [item?.id ?? ""],
+                            });
                         }}
                     >
                         Delete

@@ -17,7 +17,7 @@ export type Item = {
     path: string;
     parentid: string | null;
     update_date: number;
-    creation_data: number;
+    creation_date: number;
 };
 
 export type Account = {
@@ -29,6 +29,11 @@ export type Account = {
 
 export type Client = AxiosInstance;
 
+export type FailuresAndSuccesses = {
+    successes: string[];
+    failures: string[];
+};
+
 export type RequestConfig = {
     path: string;
     method: HTTPMethods;
@@ -36,7 +41,7 @@ export type RequestConfig = {
     headers?: {
         [key: string]: string;
     };
-    blob?: boolean
+    blob?: boolean;
 };
 
 export type AuthResult = {
