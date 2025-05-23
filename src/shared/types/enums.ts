@@ -1,11 +1,6 @@
-export enum NotificationLevels {
-    INFO = "INFO",
-    ERROR = "ERROR",
-}
-
-export enum NotificationTypes {
-    STATIC = "STATIC",
-    DYNAMIC = "DYNAMIC",
+export enum NotifyLevel {
+    info,
+    error,
 }
 
 export enum ItemType {

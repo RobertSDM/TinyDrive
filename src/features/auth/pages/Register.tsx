@@ -1,4 +1,3 @@
-import { useNotificationSystemContext } from "@/shared/context/useContext.tsx";
 import useRequest from "@/shared/hooks/useRequest.tsx";
 import useTitle from "@/shared/hooks/useTitle.tsx";
 import { emailPassVerification } from "@/shared/utils/valitations.ts";
@@ -8,7 +7,6 @@ import { registerConfig } from "../api/config.ts";
 import AuthForm from "../components/FormWrapper/AuthForm.tsx";
 
 const Register = () => {
-    const { addNotif } = useNotificationSystemContext();
     const [username, setUsername] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -42,9 +40,7 @@ const Register = () => {
 
                         const isValid = emailPassVerification(
                             email.trimEnd().toLowerCase(),
-                            addNotif,
-                            password,
-                            confirmPass
+                            password
                         );
 
                         if (isValid) {

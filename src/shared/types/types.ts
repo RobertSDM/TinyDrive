@@ -1,10 +1,5 @@
 import { AxiosInstance } from "axios";
-import {
-    HTTPMethods,
-    ItemType,
-    NotificationLevels,
-    NotificationTypes,
-} from "./enums.ts";
+import { HTTPMethods, ItemType, NotifyLevel } from "./enums.ts";
 
 export type Item = {
     id: string | null;
@@ -69,25 +64,19 @@ export type SingleResponse<T> = DefaultResponse & {
 export type ListItemResponse = ListResponse<Item> & {};
 export type SingleItemResponse = SingleResponse<Item> & {};
 
-export interface INotification {
-    level: NotificationLevels;
-    type?: NotificationTypes;
-    id?: number;
-    msg: string;
-    special?: string;
-}
-
-export type TSeachFile = {
-    id: string;
-    name: string;
-    extension: string;
-    byteSize: number;
-    prefix: string;
-    [Symbol.iterator](): IterableIterator<TSeachFile>;
+export type BaseNotification = {
+    level: NotifyLevel;
+    message: string;
 };
 
-export type TSearchFolder = {
-    id: string;
-    name: string;
-    [Symbol.iterator](): IterableIterator<TSeachFile>;
+export type PopupNotification = BaseNotification & {};
+
+export type ProgressGenerator = AsyncGenerator<number, void, any>;
+export type ProgressNotification = BaseNotification & {
+    target: number;
+    progress: () => ProgressGenerator;
+};
+
+export type TimedNotification = BaseNotification & {
+    duration: number;
 };
