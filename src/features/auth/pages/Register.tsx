@@ -5,8 +5,11 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerConfig } from "../api/config.ts";
 import AuthForm from "../components/FormWrapper/AuthForm.tsx";
+import { useNotify } from "@/shared/context/useContext.tsx";
+import { NotifyLevel } from "@/shared/types/enums.ts";
 
 const Register = () => {
+    const notify = useNotify();
     const [username, setUsername] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -38,16 +41,14 @@ const Register = () => {
                     onsubmit={(event) => {
                         event.preventDefault();
 
-                        const isValid = emailPassVerification(
-                            email.trimEnd().toLowerCase(),
-                            password
-                        );
-
-                        if (isValid) {
-                            request().then(() => {
-                                navigate("/login");
+                        request().then(() => {
+                            notify.popup({
+                                level: NotifyLevel.info,
+                                message:
+                                    "You are now registred. To login verify your email",
                             });
-                        }
+                            navigate("/login");
+                        });
                     }}
                 >
                     <AuthForm.Input

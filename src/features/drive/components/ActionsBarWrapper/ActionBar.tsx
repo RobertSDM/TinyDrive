@@ -3,9 +3,10 @@ import {
     useAuthContext,
     useDriveItemsContext,
     useModalContext,
+    useNotify,
 } from "@/shared/context/useContext.tsx";
 import useRequest from "@/shared/hooks/useRequest.tsx";
-import { ItemType } from "@/shared/types/enums.ts";
+import { ItemType, NotifyLevel } from "@/shared/types/enums.ts";
 import {
     FailuresAndSuccesses,
     Item,
@@ -27,11 +28,18 @@ type ActionBarProps = {
 export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
     const { removeItem, reloadItems } = useDriveItemsContext();
     const { account, session } = useAuthContext();
+    const notify = useNotify();
     const { request: _delete } = useRequest<
         SingleResponse<FailuresAndSuccesses>
     >(ItemDeleteConfig(account!.id!, session!.accessToken), (resp) => {
         resp.data.data.successes.forEach((id) => {
             removeItem(id);
+        });
+        notify.popup({
+            level: NotifyLevel.info,
+            message: `${
+                resp.data.data.successes.length > 1 ? "All items" : "The item"
+            }  was deleted`,
         });
         closeActionBar();
         return resp.data;
@@ -44,6 +52,10 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
             session!.accessToken
         ),
         (resp) => {
+            notify.popup({
+                level: NotifyLevel.info,
+                message: `The "${item!.name}" was updated`,
+            });
             item!.name = resp.data.data.name;
             reloadItems();
             return resp.data;
@@ -98,7 +110,9 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
                     )
                 )
                     return;
-                _delete();
+                _delete({
+                    itemids: [item?.id ?? ""],
+                });
             }
         }
 
@@ -154,6 +168,12 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
                     <button
                         className="hover:bg-slate-400 bg-slate-200 px-2 py-1 rounded-md hover:text-white active:scale-95"
                         onClick={() => {
+                            notify.popup({
+                                level: NotifyLevel.info,
+                                message: `Downloading the ${item.type.toLowerCase()} "${
+                                    item.name
+                                }${item.extension}"`,
+                            });
                             if (item.type === ItemType.FILE) {
                                 download();
                             } else {

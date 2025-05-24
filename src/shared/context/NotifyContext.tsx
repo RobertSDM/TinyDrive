@@ -5,7 +5,6 @@ import {
     ProgressNotification,
     TimedNotification,
 } from "../types/types.ts";
-import { NotifyLevel } from "../types/enums.ts";
 
 type context = {
     popup: (notification: PopupNotification) => void;
@@ -16,15 +15,7 @@ type context = {
 export const NotifyContext = createContext<context>({} as context);
 
 export const Notify = ({ children }: { children: ReactNode }) => {
-    const [notifications, setNotifications] = useState<JSX.Element[]>([
-        <Notify.Popup
-            notification={{
-                level: NotifyLevel.info,
-                message: "Uploading Files",
-            }}
-            done={done}
-        />,
-    ]);
+    const [notifications, setNotifications] = useState<JSX.Element[]>([]);
     const [notification, setNotification] = useState<JSX.Element | undefined>(
         undefined
     );
