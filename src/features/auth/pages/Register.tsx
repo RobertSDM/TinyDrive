@@ -1,27 +1,19 @@
-import useRequest from "@/shared/hooks/useRequest.tsx";
+import { useNotify } from "@/shared/context/useContext.tsx";
 import useTitle from "@/shared/hooks/useTitle.tsx";
-import { emailPassVerification } from "@/shared/utils/valitations.ts";
+import { NotifyLevel } from "@/shared/types/enums.ts";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerConfig } from "../api/config.ts";
 import AuthForm from "../components/FormWrapper/AuthForm.tsx";
-import { useNotify } from "@/shared/context/useContext.tsx";
-import { NotifyLevel } from "@/shared/types/enums.ts";
+import useRegister from "../hooks/registerHooks.tsx";
 
 const Register = () => {
     const notify = useNotify();
     const [username, setUsername] = useState<string>("");
     const [email, setEmail] = useState<string>("");
+    const { request: register, isLoading } = useRegister();
     const [password, setPassword] = useState<string>("");
     const [confirmPass, setConfirmPass] = useState<string>("");
-    const { request, isLoading } = useRequest<void>({
-        ...registerConfig(),
-        body: {
-            email,
-            password,
-            username,
-        },
-    });
+
     const navigate = useNavigate();
     useTitle("Register | Tiny Drive");
 
@@ -41,7 +33,11 @@ const Register = () => {
                     onsubmit={(event) => {
                         event.preventDefault();
 
-                        request().then(() => {
+                        register({
+                            email,
+                            password,
+                            username,
+                        }).then(() => {
                             notify.popup({
                                 level: NotifyLevel.info,
                                 message:
