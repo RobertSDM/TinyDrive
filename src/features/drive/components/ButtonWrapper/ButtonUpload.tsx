@@ -1,45 +1,24 @@
 import TextModal from "@/shared/components/ModalWrapper/TextModal.tsx";
 import {
     useAuthContext,
-    useDriveItemsContext,
     useModalContext,
-    useParentContext,
+    useParentContext
 } from "@/shared/context/useContext.tsx";
-import useRequest from "@/shared/hooks/useRequest.tsx";
-import { SingleItemResponse } from "@/shared/types/types.ts";
 import { useState } from "react";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 
-import DropDown, { FileOptionType } from "../../../../shared/components/DropDownWrapper/DropDown.tsx";
-import {
-    ItemSaveConfig,
-    ItemSaveFolderConfig,
-} from "../../api/requestConfig.ts";
+import DropDown, {
+    FileOptionType,
+} from "../../../../shared/components/DropDownWrapper/DropDown.tsx";
+import { useUploadFolder, useUploadItem } from "../../hooks/uploadHooks.tsx";
 
 export default function ButtonUpload() {
     const [isOpen, setIsOpen] = useState(false);
-    const { addItem } = useDriveItemsContext();
-
+    const { request: uploadItem } = useUploadItem();
+    const { request: uploadFolder } = useUploadFolder();
     const { parent } = useParentContext();
-    const { account, session } = useAuthContext();
+    const { account } = useAuthContext();
     const { openModal, closeModal } = useModalContext();
-    const { request: fileRequest } = useRequest<SingleItemResponse>(
-        ItemSaveConfig(session!.accessToken),
-        (resp) => {
-            const item = resp.data.data;
-            if (item.parentid === parent.id) addItem(resp.data.data);
-
-            return resp.data;
-        }
-    );
-    const { request: folderRequest } = useRequest<SingleItemResponse>(
-        ItemSaveFolderConfig(session!.accessToken),
-        (resp) => {
-            addItem(resp.data.data);
-
-            return resp.data;
-        }
-    );
 
     function open() {
         setIsOpen(true);
@@ -67,27 +46,15 @@ export default function ButtonUpload() {
             <DropDown {...{ isOpen }}>
                 <DropDown.FileOption
                     text="Upload File"
-                    onchange={async (filelist: FileList) => {
-                        for (let i = 0; i < filelist.length; i++) {
-                            const form = new FormData();
-                            form.append("file", filelist[i]);
-                            form.append("parentid", parent.id || "");
-                            form.append("ownerid", account!.id);
-                            await fileRequest(form);
-                        }
+                    onchange={(filelist: FileList) => {
+                        uploadItem(filelist);
                     }}
                     type={FileOptionType.FILE}
                 />
                 <DropDown.FileOption
                     text="Upload Folder"
-                    onchange={async (filelist: FileList) => {
-                        for (let i = 0; i < filelist.length; i++) {
-                            const form = new FormData();
-                            form.append("file", filelist[i]);
-                            form.append("parentid", parent.id || "");
-                            form.append("ownerid", account!.id);
-                            await fileRequest(form);
-                        }
+                    onchange={(filelist: FileList) => {
+                        uploadItem(filelist);
                     }}
                     type={FileOptionType.FOLDER}
                 />
@@ -96,7 +63,7 @@ export default function ButtonUpload() {
                         openModal(
                             <TextModal
                                 callback={(text) => {
-                                    folderRequest({
+                                    uploadFolder({
                                         name: text,
                                         parentid: parent.id,
                                         ownerid: account!.id,

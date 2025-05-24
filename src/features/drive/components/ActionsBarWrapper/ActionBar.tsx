@@ -1,99 +1,26 @@
 import TextModal from "@/shared/components/ModalWrapper/TextModal.tsx";
 import {
-    useAuthContext,
-    useDriveItemsContext,
-    useModalContext,
-    useNotify,
+    useModalContext
 } from "@/shared/context/useContext.tsx";
-import useRequest from "@/shared/hooks/useRequest.tsx";
-import { ItemType, NotifyLevel } from "@/shared/types/enums.ts";
-import {
-    FailuresAndSuccesses,
-    Item,
-    SingleItemResponse,
-    SingleResponse,
-} from "@/shared/types/types.ts";
+import { ItemType } from "@/shared/types/enums.ts";
+import { Item } from "@/shared/types/types.ts";
 import { useEffect } from "react";
+import useDeleteItem from "../../hooks/deleteHooks.tsx";
 import {
-    ItemDeleteConfig,
-    ItemDownloadConfig,
-    ItemDownloadFolder as ItemDownloadFolderConfig,
-    ItemUpdateNameConfig,
-} from "../../api/requestConfig.ts";
+    useDonwloadFile,
+    useDownloadFolder,
+} from "../../hooks/downloadHooks.tsx";
+import { useUpdateName } from "../../hooks/updateHooks.tsx";
 
 type ActionBarProps = {
     item: Item | null;
     closeActionBar: () => void;
 };
 export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
-    const { removeItem, reloadItems } = useDriveItemsContext();
-    const { account, session } = useAuthContext();
-    const notify = useNotify();
-    const { request: _delete } = useRequest<
-        SingleResponse<FailuresAndSuccesses>
-    >(ItemDeleteConfig(account!.id!, session!.accessToken), (resp) => {
-        resp.data.data.successes.forEach((id) => {
-            removeItem(id);
-        });
-        notify.popup({
-            level: NotifyLevel.info,
-            message: `${
-                resp.data.data.successes.length > 1 ? "All items" : "The item"
-            }  was deleted`,
-        });
-        closeActionBar();
-        return resp.data;
-    });
-
-    const { request: update } = useRequest<SingleItemResponse>(
-        ItemUpdateNameConfig(
-            item?.id! ?? "",
-            account!.id,
-            session!.accessToken
-        ),
-        (resp) => {
-            notify.popup({
-                level: NotifyLevel.info,
-                message: `The "${item!.name}" was updated`,
-            });
-            item!.name = resp.data.data.name;
-            reloadItems();
-            return resp.data;
-        }
-    );
-
-    const { request: downloadFolder } = useRequest<Blob>(
-        ItemDownloadFolderConfig(
-            account!.id,
-            item?.id! ?? "",
-            session!.accessToken
-        ),
-        (resp) => {
-            const bloburl = URL.createObjectURL(resp.data);
-            const $a = document.createElement("a");
-            $a.download = "";
-            $a.href = bloburl;
-
-            $a.click();
-            $a.remove();
-
-            return resp.data;
-        }
-    );
-
-    const { request: download } = useRequest<SingleResponse<string>>(
-        ItemDownloadConfig(account!.id, item?.id! ?? "", session!.accessToken),
-        (resp) => {
-            const $a = document.createElement("a");
-            $a.download = "";
-            $a.href = resp.data.data;
-
-            $a.click();
-            $a.remove();
-
-            return resp.data;
-        }
-    );
+    const { request: downloadFolder } = useDownloadFolder(item!);
+    const { request: downloadFile } = useDonwloadFile(item!);
+    const { request: delete_ } = useDeleteItem();
+    const { request: update } = useUpdateName(item!);
     const { closeModal, openModal } = useModalContext();
 
     useEffect(() => {
@@ -104,15 +31,13 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
                 e.stopPropagation();
                 e.preventDefault();
 
-                if (
-                    !confirm(
-                        "Are you sure? All the data from the folder will be lost"
-                    )
-                )
-                    return;
-                _delete({
+                const confirmDelete = confirm(
+                    "Are you sure? All the data from the folder will be lost"
+                );
+                if (!confirmDelete) return;
+                delete_({
                     itemids: [item?.id ?? ""],
-                });
+                }).then(closeActionBar);
             }
         }
 
@@ -133,16 +58,14 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
                     <button
                         className="hover:bg-red-400 bg-red-200 px-2 py-1 rounded-md hover:text-white active:scale-95"
                         onClick={() => {
-                            if (
-                                !confirm(
-                                    "Are you sure? All the data from the folder will be lost"
-                                )
-                            )
-                                return;
+                            const confirmDelete = confirm(
+                                "Are you sure? All the data from the folder will be lost"
+                            );
+                            if (!confirmDelete) return;
 
-                            _delete({
+                            delete_({
                                 itemids: [item?.id ?? ""],
-                            });
+                            }).then(closeActionBar);
                         }}
                     >
                         Delete
@@ -168,14 +91,8 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
                     <button
                         className="hover:bg-slate-400 bg-slate-200 px-2 py-1 rounded-md hover:text-white active:scale-95"
                         onClick={() => {
-                            notify.popup({
-                                level: NotifyLevel.info,
-                                message: `Downloading the ${item.type.toLowerCase()} "${
-                                    item.name
-                                }${item.extension}"`,
-                            });
                             if (item.type === ItemType.FILE) {
-                                download();
+                                downloadFile();
                             } else {
                                 downloadFolder();
                             }
