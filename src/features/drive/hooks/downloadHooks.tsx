@@ -6,6 +6,7 @@ import {
 } from "../api/requestConfig.ts";
 import { useAuthContext, useNotify } from "@/shared/context/useContext.tsx";
 import { NotifyLevel } from "@/shared/types/enums.ts";
+import { AxiosError } from "axios";
 
 export function useDownloadFolder(item: Item) {
     const { session, account } = useAuthContext();
@@ -27,6 +28,14 @@ export function useDownloadFolder(item: Item) {
             $a.remove();
 
             return resp.data;
+        },
+        (err) => {
+            if (!(err instanceof AxiosError)) return err;
+
+            notify.popup({
+                level: NotifyLevel.error,
+                message: err.response!.data.error!.message,
+            });
         }
     );
 
@@ -58,6 +67,14 @@ export function useDonwloadFile(item: Item) {
             $a.remove();
 
             return resp.data;
+        },
+        (err) => {
+            if (!(err instanceof AxiosError)) return err;
+
+            notify.popup({
+                level: NotifyLevel.error,
+                message: err.response!.data.error!.message,
+            });
         }
     );
 
