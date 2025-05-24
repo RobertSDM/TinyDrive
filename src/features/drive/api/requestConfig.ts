@@ -58,7 +58,7 @@ export function ItemSearch(
     };
 }
 
-export function ItemDownloadFolder(
+export function ItemDownloadFolderConfig(
     ownerid: string,
     parentid: string,
     accessToken: string

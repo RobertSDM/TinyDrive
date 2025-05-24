@@ -1,11 +1,4 @@
-import {
-    useAuthContext,
-    useDriveItemsContext,
-    useParentContext,
-} from "@/shared/context/useContext.tsx";
-import useRequest from "@/shared/hooks/useRequest.tsx";
-import { SingleItemResponse } from "@/shared/types/types.ts";
-import { ItemSaveConfig } from "../../api/requestConfig.ts";
+import { useUploadItem } from "../../hooks/uploadHooks.tsx";
 
 type DragOverModalProps = {
     close: () => void;
@@ -15,18 +8,7 @@ export default function DragAndDropModal({
     close,
     isOpen,
 }: DragOverModalProps) {
-    const { parent } = useParentContext();
-    const { session, account } = useAuthContext();
-    const { addItem } = useDriveItemsContext();
-    const { request: fileRequest } = useRequest<SingleItemResponse>(
-        ItemSaveConfig(session!.accessToken),
-        (resp) => {
-            const item = resp.data.data;
-            if (item.parentid === parent.id) addItem(resp.data.data);
-
-            return resp.data;
-        }
-    );
+    const { request: uploadItem } = useUploadItem();
 
     return (
         <div
@@ -43,13 +25,7 @@ export default function DragAndDropModal({
                 e.preventDefault();
                 close();
                 const filelist = e.dataTransfer.files;
-                for (let i = 0; i < filelist.length; i++) {
-                    const form = new FormData();
-                    form.append("file", filelist[i]);
-                    form.append("parentid", parent.id || "");
-                    form.append("ownerid", account!.id);
-                    await fileRequest(form);
-                }
+                uploadItem(filelist);
             }}
             hidden={!isOpen}
         >
