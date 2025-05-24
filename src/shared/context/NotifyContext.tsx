@@ -5,6 +5,7 @@ import {
     ProgressNotification,
     TimedNotification,
 } from "../types/types.ts";
+import { NotifyLevel } from "../types/enums.ts";
 
 type context = {
     popup: (notification: PopupNotification) => void;
@@ -15,7 +16,15 @@ type context = {
 export const NotifyContext = createContext<context>({} as context);
 
 export const Notify = ({ children }: { children: ReactNode }) => {
-    const [notifications, setNotifications] = useState<JSX.Element[]>([]);
+    const [notifications, setNotifications] = useState<JSX.Element[]>([
+        <Notify.Popup
+            notification={{
+                level: NotifyLevel.info,
+                message: "Uploading Files",
+            }}
+            done={done}
+        />,
+    ]);
     const [notification, setNotification] = useState<JSX.Element | undefined>(
         undefined
     );
@@ -58,7 +67,7 @@ export const Notify = ({ children }: { children: ReactNode }) => {
 
     return (
         <NotifyContext.Provider value={{ popup, progress, timed }}>
-            <div className="fixed top-0 left-0 z-[60]">{notification}</div>
+            <div className="fixed bottom-0 right-0 z-[60]">{notification}</div>
             {children}
         </NotifyContext.Provider>
     );
@@ -79,7 +88,11 @@ Notify.Popup = ({ done, notification }: PopupProps) => {
         return () => clearTimeout(timer);
     }, []);
 
-    return <Notification notification={notification} close={done} />;
+    return (
+        <div className="mr-10 mb-5 bg-white pt-1 rounded-sm border border-slate-400 shadow-md px-3">
+            <Notification notification={notification} close={done} />
+        </div>
+    );
 };
 
 type ProgressProps = Props & {
@@ -91,7 +104,7 @@ Notify.Progress = ({ notification, done }: ProgressProps) => {
     useEffect(() => {
         async function run() {
             for await (const value of notification.progress()) {
-                setProgress(value);
+                setProgress((value * 100) / notification.target);
             }
             done();
         }
@@ -99,13 +112,19 @@ Notify.Progress = ({ notification, done }: ProgressProps) => {
         run();
     }, []);
 
+    useEffect(() => {
+        console.log(progress);
+    }, [progress]);
+
     return (
-        <div>
-            <Notification notification={notification} />
-            <span>
-                <p>{progress}</p>
-                <p>{notification.target}</p>
-            </span>
+        <div className="mr-10 mb-5 bg-white  pt-1 rounded-sm border border-slate-400 border-b-transparent shadow-md">
+            <div className="px-3">
+                <Notification notification={notification} />
+            </div>
+            <div
+                style={{ width: `${progress}%` }}
+                className="h-[3px] bg-purple-500"
+            ></div>
         </div>
     );
 };
@@ -122,7 +141,11 @@ Notify.Timed = ({ notification, done }: TimedProps) => {
         return () => clearTimeout(timer);
     }, []);
 
-    return <Notification notification={notification} close={done} />;
+    return (
+        <div className="mr-10 mb-5 bg-white pt-1 rounded-sm border border-slate-400 shadow-md px-3">
+            <Notification notification={notification} close={done} />
+        </div>
+    );
 };
 
 type NotificationProps = {
@@ -131,11 +154,20 @@ type NotificationProps = {
 };
 function Notification({ notification, close }: NotificationProps) {
     return (
-        <>
-            <div>
-                <p>{notification.message}</p>
-            </div>
-            {close !== undefined ? <div onClick={close}>X</div> : <></>}
-        </>
+        <div className="flex gap-x-3 max-w-72 my-1 items-center">
+            <p className="text-slate-800">{notification.message}</p>
+            {close !== undefined ? (
+                <div className="flex items-start">
+                    <p
+                        className="cursor-pointer  font-semibold text-lg px-1"
+                        onClick={close}
+                    >
+                        x
+                    </p>
+                </div>
+            ) : (
+                <></>
+            )}
+        </div>
     );
 }
