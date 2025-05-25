@@ -20,7 +20,7 @@ export function DriveItemsProvider({ children }: DriveItemsProviderProps) {
     }
 
     function updateItems(items: Item[]) {
-        setItems(items);
+        setItems((prev) => [...prev, ...items]);
     }
 
     function addItem(item: Item) {

@@ -124,10 +124,11 @@ export function ItemDeleteConfig(
 export function ItemAllFromFolder(
     ownerid: string,
     parentid: string | null,
-    accessToken: string
+    accessToken: string,
+    page: number = 1
 ): RequestConfig {
     return {
-        path: `/item/all/${ownerid}/${parentid}`,
+        path: `/item/all/${ownerid}/${parentid}?p=${page}`,
         method: HTTPMethods.GET,
         headers: {
             Authorization: `Bearer ${accessToken}`,
