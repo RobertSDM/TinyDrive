@@ -1,11 +1,13 @@
+import { ItemType } from "@/shared/types/enums.ts";
 import { Item } from "@/shared/types/types.ts";
 import { createContext, ReactNode, useState } from "react";
 type DriveItemsContext = {
-    items: Item[];
+    folders: Item[];
+    files: Item[];
     removeItem: (itemid: string) => void;
     addItem: (item: Item) => void;
+    addItems: (items: Item[]) => void;
     updateItems: (items: Item[]) => void;
-    reloadItems: () => void;
 };
 export const DriveItemsContext = createContext<DriveItemsContext>(
     {} as DriveItemsContext
@@ -13,27 +15,44 @@ export const DriveItemsContext = createContext<DriveItemsContext>(
 
 type DriveItemsProviderProps = { children: ReactNode };
 export function DriveItemsProvider({ children }: DriveItemsProviderProps) {
-    const [items, setItems] = useState<Item[]>([]);
+    const [folders, setFolders] = useState<Item[]>([]);
+    const [files, setFiles] = useState<Item[]>([]);
 
-    function reloadItems() {
-        setItems((prev) => [...prev]);
-    }
-
-    function updateItems(items: Item[]) {
-        setItems(items);
+    function addItems(items: Item[]) {
+        items.forEach((item) => {
+            addItem(item);
+        });
     }
 
     function addItem(item: Item) {
-        setItems((prev) => [...prev, item]);
+        if (item.type === ItemType.FILE) {
+            setFiles((prev) => [...prev, item]);
+        } else {
+            setFolders((prev) => [...prev, item]);
+        }
+    }
+
+    function updateItems(items: Item[]) {
+        setFiles([])
+        setFolders([])
+        addItems(items)
     }
 
     function removeItem(itemid: string) {
-        setItems((prev) => prev.filter((it) => it.id !== itemid));
+        setFiles((prev) => prev.filter((it) => it.id !== itemid));
+        setFolders((prev) => prev.filter((it) => it.id !== itemid));
     }
 
     return (
         <DriveItemsContext.Provider
-            value={{ items, addItem, removeItem, updateItems, reloadItems }}
+            value={{
+                folders,
+                files,
+                addItem,
+                removeItem,
+                addItems,
+                updateItems,
+            }}
         >
             {children}
         </DriveItemsContext.Provider>
