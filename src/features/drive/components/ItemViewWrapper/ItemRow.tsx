@@ -2,6 +2,7 @@ import Preview from "@/shared/components/ModalWrapper/Preview.tsx";
 import { useModalContext } from "@/shared/context/useContext.tsx";
 import { ItemType } from "@/shared/types/enums.ts";
 import { Item } from "@/shared/types/types.ts";
+import { MouseEvent } from "react";
 import { FaFile } from "react-icons/fa";
 import { FaFolderClosed } from "react-icons/fa6";
 import { Link } from "react-router-dom";
@@ -60,7 +61,7 @@ function FileItem({ item, isSelected }: FileItemProps) {
 }
 type ItemRowProps = {
     item: Item;
-    onclick?: () => void;
+    onclick: (e: MouseEvent) => void;
     isSelected?: boolean;
 };
 
@@ -69,7 +70,8 @@ function ItemRow({ item, onclick, isSelected }: ItemRowProps) {
 
     return (
         <section
-            onClick={onclick}
+            onClick={(e) => onclick(e)}
+            onSelect={(e) => e.preventDefault()}
             onDoubleClick={(e) => {
                 e.preventDefault();
 
@@ -79,7 +81,7 @@ function ItemRow({ item, onclick, isSelected }: ItemRowProps) {
                     <Preview close={closeModal} isOpen={isOpen} item={item} />
                 );
             }}
-            className={`border justify-between hover:bg-purple-100 rounded-lg items-center h-12 max-h-12 p-2 flex outline-none cursor-default ${
+            className={`border justify-between hover:bg-purple-100 rounded-lg items-center h-12 max-h-12 p-2 flex outline-none cursor-default select-none ${
                 isSelected &&
                 "bg-purple-400 hover:bg-purple-500 border-purple-500 text-white"
             }`}

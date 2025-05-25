@@ -10,7 +10,7 @@ import { ItemUpdateNameConfig } from "../api/requestConfig.ts";
 import { AxiosError } from "axios";
 
 export function useUpdateName(item: Item) {
-    const { reloadItems } = useDriveItemsContext();
+    const { updateItems, items } = useDriveItemsContext();
     const { session, account } = useAuthContext();
     const notify = useNotify();
 
@@ -26,7 +26,7 @@ export function useUpdateName(item: Item) {
                 message: `The "${item!.name}" was updated`,
             });
             item!.name = resp.data.data.name;
-            reloadItems();
+            updateItems(items);
             return resp.data;
         },
         (err) => {

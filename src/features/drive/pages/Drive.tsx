@@ -1,11 +1,9 @@
 import {
-    useDriveItemsContext,
     useModalContext,
     useParentContext,
 } from "@/shared/context/useContext.tsx";
 import useTitle from "@/shared/hooks/useTitle.tsx";
-import { Item } from "@/shared/types/types.ts";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ActionBar from "../components/ActionsBarWrapper/ActionBar.tsx";
 import Breadcrumb from "../components/BreadcrumbWrapper/Breadcrumb.tsx";
@@ -17,31 +15,15 @@ import { useItemById } from "../hooks/getItemsHooks.tsx";
 function Drive() {
     let { parentid } = useParams();
     const { closeModal, isOpen, openModal } = useModalContext();
-    const { items } = useDriveItemsContext();
-    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
     const { changeParent, changeParentToRoot } = useParentContext();
 
     const { request: parentRequest, data: parentData } = useItemById(
         parentid === "drive" ? "" : parentid!
     );
 
-    function changeSelectedItem(item: Item) {
-        if (item.id === selectedItem?.id) {
-            setSelectedItem(null);
-            return;
-        }
-        setSelectedItem(item);
-    }
-
-    function changeSelectedItemToNull() {
-        setSelectedItem(null);
-    }
-
     useTitle("Tiny Drive");
 
     useEffect(() => {
-        changeSelectedItemToNull();
-
         if (parentid !== "drive") parentRequest();
         else changeParentToRoot();
     }, [parentid]);
@@ -65,17 +47,8 @@ function Drive() {
         >
             <Breadcrumb />
             <ButtonUpload />
-            <ActionBar
-                item={selectedItem}
-                closeActionBar={changeSelectedItemToNull}
-            />
-            <ItemsView
-                {...{
-                    items,
-                    changeSelectedItem,
-                    selectedItem,
-                }}
-            />
+            <ActionBar />
+            <ItemsView />
         </main>
     );
 }
