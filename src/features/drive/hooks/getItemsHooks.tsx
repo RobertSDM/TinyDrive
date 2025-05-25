@@ -3,7 +3,11 @@ import { ListItemResponse, SingleItemResponse } from "@/shared/types/types.ts";
 import { ItemAllFromFolder, ItemById } from "../api/requestConfig.ts";
 import { useAuthContext } from "@/shared/context/useContext.tsx";
 
-export function useAllFromFolder(parentid: string, page: number = 1) {
+export function useAllFromFolder(
+    parentid: string,
+    page: number = 0,
+    sort: string = "name"
+) {
     const { account, session } = useAuthContext();
 
     const request = useRequest<ListItemResponse>(
@@ -11,7 +15,8 @@ export function useAllFromFolder(parentid: string, page: number = 1) {
             account!.id,
             parentid,
             session!.accessToken ?? "",
-            page
+            page,
+            sort
         )
     );
 

@@ -80,3 +80,8 @@ export type ProgressNotification = BaseNotification & {
 export type TimedNotification = BaseNotification & {
     duration: number;
 };
+
+export type Sort = {
+    exhibitionTitle: string;
+    title: string;
+};
