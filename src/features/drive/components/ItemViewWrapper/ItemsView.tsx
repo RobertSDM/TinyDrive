@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useAllFromFolder } from "../../hooks/getItemsHooks.tsx";
 import ItemRow from "./ItemRow.tsx";
 import sortFilters from "../../constants/itemsSort.ts";
+import { ItemType } from "@/shared/types/enums.ts";
 
 type ItemsViewProps = {};
 const ItemsView = ({}: ItemsViewProps) => {
@@ -70,26 +71,55 @@ const ItemsView = ({}: ItemsViewProps) => {
                         order by: {sortFilters[filter].exhibitionTitle}
                     </button>
                 </div>
-                <section className="flex gap-y-2 flex-col ">
-                    {items.map((item) => (
-                        <ItemRow
-                            onclick={(e: MouseEvent) => {
-                                if (e.shiftKey && selectedItem !== null) {
-                                    e.preventDefault();
-                                    createSelectionRange(selectedItem, item);
-                                    return;
+                <section className="flex gap-y-2 flex-col mt-5">
+                    {items
+                        .filter((item) => item.type === ItemType.FOLDER)
+                        .map((item) => (
+                            <ItemRow
+                                onclick={(e: MouseEvent) => {
+                                    if (e.shiftKey && selectedItem !== null) {
+                                        e.preventDefault();
+                                        createSelectionRange(
+                                            selectedItem,
+                                            item
+                                        );
+                                        return;
+                                    }
+                                    selectItem(item);
+                                }}
+                                key={item.id}
+                                item={item}
+                                isSelected={
+                                    (selectedItem !== null &&
+                                        selectedItem.id === item.id) ||
+                                    selectedRange.includes(item)
                                 }
-                                selectItem(item);
-                            }}
-                            key={item.id}
-                            item={item}
-                            isSelected={
-                                (selectedItem !== null &&
-                                    selectedItem.id === item.id) ||
-                                selectedRange.includes(item)
-                            }
-                        />
-                    ))}
+                            />
+                        ))}
+                    {items
+                        .filter((item) => item.type === ItemType.FILE)
+                        .map((item) => (
+                            <ItemRow
+                                onclick={(e: MouseEvent) => {
+                                    if (e.shiftKey && selectedItem !== null) {
+                                        e.preventDefault();
+                                        createSelectionRange(
+                                            selectedItem,
+                                            item
+                                        );
+                                        return;
+                                    }
+                                    selectItem(item);
+                                }}
+                                key={item.id}
+                                item={item}
+                                isSelected={
+                                    (selectedItem !== null &&
+                                        selectedItem.id === item.id) ||
+                                    selectedRange.includes(item)
+                                }
+                            />
+                        ))}
                 </section>
                 {items.length === 0 ? (
                     <section>
