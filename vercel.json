@@ -5,7 +5,11 @@
             "destination": "/index.html"
         },
         {
-            "source": "/folder/:id",
+            "source": "/drive/:id",
+            "destination": "/index.html"
+        },
+        {
+            "source": "/drive",
             "destination": "/index.html"
         },
         {
