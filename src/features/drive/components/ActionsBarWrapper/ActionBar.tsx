@@ -11,9 +11,11 @@ import {
     useDownloadFolder,
 } from "../../hooks/downloadHooks.tsx";
 import { useUpdateName } from "../../hooks/updateHooks.tsx";
+import { useParams } from "react-router-dom";
 
 type ActionBarProps = {};
 export default function ActionBar({}: ActionBarProps) {
+    const { parentid } = useParams();
     const { selectedItem, deselectItem, selectedRange } =
         useDriveItemsContext();
     const { request: downloadFolder } = useDownloadFolder(selectedItem!);
@@ -22,6 +24,10 @@ export default function ActionBar({}: ActionBarProps) {
     const { request: update } = useUpdateName(selectedItem!);
     const { closeModal, openModal, isOpen } = useModalContext();
 
+    useEffect(() => {
+        deselectItem();
+    }, [parentid]);
+    
     useEffect(() => {
         function action(e: KeyboardEvent) {
             if (!selectedItem) return;
