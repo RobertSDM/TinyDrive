@@ -1,38 +1,24 @@
 import TextModal from "@/shared/components/ModalWrapper/TextModal.tsx";
 import {
     useAuthContext,
-    useDriveItemsContext,
     useModalContext,
-    useParentContext,
+    useParentContext
 } from "@/shared/context/useContext.tsx";
-import { ItemType } from "@/shared/types/enums.ts";
-import { ItemData, SingleItemResponse } from "@/shared/types/index.ts";
 import { useState } from "react";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
-import transformFileToItem from "../../core/extractFileContent.ts";
-import { saveItemService } from "../../service/itemService.ts";
-import DropDown, { FileOptionType } from "../DropDownWrapper/DropDown.tsx";
-import { ItemSaveConfig } from "../../api/config.ts";
-import useFetcher from "@/shared/hooks/useRequest.tsx";
-import { DefaultClient } from "@/shared/api/clients.ts";
+
+import DropDown, {
+    FileOptionType,
+} from "../../../../shared/components/DropDownWrapper/DropDown.tsx";
+import { useUploadFolder, useUploadItem } from "../../hooks/uploadHooks.tsx";
 
 export default function ButtonUpload() {
     const [isOpen, setIsOpen] = useState(false);
-    const { addItem } = useDriveItemsContext();
-
+    const { request: uploadItem } = useUploadItem();
+    const { request: uploadFolder } = useUploadFolder();
     const { parent } = useParentContext();
     const { account } = useAuthContext();
     const { openModal, closeModal } = useModalContext();
-    const { request } = useFetcher<SingleItemResponse>(
-        ItemSaveConfig(),
-        DefaultClient,
-        false,
-        (resp) => {
-            addItem(resp.data.data);
-
-            return resp.data;
-        }
-    );
 
     function open() {
         setIsOpen(true);
@@ -45,11 +31,12 @@ export default function ButtonUpload() {
     return (
         <div
             className={`inline relative ${isOpen ? "border-black/30" : ""}`}
+            onClick={() => (isOpen ? close() : open())}
             onMouseEnter={open}
             onMouseLeave={close}
         >
             <span
-                className={`items-center gap-x-2 border-purple-500 text-black border hover:bg-purple-500 w-32 hover:text-white  inline-flex cursor-pointer rounded-md justify-around p-2 ${
+                className={`items-center gap-x-2 border-purple-500 text-black border hover:bg-purple-500 active:bg-purple-500 w-32 hover:text-white  inline-flex cursor-pointer rounded-sm justify-around p-2 ${
                     isOpen && "rounded-b-none"
                 }`}
             >
@@ -59,35 +46,15 @@ export default function ButtonUpload() {
             <DropDown {...{ isOpen }}>
                 <DropDown.FileOption
                     text="Upload File"
-                    onchange={async (filelist: FileList) => {
-                        const fileStruct = transformFileToItem(
-                            filelist,
-                            account!.id
-                        );
-
-                        for await (const item of saveItemService(
-                            fileStruct,
-                            parent.id!
-                        )) {
-                            addItem(item);
-                        }
+                    onchange={(filelist: FileList) => {
+                        uploadItem(filelist);
                     }}
                     type={FileOptionType.FILE}
                 />
                 <DropDown.FileOption
                     text="Upload Folder"
-                    onchange={async (filelist: FileList) => {
-                        const fileStruct = transformFileToItem(
-                            filelist,
-                            account!.id
-                        );
-
-                        for await (const item of saveItemService(
-                            fileStruct,
-                            parent.id!
-                        )) {
-                            if (item.parentid === parent.id) addItem(item);
-                        }
+                    onchange={(filelist: FileList) => {
+                        uploadItem(filelist);
                     }}
                     type={FileOptionType.FOLDER}
                 />
@@ -96,19 +63,14 @@ export default function ButtonUpload() {
                         openModal(
                             <TextModal
                                 callback={(text) => {
-                                    const item: ItemData = {
-                                        extension: "",
+                                    uploadFolder({
                                         name: text,
-                                        ownerid: account!.id,
                                         parentid: parent.id,
-                                        path: text,
-                                        size: 0,
-                                        type: ItemType.FOLDER,
-                                    };
-                                    request(item);
+                                        ownerid: account!.id,
+                                    });
                                 }}
                                 close={closeModal}
-                                isOpen={true}
+                                isOpen={isOpen}
                             />
                         )
                     }

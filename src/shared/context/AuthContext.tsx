@@ -1,35 +1,36 @@
-import { Session, User } from "@supabase/supabase-js";
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { AccountGet } from "../api/config.ts";
+import { GetAccount } from "../api/requestConfig.ts";
+import useRequest from "../hooks/useRequest.tsx";
+import { Account, AuthResult, SingleResponse } from "../types/types.ts";
 import authClient from "../clients/supabase/authClient.ts";
-import useFetcher from "../hooks/useRequest.tsx";
-import { Account, SingleResponse } from "../types/index.ts";
 
 type AuthContext = {
-    user: User | null;
     logOut: () => void;
-    logIn: (email: string, password: string) => void;
+    logInPassword: (email: string, password: string) => Promise<void>;
     isLogged: boolean;
-    session: Session | null;
     isLoading: boolean;
+    session: AuthResult | null;
     account: Account | null;
 };
 export const AuthContext = createContext<AuthContext>({} as AuthContext);
 
 type AuthProviderProps = { children: ReactNode };
-export default function AuthProvider({ children: chidren }: AuthProviderProps) {
-    const [user, setUser] = useState<User | null>(null);
-    const [session, setSession] = useState<Session | null>(null);
+export default function AuthProvider({ children }: AuthProviderProps) {
+    const [session, setSession] = useState<AuthResult | null>(null);
     const [isLogged, setIsLogged] = useState<boolean>(false);
     const [account, setAccount] = useState<Account | null>(null);
-    const { request, data } = useFetcher<SingleResponse<Account>>(
-        AccountGet(user?.id!, session?.access_token!)
+    const {
+        request: accountRequest,
+        data,
+        error,
+    } = useRequest<SingleResponse<Account>>(
+        GetAccount(session?.userid!, session?.accessToken!)
     );
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        if (!session?.access_token) return;
-        request();
+        if (!session?.accessToken) return;
+        accountRequest();
     }, [session]);
 
     useEffect(() => {
@@ -39,26 +40,34 @@ export default function AuthProvider({ children: chidren }: AuthProviderProps) {
     }, [data]);
 
     useEffect(() => {
-        authClient.getSession().then((resp) => {
-            if (resp.error) return;
-            setUser(resp.data.session?.user ?? null);
-            setSession(resp.data.session);
-            setIsLogged(true);
-        });
+        if (!error) return;
+        setIsLoading(false);
+    }, [error]);
+
+    useEffect(() => {
+        authClient
+            .getSession()
+            .then((resp) => {
+                setSession(resp);
+                setIsLogged(true);
+            })
+            .catch(() => {
+                setIsLoading(false);
+                setIsLogged(false);
+            });
     }, []);
 
-    async function logIn(email: string, password: string) {
-        const resp = await authClient.logIn(email, password);
-        if (resp.error) return;
-        setUser(resp.data.session?.user ?? null);
-        setSession(resp.data.session);
+    async function logInPassword(email: string, password: string) {
+        setIsLoading(true);
+        const resp = await authClient.logInPassword(email, password);
         setIsLogged(true);
+        setSession(resp);
     }
 
     function logOut() {
         authClient.logOut().then(() => {
             setIsLoading(false);
-            setUser(null);
+            setIsLogged(false);
             setSession(null);
             setAccount(null);
         });
@@ -67,16 +76,15 @@ export default function AuthProvider({ children: chidren }: AuthProviderProps) {
     return (
         <AuthContext.Provider
             value={{
-                user,
                 logOut,
                 isLogged,
-                logIn,
+                logInPassword,
                 account,
                 isLoading,
                 session,
             }}
         >
-            {chidren}
+            {children}
         </AuthContext.Provider>
     );
 }

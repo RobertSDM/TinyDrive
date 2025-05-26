@@ -1,6 +1,4 @@
-import { NotificationLevels } from "../types/enums.ts";
-import { INotification } from "../types/index.ts";
-import { EMAIL_REGEX } from "./globalVariables.ts";
+import { EmailRegex } from "../constants/projectConfigVariables.ts";
 
 export const correctName = (name: string) => {
     name = name.replace(/[\/\\\0<>\?"'\*:\']/g, "");
@@ -21,21 +19,12 @@ export const correctName = (name: string) => {
 
 export const emailPassVerification = (
     email: string,
-    enqueue: (notification: INotification) => void,
     pass?: string,
     confirmPass?: string
 ) => {
     if (pass && pass !== confirmPass) {
-        enqueue({
-            level: NotificationLevels.INFO,
-            msg: "The pass and confirm pass don't match",
-        });
         return false;
-    } else if (!EMAIL_REGEX.test(email)) {
-        enqueue({
-            level: NotificationLevels.INFO,
-            msg: "The email format is invalid",
-        });
+    } else if (!EmailRegex.test(email)) {
         return false;
     }
     return true;

@@ -1,28 +1,19 @@
-import {
-    useNotificationSystemContext
-} from "@/shared/context/useContext.tsx";
-import useFetcher from "@/shared/hooks/useRequest.tsx";
+import { useNotify } from "@/shared/context/useContext.tsx";
 import useTitle from "@/shared/hooks/useTitle.tsx";
-import { emailPassVerification } from "@/shared/utils/valitation.ts";
+import { NotifyLevel } from "@/shared/types/enums.ts";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerConfig } from "../api/config.ts";
 import AuthForm from "../components/FormWrapper/AuthForm.tsx";
+import useRegister from "../hooks/registerHooks.tsx";
 
 const Register = () => {
-    const { addNotif } = useNotificationSystemContext();
+    const notify = useNotify();
     const [username, setUsername] = useState<string>("");
     const [email, setEmail] = useState<string>("");
+    const { request: register, isLoading } = useRegister();
     const [password, setPassword] = useState<string>("");
     const [confirmPass, setConfirmPass] = useState<string>("");
-    const { request, isLoading } = useFetcher<void>({
-        ...registerConfig(),
-        body: {
-            email,
-            password,
-            username,
-        },
-    });
+
     const navigate = useNavigate();
     useTitle("Register | Tiny Drive");
 
@@ -42,18 +33,18 @@ const Register = () => {
                     onsubmit={(event) => {
                         event.preventDefault();
 
-                        const isValid = emailPassVerification(
-                            email.trimEnd().toLowerCase(),
-                            addNotif,
+                        register({
+                            email,
                             password,
-                            confirmPass
-                        );
-
-                        if (isValid) {
-                            request().then(() => {
-                                navigate("/login");
+                            username,
+                        }).then(() => {
+                            notify.popup({
+                                level: NotifyLevel.info,
+                                message:
+                                    "You are now registred. To login verify your email",
                             });
-                        }
+                            navigate("/login");
+                        });
                     }}
                 >
                     <AuthForm.Input

@@ -1,22 +1,21 @@
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import "./index.css";
 import AuthLayout from "./features/auth/layouts/AuthLayout.tsx";
 import Login from "./features/auth/pages/Login.tsx";
 import Register from "./features/auth/pages/Register.tsx";
 import DriveLayout from "./features/drive/layouts/DriveLayout.tsx";
 import Drive from "./features/drive/pages/Drive.tsx";
-import { NotificationProvider } from "./shared/context/NotificationSystem.tsx";
+import "./index.css";
+import ProtectedPage from "./shared/components/RouteWrapper/ProtectedRoute.tsx";
 import AuthProvider from "./shared/context/AuthContext.tsx";
-import AllowedRoute from "./shared/components/RouteWrapper/AllowedRoute.tsx";
-import ProtectedRoute from "./shared/components/RouteWrapper/ProtectedRoute.tsx";
+import { Notify } from "./shared/context/NotifyContext.tsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
         children: [
             {
-                element: <ProtectedRoute />,
+                element: <ProtectedPage />,
                 children: [
                     {
                         element: <DriveLayout />,
@@ -30,20 +29,15 @@ const router = createBrowserRouter([
                 ],
             },
             {
-                element: <AllowedRoute />,
+                element: <AuthLayout />,
                 children: [
                     {
-                        element: <AuthLayout />,
-                        children: [
-                            {
-                                path: "/register",
-                                element: <Register />,
-                            },
-                            {
-                                path: "/login",
-                                element: <Login />,
-                            },
-                        ],
+                        path: "/register",
+                        element: <Register />,
+                    },
+                    {
+                        path: "/login",
+                        element: <Login />,
                     },
                 ],
             },
@@ -53,12 +47,12 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     // <React.StrictMode>
-    <section className="w-[100vw] h-[100dvh]">
-        <NotificationProvider>
+    <section className="w-dvw h-dvh relative flex flex-col">
+        <Notify>
             <AuthProvider>
                 <RouterProvider router={router} />
             </AuthProvider>
-        </NotificationProvider>
+        </Notify>
     </section>
     // </React.StrictMode>
 );

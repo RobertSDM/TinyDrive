@@ -6,20 +6,22 @@ export default () => {
     const { logOut, account } = useAuthContext();
 
     return (
-        <div className="border">
-            <header className="flex max-w-[85%] mx-auto py-4 items-center justify-between h-20 min-w-[364px]">
+        <div className="px-10 w-full">
+            <header className="flex items-center mx-auto max-w-7xl justify-between h-20 min-w-80">
                 <Link to={"/drive"} className="cursor-pointer">
                     <img
                         src="/imgs/tiny-drive-logo.svg"
-                        className="aspect-square h-10"
+                        className="aspect-square h-12"
                     />
                 </Link>
                 <SearchInput />
-                <div className="relative px-4 border border-slate-300 flex justify-center group w-40 rounded-md hover:border-b-transparent hover:rounded-b-none">
-                    <span className="font-semibold">{account?.username}</span>
-                    <div className="absolute left-[-1px] top-full scale-0 group-hover:scale-100 group-active:scale-100 p-4 w-[calc(100%_+_2px)] bg-white border-slate-300 border rounded-b-md">
+                <div className="relative border border-slate-300 group w-32 rounded-sm hover:rounded-b-none">
+                    <p className="font-semibold text-center">
+                        {account?.username}
+                    </p>
+                    <div className="absolute top-full scale-0 group-hover:scale-100 group-active:scale-100 p-2 w-full bg-white border-slate-300 border rounded-b-md">
                         <button
-                            className="px-3 w-full  rounded-md bg-red-500 text-white font-semibold hover:bg-white hover:border hover:border-current hover:border-red-500 hover:text-red-500 text-sm"
+                            className="py-1 w-full rounded-sm text-red-500 font-semibold hover:bg-red-500 hover:text-white text-sm"
                             onClick={() => {
                                 logOut();
                             }}

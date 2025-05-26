@@ -1,34 +1,48 @@
-import { supabaseKey, supabaseUrl } from "@/shared/utils/globalVariables.ts";
-import { AuthTokenResponsePassword, createClient } from "@supabase/supabase-js";
+import { SupabaseKey, SupabaseUrl } from "@/shared/constants/envVariables.ts";
+import AuthClientInterface from "@/shared/interfaces/AuthClientInterface.ts";
+import { AuthResult } from "@/shared/types/types.ts";
+import { createClient } from "@supabase/supabase-js";
 import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient.js";
 
-class AuthClient {
+class AuthClient implements AuthClientInterface {
     private suauth: SupabaseAuthClient;
+
     constructor(url: string, key: string) {
         this.suauth = createClient(url, key).auth;
     }
 
-    public async logIn(
+    public async logInPassword(
         email: string,
         password: string
-    ): Promise<AuthTokenResponsePassword> {
-        return await this.suauth.signInWithPassword({
+    ): Promise<AuthResult> {
+        const resp = await this.suauth.signInWithPassword({
             email,
             password,
         });
+
+        return {
+            accessToken: resp.data.session!.access_token,
+            refreshToken: resp.data.session!.refresh_token,
+            userid: resp.data.user!.id,
+        };
     }
 
-    public async getSession() {
-        return await this.suauth.getSession();
+    public async getSession(): Promise<AuthResult> {
+        const resp = await this.suauth.getSession();
+        if (!resp.data.session) {
+            throw new Error("no section found");
+        }
+
+        return {
+            accessToken: resp.data.session!.access_token,
+            refreshToken: resp.data.session!.refresh_token,
+            userid: resp.data.session!.user!.id,
+        };
     }
 
-    public async getUser() {
-        return await this.suauth.getUser();
-    }
-
-    public async logOut() {
-        return await this.suauth.signOut();
+    public async logOut(): Promise<void> {
+        await this.suauth.signOut();
     }
 }
 
-export default new AuthClient(supabaseUrl, supabaseKey);
+export default new AuthClient(SupabaseUrl, SupabaseKey);

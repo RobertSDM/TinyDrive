@@ -1,60 +1,56 @@
 import TextModal from "@/shared/components/ModalWrapper/TextModal.tsx";
 import {
-    useAuthContext,
     useDriveItemsContext,
     useModalContext,
 } from "@/shared/context/useContext.tsx";
-import useFetcher from "@/shared/hooks/useRequest.tsx";
-import { Item, SingleItemResponse } from "@/shared/types/index.ts";
-import { ItemDeleteConfig, ItemUpdateNameConfig } from "../../api/config.ts";
-import { DefaultClient } from "@/shared/api/clients.ts";
+import { ItemType } from "@/shared/types/enums.ts";
 import { useEffect } from "react";
+import useDeleteItem from "../../hooks/deleteHooks.tsx";
+import {
+    useDonwloadFile,
+    useDownloadFolder,
+} from "../../hooks/downloadHooks.tsx";
+import { useUpdateName } from "../../hooks/updateHooks.tsx";
+import { useParams } from "react-router-dom";
 
-type ActionBarProps = {
-    item?: Item | null;
-    closeActionBar: () => void;
-};
-export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
-    const { removeItem, reloadItems } = useDriveItemsContext();
-    const { account } = useAuthContext();
-    const { request: _delete } = useFetcher(
-        ItemDeleteConfig(account?.id ?? "", item?.id ?? ""),
-        DefaultClient,
-        false,
-        (resp) => {
-            removeItem(item!);
-            closeActionBar();
-            return resp.data;
-        }
-    );
-
-    const { request: update } = useFetcher<SingleItemResponse>(
-        ItemUpdateNameConfig(item?.id! ?? ""),
-        DefaultClient,
-        false,
-        (resp) => {
-            item!.name = resp.data.data.name;
-            reloadItems();
-            return resp.data;
-        }
-    );
-    const { closeModal, openModal } = useModalContext();
+type ActionBarProps = {};
+export default function ActionBar({}: ActionBarProps) {
+    const { parentid } = useParams();
+    const { selectedItem, deselectItem, selectedRange } =
+        useDriveItemsContext();
+    const { request: downloadFolder } = useDownloadFolder(selectedItem!);
+    const { request: downloadFile } = useDonwloadFile(selectedItem!);
+    const { request: delete_ } = useDeleteItem();
+    const { request: update } = useUpdateName(selectedItem!);
+    const { closeModal, openModal, isOpen } = useModalContext();
 
     useEffect(() => {
+        deselectItem();
+    }, [parentid]);
+    
+    useEffect(() => {
         function action(e: KeyboardEvent) {
-            if (!item) return;
+            if (!selectedItem) return;
 
             if (e.key === "Delete") {
                 e.stopPropagation();
                 e.preventDefault();
 
-                if (
-                    !confirm(
-                        "Are you sure? All the data from the folder will be lost"
-                    )
-                )
-                    return;
-                _delete();
+                const confirmDelete = confirm(
+                    "Are you sure? All the data from the folder will be lost"
+                );
+                if (!confirmDelete) return;
+
+                let ids;
+                if (selectedRange.length > 0) {
+                    ids = [...selectedRange.map((item) => item.id)];
+                } else {
+                    ids = [selectedItem.id];
+                }
+
+                delete_({
+                    itemids: ids,
+                }).then(deselectItem);
             }
         }
 
@@ -63,32 +59,39 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
         return () => {
             window.removeEventListener("keydown", action);
         };
-    }, [item]);
+    }, [selectedItem, selectedRange]);
 
     return (
         <div
             className={`h-10  px-1 rounded-md my-2 flex items-center gap-x-2  "bg-white"
             `}
         >
-            {item && (
+            {selectedItem && (
                 <>
                     <button
-                        className="hover:bg-red-400 bg-red-200 px-2 py-1 rounded-md hover:text-white"
+                        className="hover:bg-red-400 bg-red-200 px-2 py-1 rounded-md hover:text-white active:scale-95"
                         onClick={() => {
-                            if (
-                                !confirm(
-                                    "Are you sure? All the data from the folder will be lost"
-                                )
-                            )
-                                return;
+                            const confirmDelete = confirm(
+                                "Are you sure? All the data from the folder will be lost"
+                            );
+                            if (!confirmDelete) return;
 
-                            _delete();
+                            let ids;
+                            if (selectedRange.length > 0) {
+                                ids = [...selectedRange.map((item) => item.id)];
+                            } else {
+                                ids = [selectedItem.id];
+                            }
+
+                            delete_({
+                                itemids: ids,
+                            }).then(deselectItem);
                         }}
                     >
                         Delete
                     </button>
                     <button
-                        className="hover:bg-slate-400 bg-slate-200 px-2 py-1 rounded-md hover:text-white"
+                        className="hover:bg-slate-400 bg-slate-200 px-2 py-1 rounded-md hover:text-white active:scale-95"
                         onClick={() => {
                             openModal(
                                 <TextModal
@@ -98,12 +101,24 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
                                             name,
                                         });
                                     }}
-                                    isOpen={true}
+                                    isOpen={isOpen}
                                 />
                             );
                         }}
                     >
                         Rename
+                    </button>
+                    <button
+                        className="hover:bg-slate-400 bg-slate-200 px-2 py-1 rounded-md hover:text-white active:scale-95"
+                        onClick={() => {
+                            if (selectedItem.type === ItemType.FILE) {
+                                downloadFile();
+                            } else {
+                                downloadFolder();
+                            }
+                        }}
+                    >
+                        Download
                     </button>
                 </>
             )}
