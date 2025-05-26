@@ -25,11 +25,7 @@ export default function useDeleteItem() {
                 message: `${
                     respBody.successes.length > 1
                         ? "All items where "
-                        : `The item ${
-                              respBody.successes.length == 1
-                                  ? `"${respBody.successes[0]}"`
-                                  : ""
-                          } was `
+                        : `The item was `
                 }deleted`,
             });
             return resp.data;

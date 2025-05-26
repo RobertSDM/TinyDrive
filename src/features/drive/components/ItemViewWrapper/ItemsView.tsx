@@ -1,27 +1,25 @@
 import { useDriveItemsContext } from "@/shared/context/useContext.tsx";
-import { Item } from "@/shared/types/types.ts";
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAllFromFolder } from "../../hooks/getItemsHooks.tsx";
 import ItemRow from "./ItemRow.tsx";
 import sortFilters from "../../constants/itemsSort.ts";
 
-type ItemsViewProps = {
-    changeSelectedItem: (item: Item) => void;
-    selectedItem: Item | null;
-};
-
-const ItemsView = ({ changeSelectedItem, selectedItem }: ItemsViewProps) => {
+type ItemsViewProps = {};
+const ItemsView = ({}: ItemsViewProps) => {
     let { parentid } = useParams();
-    const { folders, files } = useDriveItemsContext();
-    const { addItems, updateItems } = useDriveItemsContext();
+    const { items } = useDriveItemsContext();
+    const {
+        addItems,
+        updateItems,
+        selectItem,
+        selectedItem,
+        createSelectionRange,
+        selectedRange,
+    } = useDriveItemsContext();
     const [filter, setFilter] = useState<number>(0);
     const [page, setPage] = useState<number>(0);
-    const {
-        request: allFromFolder,
-        data,
-        isLoading,
-    } = useAllFromFolder(
+    const { request: allFromFolder, data } = useAllFromFolder(
         parentid === "drive" ? "" : parentid!,
         page,
         sortFilters[filter].title
@@ -73,30 +71,27 @@ const ItemsView = ({ changeSelectedItem, selectedItem }: ItemsViewProps) => {
                     </button>
                 </div>
                 <section className="flex gap-y-2 flex-col ">
-                    {folders.map((item) => (
+                    {items.map((item) => (
                         <ItemRow
-                            onclick={() => changeSelectedItem(item)}
+                            onclick={(e: MouseEvent) => {
+                                if (e.shiftKey && selectedItem !== null) {
+                                    e.preventDefault();
+                                    createSelectionRange(selectedItem, item);
+                                    return;
+                                }
+                                selectItem(item);
+                            }}
                             key={item.id}
                             item={item}
                             isSelected={
-                                selectedItem !== null &&
-                                selectedItem.id === item.id
-                            }
-                        />
-                    ))}
-                    {files.map((item) => (
-                        <ItemRow
-                            onclick={() => changeSelectedItem(item)}
-                            key={item.id}
-                            item={item}
-                            isSelected={
-                                selectedItem !== null &&
-                                selectedItem.id === item.id
+                                (selectedItem !== null &&
+                                    selectedItem.id === item.id) ||
+                                selectedRange.includes(item)
                             }
                         />
                     ))}
                 </section>
-                {folders.length === 0 && files.length === 0 ? (
+                {items.length === 0 ? (
                     <section>
                         <span className="mx-auto flex justify-center text-black/30 font-semibold">
                             Nothing was found. Upload something

@@ -1,9 +1,9 @@
 import TextModal from "@/shared/components/ModalWrapper/TextModal.tsx";
 import {
-    useModalContext
+    useDriveItemsContext,
+    useModalContext,
 } from "@/shared/context/useContext.tsx";
 import { ItemType } from "@/shared/types/enums.ts";
-import { Item } from "@/shared/types/types.ts";
 import { useEffect } from "react";
 import useDeleteItem from "../../hooks/deleteHooks.tsx";
 import {
@@ -12,20 +12,19 @@ import {
 } from "../../hooks/downloadHooks.tsx";
 import { useUpdateName } from "../../hooks/updateHooks.tsx";
 
-type ActionBarProps = {
-    item: Item | null;
-    closeActionBar: () => void;
-};
-export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
-    const { request: downloadFolder } = useDownloadFolder(item!);
-    const { request: downloadFile } = useDonwloadFile(item!);
+type ActionBarProps = {};
+export default function ActionBar({}: ActionBarProps) {
+    const { selectedItem, deselectItem, selectedRange } =
+        useDriveItemsContext();
+    const { request: downloadFolder } = useDownloadFolder(selectedItem!);
+    const { request: downloadFile } = useDonwloadFile(selectedItem!);
     const { request: delete_ } = useDeleteItem();
-    const { request: update } = useUpdateName(item!);
-    const { closeModal, openModal } = useModalContext();
+    const { request: update } = useUpdateName(selectedItem!);
+    const { closeModal, openModal, isOpen } = useModalContext();
 
     useEffect(() => {
         function action(e: KeyboardEvent) {
-            if (!item) return;
+            if (!selectedItem) return;
 
             if (e.key === "Delete") {
                 e.stopPropagation();
@@ -35,9 +34,17 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
                     "Are you sure? All the data from the folder will be lost"
                 );
                 if (!confirmDelete) return;
+
+                let ids;
+                if (selectedRange.length > 0) {
+                    ids = [...selectedRange.map((item) => item.id)];
+                } else {
+                    ids = [selectedItem.id];
+                }
+
                 delete_({
-                    itemids: [item?.id ?? ""],
-                }).then(closeActionBar);
+                    itemids: ids,
+                }).then(deselectItem);
             }
         }
 
@@ -46,14 +53,14 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
         return () => {
             window.removeEventListener("keydown", action);
         };
-    }, [item]);
+    }, [selectedItem, selectedRange]);
 
     return (
         <div
             className={`h-10  px-1 rounded-md my-2 flex items-center gap-x-2  "bg-white"
             `}
         >
-            {item && (
+            {selectedItem && (
                 <>
                     <button
                         className="hover:bg-red-400 bg-red-200 px-2 py-1 rounded-md hover:text-white active:scale-95"
@@ -63,9 +70,16 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
                             );
                             if (!confirmDelete) return;
 
+                            let ids;
+                            if (selectedRange.length > 0) {
+                                ids = [...selectedRange.map((item) => item.id)];
+                            } else {
+                                ids = [selectedItem.id];
+                            }
+
                             delete_({
-                                itemids: [item?.id ?? ""],
-                            }).then(closeActionBar);
+                                itemids: ids,
+                            }).then(deselectItem);
                         }}
                     >
                         Delete
@@ -81,7 +95,7 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
                                             name,
                                         });
                                     }}
-                                    isOpen={true}
+                                    isOpen={isOpen}
                                 />
                             );
                         }}
@@ -91,7 +105,7 @@ export default function ActionBar({ item, closeActionBar }: ActionBarProps) {
                     <button
                         className="hover:bg-slate-400 bg-slate-200 px-2 py-1 rounded-md hover:text-white active:scale-95"
                         onClick={() => {
-                            if (item.type === ItemType.FILE) {
+                            if (selectedItem.type === ItemType.FILE) {
                                 downloadFile();
                             } else {
                                 downloadFolder();

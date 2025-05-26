@@ -1,13 +1,17 @@
-import { ItemType } from "@/shared/types/enums.ts";
 import { Item } from "@/shared/types/types.ts";
 import { createContext, ReactNode, useState } from "react";
 type DriveItemsContext = {
-    folders: Item[];
-    files: Item[];
+    items: Item[];
     removeItem: (itemid: string) => void;
     addItem: (item: Item) => void;
     addItems: (items: Item[]) => void;
     updateItems: (items: Item[]) => void;
+    selectItem: (item: Item) => void;
+    deselectItem: () => void;
+    selectedItem: Item | null;
+    selectedRange: Item[];
+    cleanSelectionRange: () => void;
+    createSelectionRange: (item1: Item, item2: Item) => void;
 };
 export const DriveItemsContext = createContext<DriveItemsContext>(
     {} as DriveItemsContext
@@ -15,8 +19,43 @@ export const DriveItemsContext = createContext<DriveItemsContext>(
 
 type DriveItemsProviderProps = { children: ReactNode };
 export function DriveItemsProvider({ children }: DriveItemsProviderProps) {
-    const [folders, setFolders] = useState<Item[]>([]);
-    const [files, setFiles] = useState<Item[]>([]);
+    const [items, setItems] = useState<Item[]>([]);
+    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+    const [selectedRange, setSelectedRange] = useState<Item[]>([]);
+
+    function selectItem(item: Item) {
+        cleanSelectionRange();
+        setSelectedItem(
+            item.id === selectedItem?.id && selectedRange.length === 0
+                ? null
+                : item
+        );
+    }
+
+    function deselectItem() {
+        setSelectedItem(null);
+    }
+
+    function cleanSelectionRange() {
+        setSelectedRange([]);
+    }
+
+    function createSelectionRange(item1: Item, item2: Item) {
+        if (item1.id === item2.id) {
+            selectItem(item1);
+            return;
+        }
+
+        const itemIndex1 = items.findIndex((item) => item.id === item1.id);
+        const itemIndex2 = items.findIndex((item) => item.id === item2.id);
+
+        setSelectedRange(
+            items.slice(
+                Math.min(itemIndex1, itemIndex2),
+                Math.max(itemIndex1, itemIndex2) + 1
+            )
+        );
+    }
 
     function addItems(items: Item[]) {
         items.forEach((item) => {
@@ -25,29 +64,28 @@ export function DriveItemsProvider({ children }: DriveItemsProviderProps) {
     }
 
     function addItem(item: Item) {
-        if (item.type === ItemType.FILE) {
-            setFiles((prev) => [...prev, item]);
-        } else {
-            setFolders((prev) => [...prev, item]);
-        }
+        setItems((prev) => [...prev, item]);
     }
 
     function updateItems(items: Item[]) {
-        setFiles([])
-        setFolders([])
-        addItems(items)
+        setItems([]);
+        addItems(items);
     }
 
     function removeItem(itemid: string) {
-        setFiles((prev) => prev.filter((it) => it.id !== itemid));
-        setFolders((prev) => prev.filter((it) => it.id !== itemid));
+        setItems((prev) => prev.filter((it) => it.id !== itemid));
     }
 
     return (
         <DriveItemsContext.Provider
             value={{
-                folders,
-                files,
+                items,
+                createSelectionRange,
+                selectedRange,
+                cleanSelectionRange,
+                selectedItem,
+                selectItem,
+                deselectItem,
                 addItem,
                 removeItem,
                 addItems,
