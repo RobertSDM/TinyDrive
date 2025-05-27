@@ -14,3 +14,8 @@ export enum HTTPMethods {
     PUT = "PUT",
     DELETE = "DELETE",
 }
+
+export enum ProjectMode{
+    PROD = "prod",
+    DEV = "dev"
+}

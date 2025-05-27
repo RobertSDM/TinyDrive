@@ -1,10 +1,11 @@
-import { SupabaseKey, SupabaseUrl } from "@/shared/constants/envVariables.ts";
 import AuthClientInterface from "@/shared/interfaces/AuthClientInterface.ts";
 import { AuthResult } from "@/shared/types/types.ts";
 import { createClient } from "@supabase/supabase-js";
 import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient.js";
 
-class AuthClient implements AuthClientInterface {
+export default class SupabaseAuthenticationClient
+    implements AuthClientInterface
+{
     private suauth: SupabaseAuthClient;
 
     constructor(url: string, key: string) {
@@ -44,5 +45,3 @@ class AuthClient implements AuthClientInterface {
         await this.suauth.signOut();
     }
 }
-
-export default new AuthClient(SupabaseUrl, SupabaseKey);
