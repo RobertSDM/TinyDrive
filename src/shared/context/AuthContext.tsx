@@ -2,7 +2,7 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 import { GetAccount } from "../api/requestConfig.ts";
 import useRequest from "../hooks/useRequest.tsx";
 import { Account, AuthResult, SingleResponse } from "../types/types.ts";
-import authClient from "../clients/supabase/authClient.ts";
+import getAuthClientInstance from "../core/getAuthenticationClient.ts";
 
 type AuthContext = {
     logOut: () => void;
@@ -16,6 +16,7 @@ export const AuthContext = createContext<AuthContext>({} as AuthContext);
 
 type AuthProviderProps = { children: ReactNode };
 export default function AuthProvider({ children }: AuthProviderProps) {
+    const authClient = getAuthClientInstance();
     const [session, setSession] = useState<AuthResult | null>(null);
     const [isLogged, setIsLogged] = useState<boolean>(false);
     const [account, setAccount] = useState<Account | null>(null);
