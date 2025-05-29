@@ -70,7 +70,7 @@ const ItemsView = ({}: ItemsViewProps) => {
 
         loaderObserver.observe(pageLoader.current as Element);
         return () => loaderObserver.disconnect();
-    }, [data]);
+    }, [data, isLoading]);
 
     return (
         <div className="mt-2 mx-auto space-y-4 min-w-80">

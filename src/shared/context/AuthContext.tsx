@@ -31,8 +31,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
     useEffect(() => {
         if (!data) return;
-        setIsLoading(false)
         setAccount(data.data);
+        setIsLoading(false)
     }, [data]);
 
     useEffect(() => {
