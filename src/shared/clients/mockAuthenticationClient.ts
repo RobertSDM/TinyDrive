@@ -1,8 +1,17 @@
 import AuthClientInterface from "../interfaces/AuthClientInterface.ts";
 import { AuthResult } from "../types/types.ts";
 
+function sleep(duration: number): Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, duration * 1000);
+    });
+}
+
 export default class MockAuthenticationClient implements AuthClientInterface {
     public async logInPassword(): Promise<AuthResult> {
+        await sleep(2)
         return new Promise((resolve) => {
             resolve({
                 accessToken:
@@ -14,6 +23,7 @@ export default class MockAuthenticationClient implements AuthClientInterface {
     }
 
     public async getSession(): Promise<AuthResult> {
+        await sleep(2);
         return new Promise((resolve) => {
             resolve({
                 accessToken:

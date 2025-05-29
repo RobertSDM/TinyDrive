@@ -58,11 +58,11 @@ const ItemsView = ({}: ItemsViewProps) => {
 
     return (
         <div className="mt-2 mx-auto space-y-4 min-w-80">
-            <section>
-                <div className="flex w-full justify-between">
+            <section className="relative">
+                <div className="flex w-full justify-between ">
                     <span className="font-semibold text-slate-500">Name</span>
                     <button
-                        className="w-52 border "
+                        className="w-52 border"
                         onClick={() => {
                             if (filter === sortFilters.length - 1) setFilter(0);
                             else setFilter((prev) => prev + 1);
@@ -71,7 +71,7 @@ const ItemsView = ({}: ItemsViewProps) => {
                         order by: {sortFilters[filter].exhibitionTitle}
                     </button>
                 </div>
-                <section className="flex gap-y-2 flex-col mt-5">
+                <section className="flex gap-y-2 flex-col mt-5 overflow-y-scroll max-h-[60vh]">
                     {items
                         .filter((item) => item.type === ItemType.FOLDER)
                         .map((item) => (
