@@ -1,11 +1,6 @@
-import {
-    ItemDownloadConfig,
-    ItemImagePreviewConfig,
-} from "@/features/drive/api/requestConfig.ts";
-import { useAuthContext } from "@/shared/context/useContext.tsx";
-import TimedCache from "@/shared/core/TimedCache.ts";
-import useRequest from "@/shared/hooks/useRequest.tsx";
-import { Item, SingleResponse } from "@/shared/types/types.ts";
+import { useDonwloadFile as useDownloadFile } from "@/features/drive/hooks/downloadHooks.tsx";
+import { usePreview } from "@/features/drive/hooks/previewHooks.tsx";
+import { Item } from "@/shared/types/types.ts";
 import { useEffect, useState } from "react";
 
 type PreviewProps = {
@@ -14,29 +9,7 @@ type PreviewProps = {
     close: () => void;
 };
 export default function Preview({ item, isOpen, close }: PreviewProps) {
-    const [cache, setCache] = useState<TimedCache | null>(null);
-    const { account, session } = useAuthContext();
-    const time = 55 * 60 * 1000;
-
-    function addToCache(key: string, value: string) {
-        const newCache = Object.assign(new TimedCache(time), cache);
-        newCache.add(key, value);
-        setCache(newCache);
-    }
-
-    const { request: download } = useRequest<SingleResponse<string>>(
-        ItemDownloadConfig(account!.id, item?.id! ?? "", session!.accessToken),
-        (resp) => {
-            const $a = document.createElement("a");
-            $a.download = "";
-            $a.href = resp.data.data;
-
-            $a.click();
-            $a.remove();
-
-            return resp.data;
-        }
-    );
+    const { request: download } = useDownloadFile(item);
 
     useEffect(() => {
         document.body.style.overflow = "hidden";
@@ -46,25 +19,6 @@ export default function Preview({ item, isOpen, close }: PreviewProps) {
             document.body.style.overflow = "auto";
         };
     }, []);
-
-    useEffect(() => {
-        const previewCache = sessionStorage.getItem("preview-cache");
-
-        if (previewCache) {
-            const timedCache: TimedCache = TimedCache.from(
-                JSON.parse(previewCache)
-            );
-            setCache(timedCache);
-        } else {
-            setCache(new TimedCache(time));
-        }
-    }, []);
-
-    useEffect(() => {
-        if (!cache) return;
-
-        return () => sessionStorage.setItem("preview-cache", cache.serialize());
-    }, [cache]);
 
     return (
         <div
@@ -108,11 +62,7 @@ export default function Preview({ item, isOpen, close }: PreviewProps) {
             </header>
 
             {item.content_type.startsWith("image") ? (
-                <ImagePreview
-                    item={item}
-                    cache={cache}
-                    addToCache={addToCache}
-                />
+                <ImagePreview item={item} />
             ) : (
                 <p className="font-semibold text-slate-400">Soon</p>
             )}
@@ -122,31 +72,20 @@ export default function Preview({ item, isOpen, close }: PreviewProps) {
 
 type ImagePreviewProps = {
     item: Item;
-    cache: TimedCache | null;
-    addToCache: (key: string, value: string) => void;
 };
-function ImagePreview({ item, cache, addToCache }: ImagePreviewProps) {
-    const { account, session } = useAuthContext();
-    const { data, request, isLoading } = useRequest<SingleResponse<string>>(
-        ItemImagePreviewConfig(account!.id, item.id!, session!.accessToken)
-    );
+function ImagePreview({ item }: ImagePreviewProps) {
+    const { data, request, isLoading } = usePreview(item.id!);
     const [url, setUrl] = useState<string>("");
 
     useEffect(() => {
-        if (!data || !cache) return;
-        addToCache(item.id!, data.data);
+        if (!data) return;
+
         setUrl(data.data);
     }, [data]);
 
     useEffect(() => {
-        if (!cache) return;
-
-        if (cache.has(item.id!)) {
-            setUrl(cache.get(item.id!)!);
-            return;
-        }
         request();
-    }, [cache]);
+    }, []);
 
     return (
         <section className="flex-1 flex items-center justify-center">

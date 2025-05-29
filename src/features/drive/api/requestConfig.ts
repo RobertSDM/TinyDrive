@@ -12,6 +12,7 @@ export function ItemDownloadConfig(
         headers: {
             Authorization: `Bearer ${accessToken}`,
         },
+        blob: true,
     };
 }
 
@@ -35,7 +36,7 @@ export function ItemImagePreviewConfig(
     accessToken: string
 ): RequestConfig {
     return {
-        path: `item/preview/img/${ownerid}/${id}`,
+        path: `item/preview/${ownerid}/${id}`,
         method: HTTPMethods.GET,
         headers: {
             Authorization: `Bearer ${accessToken}`,
