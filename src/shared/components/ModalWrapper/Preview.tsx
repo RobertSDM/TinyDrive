@@ -1,9 +1,6 @@
-import { ItemImagePreviewConfig } from "@/features/drive/api/requestConfig.ts";
 import { useDonwloadFile as useDownloadFile } from "@/features/drive/hooks/downloadHooks.tsx";
 import { usePreview } from "@/features/drive/hooks/previewHooks.tsx";
-import { useAuthContext } from "@/shared/context/useContext.tsx";
-import useRequest from "@/shared/hooks/useRequest.tsx";
-import { Item, SingleResponse } from "@/shared/types/types.ts";
+import { Item } from "@/shared/types/types.ts";
 import { useEffect, useState } from "react";
 
 type PreviewProps = {
