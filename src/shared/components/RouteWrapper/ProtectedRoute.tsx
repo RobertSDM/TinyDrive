@@ -9,7 +9,7 @@ export default function ProtectedPage() {
 
     useEffect(() => {
         if (!isLoading && !account) navigate("/login");
-    }, [account, isLoading]);
+    }, [isLoading, account]);
 
     if (isLoading || !account) return <LogoLoader />;
 

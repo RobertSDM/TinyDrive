@@ -35,12 +35,12 @@ AuthForm.PasswordInput = ({
     const [showPass, setShowPass] = useState<boolean>(false);
 
     return (
-        <div className="w-full">
+        <div className="w-full flex flex-col">
             <label htmlFor={`form-inp_${title.toLowerCase()}`}>{title}</label>
-            <div className="flex items-center gap-x-2 border border-black/50 px-2 py-1 w-full">
+            <div className="flex items-center px-2 border border-slate-500 gap-x-2 py-1">
                 <input
                     id={`form-inp_${title.toLowerCase()}`}
-                    className="outline-none flex-grow bg-transparent "
+                    className="outline-none bg-transparent w-full"
                     placeholder={title}
                     value={value}
                     onChange={(event) => {
@@ -51,12 +51,12 @@ AuthForm.PasswordInput = ({
                     minLength={minLength}
                     required
                 />
-                <div
+                <span
                     onClick={() => setShowPass((prev) => !prev)}
                     className="cursor-pointer"
                 >
                     {showPass ? <FaRegEyeSlash /> : <FaEye />}
-                </div>
+                </span>
             </div>
         </div>
     );
@@ -81,7 +81,7 @@ AuthForm.Input = ({
     return (
         <div className="w-full">
             <label htmlFor={`form-inp_${title.toLowerCase}`}>{title}</label>
-            <div className="flex items-center gap-x-2 border border-black/50 px-2 py-1 w-full">
+            <div className="flex items-center gap-x-2 border  border-slate-500 px-2 py-1 w-full">
                 <input
                     id={`form-inp_${title.toLowerCase}`}
                     className="outline-none flex-grow bg-transparent "
