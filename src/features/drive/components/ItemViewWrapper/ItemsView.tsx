@@ -1,5 +1,5 @@
 import { useDriveItemsContext } from "@/shared/context/useContext.tsx";
-import { MouseEvent, useEffect, useState } from "react";
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAllFromFolder } from "../../hooks/getItemsHooks.tsx";
 import ItemRow from "./ItemRow.tsx";
@@ -9,6 +9,7 @@ import { ItemType } from "@/shared/types/enums.ts";
 type ItemsViewProps = {};
 const ItemsView = ({}: ItemsViewProps) => {
     let { parentid } = useParams();
+    const pageLoader = useRef<HTMLDivElement>(null);
     const { items } = useDriveItemsContext();
     const {
         addItems,
@@ -20,7 +21,11 @@ const ItemsView = ({}: ItemsViewProps) => {
     } = useDriveItemsContext();
     const [filter, setFilter] = useState<number>(0);
     const [page, setPage] = useState<number>(0);
-    const { request: allFromFolder, data } = useAllFromFolder(
+    const {
+        request: allFromFolder,
+        data,
+        isLoading,
+    } = useAllFromFolder(
         parentid === "drive" ? "" : parentid!,
         page,
         sortFilters[filter].title
@@ -42,18 +47,22 @@ const ItemsView = ({}: ItemsViewProps) => {
     }, [data]);
 
     useEffect(() => {
-        function action() {
-            const { scrollTop, scrollHeight, clientHeight } =
-                document.documentElement;
+        const loaderObserver = new IntersectionObserver((entries) => {
+            const entry = entries[0];
 
-            if (scrollTop + clientHeight < scrollHeight || data?.count === 0)
+            if (
+                !entry.isIntersecting ||
+                (!!data && data.count === 0) ||
+                !data ||
+                isLoading
+            )
                 return;
 
             setPage((prev) => prev + 1);
-        }
+        }, {});
 
-        document.addEventListener("scroll", action);
-        return () => document.removeEventListener("scroll", action);
+        loaderObserver.observe(pageLoader.current as Element);
+        return () => loaderObserver.disconnect();
     }, [data]);
 
     return (
@@ -120,6 +129,7 @@ const ItemsView = ({}: ItemsViewProps) => {
                                 }
                             />
                         ))}
+                    <div ref={pageLoader}></div>
                 </section>
                 {items.length === 0 ? (
                     <section>
