@@ -1,13 +1,11 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { GetAccount } from "../api/requestConfig.ts";
-import useRequest from "../hooks/useRequest.tsx";
-import { Account, AuthResult, SingleResponse } from "../types/types.ts";
 import getAuthClientInstance from "../core/getAuthenticationClient.ts";
+import useGetAccount from "../hooks/accountHooks.tsx";
+import { Account, AuthResult } from "../types/types.ts";
 
 type AuthContext = {
     logOut: () => void;
     logInPassword: (email: string, password: string) => Promise<void>;
-    isLogged: boolean;
     isLoading: boolean;
     session: AuthResult | null;
     account: Account | null;
@@ -18,25 +16,22 @@ type AuthProviderProps = { children: ReactNode };
 export default function AuthProvider({ children }: AuthProviderProps) {
     const authClient = getAuthClientInstance();
     const [session, setSession] = useState<AuthResult | null>(null);
-    const [isLogged, setIsLogged] = useState<boolean>(false);
     const [account, setAccount] = useState<Account | null>(null);
     const {
         request: accountRequest,
         data,
         error,
-    } = useRequest<SingleResponse<Account>>(
-        GetAccount(session?.userid!, session?.accessToken!)
-    );
+    } = useGetAccount(session?.userid!, session?.accessToken!);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        if (!session?.accessToken) return;
+        if (!session) return;
         accountRequest();
     }, [session]);
 
     useEffect(() => {
         if (!data) return;
-        setIsLoading(false);
+        setIsLoading(false)
         setAccount(data.data);
     }, [data]);
 
@@ -50,25 +45,21 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             .getSession()
             .then((resp) => {
                 setSession(resp);
-                setIsLogged(true);
             })
             .catch(() => {
                 setIsLoading(false);
-                setIsLogged(false);
             });
     }, []);
 
     async function logInPassword(email: string, password: string) {
         setIsLoading(true);
         const resp = await authClient.logInPassword(email, password);
-        setIsLogged(true);
         setSession(resp);
     }
 
     function logOut() {
         authClient.logOut().then(() => {
             setIsLoading(false);
-            setIsLogged(false);
             setSession(null);
             setAccount(null);
         });
@@ -78,7 +69,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         <AuthContext.Provider
             value={{
                 logOut,
-                isLogged,
                 logInPassword,
                 account,
                 isLoading,

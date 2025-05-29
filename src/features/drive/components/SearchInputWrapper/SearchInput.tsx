@@ -129,7 +129,7 @@ const SearchInput = () => {
                 {isLoading ? (
                     <p className="text-center">Loading...</p>
                 ) : items.length > 0 ? (
-                    <div className="flex-col flex">
+                    <div className="flex-col flex gap-y-2">
                         {items.map((item) => (
                             <ItemRow
                                 key={item.id}

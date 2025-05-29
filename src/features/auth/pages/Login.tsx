@@ -6,7 +6,7 @@ import useTitle from "@/shared/hooks/useTitle.tsx";
 import AuthForm from "../components/FormWrapper/AuthForm.tsx";
 
 const Login = () => {
-    const { logInPassword, isLoading } = useAuthContext();
+    const { logInPassword, isLoading, account } = useAuthContext();
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const navigate = useNavigate();
@@ -49,8 +49,8 @@ const Login = () => {
                     />
                     <section className="space-y-10 w-full">
                         <AuthForm.Button
-                            disabled={isLoading}
-                            text={isLoading ? "Loading" : "Login"}
+                            disabled={isLoading && !!account}
+                            text={isLoading && !!account ? "Loading" : "Login"}
                         />
                     </section>
                     <div className="flex items-center flex-col">
