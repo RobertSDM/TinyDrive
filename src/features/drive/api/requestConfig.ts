@@ -130,7 +130,9 @@ export function ItemAllFromFolder(
     sort: string = "name"
 ): RequestConfig {
     return {
-        path: `/item/all/${ownerid}/${parentid}?p=${page}&sort=${sort}`,
+        path: `/item/all/${ownerid}${
+            parentid === "" ? "" : `/${parentid}`
+        }?p=${page}&sort=${sort}`,
         method: HTTPMethods.GET,
         headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -138,13 +140,13 @@ export function ItemAllFromFolder(
     };
 }
 
-export function ItemById(
+export function ItemByIdConfig(
     userid: string,
     id: string,
     accessToken: string
 ): RequestConfig {
     return {
-        path: `/item/${userid}/${id}`,
+        path: `/item/${userid}${id === "" ? "" : "/" + id}`,
         method: HTTPMethods.GET,
         headers: {
             Authorization: `Bearer ${accessToken}`,

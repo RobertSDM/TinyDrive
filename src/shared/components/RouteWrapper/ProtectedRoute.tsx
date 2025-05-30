@@ -1,17 +1,17 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/useContext.tsx";
 import { useEffect } from "react";
+import LogoLoader from "../LogoLoaderWrapper/LogoLoader.tsx";
 
 export default function ProtectedPage() {
-    const { isLoading, isLogged } = useAuthContext();
+    const { isLoading, account } = useAuthContext();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!isLoading && !isLogged) navigate("/login");
-    }, [isLogged, isLoading]);
+        if (!isLoading && !account) navigate("/login");
+    }, [isLoading, account]);
 
-    if (isLoading) return <p>Loading...</p>;
-    if (!isLogged) return;
+    if (isLoading || !account) return <LogoLoader />;
 
     return <Outlet />;
 }

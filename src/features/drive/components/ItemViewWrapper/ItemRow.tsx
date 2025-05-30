@@ -34,14 +34,14 @@ type FileItemProps = {
 };
 function FileItem({ item, isSelected }: FileItemProps) {
     return (
-        <div className={`flex flex-shrink items-center h-full w-full`}>
+        <div className={`flex items-center w-full max-w-96`}>
             <FaFile
                 className={`mr-2 min-h-4 min-w-4 text-slate-500 ${
                     isSelected && "text-white"
                 }`}
             />
             <span
-                className={`whitespace-nowrap text-ellipsis overflow-hidden `}
+                className={`whitespace-nowrap text-ellipsis overflow-hidden`}
             >
                 {item.name}
             </span>
@@ -81,9 +81,9 @@ function ItemRow({ item, onclick, isSelected }: ItemRowProps) {
                     <Preview close={closeModal} isOpen={isOpen} item={item} />
                 );
             }}
-            className={`border justify-between hover:bg-purple-100 rounded-lg items-center h-12 max-h-12 p-2 flex outline-none cursor-default select-none ${
+            className={`border-b hover:bg-purple-100 items-center h-12 max-h-12 py-2 px-4 flex outline-none cursor-default select-none justify-between ${
                 isSelected &&
-                "bg-purple-400 hover:bg-purple-500 border-purple-500 text-white"
+                "bg-purple-300 hover:bg-purple-400 border-purple-300 text-white"
             }`}
         >
             {item.type === ItemType.FILE ? (
@@ -91,6 +91,18 @@ function ItemRow({ item, onclick, isSelected }: ItemRowProps) {
             ) : (
                 <FolderItem {...{ item, isSelected }} />
             )}
+            <span
+                className={`text-slate-500 whitespace-nowrap ${
+                    isSelected && "text-white"
+                }`}
+            >
+                Last updated: {" "}
+                {new Date(item.update_date)
+                    .toLocaleDateString()
+                    .split("/")
+                    .map((d) => d.padStart(2, "0"))
+                    .join("/")}
+            </span>
         </section>
     );
 }

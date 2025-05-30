@@ -39,7 +39,7 @@ export default function Preview({ item, isOpen, close }: PreviewProps) {
                 onClick={close}
             >
                 <p
-                    className=" bg-black py-1 pl-4 whitespace-nowrap text-ellipsis overflow-hidden"
+                    className=" bg-black py-1 pl-4 whitespace-nowrap text-ellipsis overflow-hidden max-w-96"
                     onClick={(e) => e.stopPropagation()}
                 >
                     {item.name}
