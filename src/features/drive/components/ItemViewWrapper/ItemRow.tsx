@@ -34,14 +34,14 @@ type FileItemProps = {
 };
 function FileItem({ item, isSelected }: FileItemProps) {
     return (
-        <div className={`flex items-center `}>
+        <div className={`flex items-center w-full max-w-96`}>
             <FaFile
                 className={`mr-2 min-h-4 min-w-4 text-slate-500 ${
                     isSelected && "text-white"
                 }`}
             />
             <span
-                className={`whitespace-nowrap text-ellipsis overflow-hidden `}
+                className={`whitespace-nowrap text-ellipsis overflow-hidden`}
             >
                 {item.name}
             </span>

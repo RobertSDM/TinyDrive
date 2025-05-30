@@ -70,7 +70,7 @@ const ItemsView = ({}: ItemsViewProps) => {
 
         loaderObserver.observe(pageLoader.current as Element);
         return () => loaderObserver.disconnect();
-    }, [data, isLoading]);
+    }, [data]);
 
     return (
         <div className="mt-2 mx-auto space-y-4 min-w-80">
@@ -79,8 +79,6 @@ const ItemsView = ({}: ItemsViewProps) => {
                 <button
                     className="w-52 border"
                     onClick={() => {
-                        if (isLoading) return;
-
                         if (filter === sortFilters.length - 1) setFilter(0);
                         else setFilter((prev) => prev + 1);
                     }}
