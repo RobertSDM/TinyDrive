@@ -34,7 +34,7 @@ type FileItemProps = {
 };
 function FileItem({ item, isSelected }: FileItemProps) {
     return (
-        <div className={`flex items-center w-full max-w-96`}>
+        <div className={`flex items-center w-full max-w-[500px]`}>
             <FaFile
                 className={`mr-2 min-h-4 min-w-4 text-slate-500 ${
                     isSelected && "text-white"
@@ -46,7 +46,7 @@ function FileItem({ item, isSelected }: FileItemProps) {
                 {item.name}
             </span>
             <div className="flex gap-x-2 items-center">
-                <span>{item.extension} </span>
+                <span>{item.extension}</span>
                 <section
                     className={`text-slate-400 ${
                         isSelected && "text-white"
@@ -94,7 +94,7 @@ function ItemRow({ item, onclick, isSelected }: ItemRowProps) {
             <span
                 className={`text-slate-500 whitespace-nowrap ${
                     isSelected && "text-white"
-                }`}
+                } hidden md:block`}
             >
                 Last updated: {" "}
                 {new Date(item.update_date)
