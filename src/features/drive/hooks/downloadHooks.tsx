@@ -19,9 +19,16 @@ export function useDownloadFolder(item: Item) {
             session!.accessToken
         ),
         (resp) => {
+            const contentDisposition: string =
+                resp.headers["content-disposition"];
+            const filename = contentDisposition
+                .split(";")[1]
+                .split("=")[1]
+                .replaceAll('"', "")
+                .replaceAll("'", "");
             const bloburl = URL.createObjectURL(resp.data);
             const $a = document.createElement("a");
-            $a.download = "";
+            $a.download = filename;
             $a.href = bloburl;
 
             $a.click();
@@ -62,7 +69,11 @@ export function useDonwloadFile(item: Item) {
             try {
                 const contentDisposition: string =
                     resp.headers["content-disposition"];
-                const filename = contentDisposition.split(";")[1].split("=")[1];
+                const filename = contentDisposition
+                    .split(";")[1]
+                    .split("=")[1]
+                    .replaceAll('"', "")
+                    .replaceAll("'", "");
                 const bloburl = URL.createObjectURL(resp.data);
                 const $a = document.createElement("a");
                 $a.download = filename;
