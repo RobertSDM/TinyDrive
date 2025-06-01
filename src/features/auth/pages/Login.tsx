@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { useAuthContext } from "@/shared/context/useContext.tsx";
+import { useAuthContext, useNotify } from "@/shared/context/useContext.tsx";
 import useTitle from "@/shared/hooks/useTitle.tsx";
 import AuthForm from "../components/FormWrapper/AuthForm.tsx";
+import { NotifyLevel } from "@/shared/types/enums.ts";
 
 const Login = () => {
     const { logInPassword, isLoading, account } = useAuthContext();
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const notify = useNotify();
     const navigate = useNavigate();
 
     useTitle("Login | Tiny Drive");
@@ -24,7 +26,34 @@ const Login = () => {
                 onsubmit={async (event) => {
                     event.preventDefault();
 
-                    await logInPassword(email, password);
+                    if (email === "") {
+                        notify.popup({
+                            level: NotifyLevel.error,
+                            message: "Cannot send blank inputs",
+                        });
+                        return;
+                    }
+
+                    if (
+                        !RegExp(
+                            "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$"
+                        ).test(email)
+                    ) {
+                        notify.popup({
+                            level: NotifyLevel.error,
+                            message: "The email is not a valid email",
+                        });
+                        return;
+                    }
+
+                    const success = await logInPassword(email, password);
+                    if (!success) {
+                        notify.popup({
+                            level: NotifyLevel.error,
+                            message: "Email or password are wrong",
+                        });
+                        return;
+                    }
                     navigate("/drive");
                 }}
             >
@@ -41,6 +70,7 @@ const Login = () => {
                     value={password}
                     setValue={setPassword}
                     title="Senha"
+                    minLength={8}
                 />
                 <section className="space-y-10 w-full">
                     <AuthForm.Button

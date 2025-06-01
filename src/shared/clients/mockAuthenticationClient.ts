@@ -10,7 +10,7 @@ function sleep(duration: number): Promise<void> {
 }
 
 export default class MockAuthenticationClient implements AuthClientInterface {
-    public async logInPassword(): Promise<AuthResult> {
+    public async logInPassword(): Promise<AuthResult | null> {
         await sleep(2)
         return new Promise((resolve) => {
             resolve({

@@ -17,11 +17,12 @@ function Drive() {
     const { closeModal, isOpen, openModal } = useModalContext();
     const { changeParent, changeParentToRoot } = useParentContext();
 
-    const { request: parentRequest, data: parentData } = useItemById(
+    const { request: parentRequest, data: parentData} = useItemById(
         parentid === "drive" ? "" : parentid!
     );
 
     useTitle("Tiny Drive");
+
 
     useEffect(() => {
         if (parentid !== "drive") parentRequest();

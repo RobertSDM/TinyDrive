@@ -3,7 +3,4 @@ import { BackendUrl } from "../constants/envVariables.ts";
 
 export const ServerClient = axios.create({
     baseURL: BackendUrl,
-    headers: {
-        "Content-Type": "application/json",
-    },
 });
