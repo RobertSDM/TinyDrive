@@ -69,7 +69,9 @@ type InputProps = {
     maxLength?: number;
     minLength?: number;
     required?: boolean;
+    email?: boolean;
 };
+
 AuthForm.Input = ({
     setValue,
     value,
@@ -77,6 +79,7 @@ AuthForm.Input = ({
     maxLength,
     minLength,
     required,
+    email,
 }: InputProps) => {
     return (
         <div className="w-full">
@@ -90,7 +93,7 @@ AuthForm.Input = ({
                     onChange={(event) => {
                         setValue(event.target.value);
                     }}
-                    type={"text"}
+                    type={email ? "email" : "text"}
                     maxLength={maxLength}
                     minLength={minLength}
                     required={required}

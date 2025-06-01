@@ -15,11 +15,13 @@ export default class SupabaseAuthenticationClient
     public async logInPassword(
         email: string,
         password: string
-    ): Promise<AuthResult> {
+    ): Promise<AuthResult | null> {
         const resp = await this.suauth.signInWithPassword({
             email,
             password,
         });
+
+        if (!resp.data.user) return null;
 
         return {
             accessToken: resp.data.session!.access_token,

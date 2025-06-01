@@ -1,20 +1,19 @@
-import { useNotify } from "@/shared/context/useContext.tsx";
 import useTitle from "@/shared/hooks/useTitle.tsx";
-import { NotifyLevel } from "@/shared/types/enums.ts";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AuthForm from "../components/FormWrapper/AuthForm.tsx";
-import useRegister from "../hooks/registerHooks.tsx";
+import useRegisterHook from "../hooks/registerHooks.tsx";
+import { useNotify } from "@/shared/context/useContext.tsx";
+import { NotifyLevel } from "@/shared/types/enums.ts";
 
 const Register = () => {
     const notify = useNotify();
     const [username, setUsername] = useState<string>("");
     const [email, setEmail] = useState<string>("");
-    const { request: register, isLoading } = useRegister();
+    const { request: register, isLoading } = useRegisterHook();
     const [password, setPassword] = useState<string>("");
     const [confirmPass, setConfirmPass] = useState<string>("");
 
-    const navigate = useNavigate();
     useTitle("Register | Tiny Drive");
 
     return (
@@ -27,18 +26,30 @@ const Register = () => {
                 style="w-full space-y-5 flex justify-center flex-col items-center"
                 onsubmit={(event) => {
                     event.preventDefault();
+                    if (email === "" || username === "") {
+                        notify.popup({
+                            level: NotifyLevel.error,
+                            message: "Cannot send blank inputs",
+                        });
+                        return;
+                    }
+
+                    if (
+                        !RegExp(
+                            "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$"
+                        ).test(email)
+                    ) {
+                        notify.popup({
+                            level: NotifyLevel.error,
+                            message: "The email is not a valid email",
+                        });
+                        return;
+                    }
 
                     register({
                         email,
                         password,
                         username,
-                    }).then(() => {
-                        notify.popup({
-                            level: NotifyLevel.info,
-                            message:
-                                "You are now registred. To login verify your email",
-                        });
-                        navigate("/login");
                     });
                 }}
             >
@@ -51,6 +62,7 @@ const Register = () => {
                 <AuthForm.Input
                     value={email}
                     setValue={setEmail}
+                    email={true}
                     title="Email"
                     maxLength={100}
                     minLength={4}
@@ -59,11 +71,13 @@ const Register = () => {
                     value={password}
                     setValue={setPassword}
                     title="Senha"
+                    minLength={8}
                 />
                 <AuthForm.PasswordInput
                     value={confirmPass}
                     setValue={setConfirmPass}
                     title="Confirmar Senha"
+                    minLength={8}
                 />
 
                 <section className="space-y-10 w-full text-center">

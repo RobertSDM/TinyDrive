@@ -2,6 +2,7 @@ import {
     useAuthContext,
     useDriveItemsContext,
     useNotify,
+    useParentContext,
 } from "@/shared/context/useContext.tsx";
 import useRequest from "@/shared/hooks/useRequest.tsx";
 import { NotifyLevel } from "@/shared/types/enums.ts";
@@ -17,9 +18,14 @@ export default function useDeleteItem() {
         ItemDeleteConfig(account!.id!, session!.accessToken),
         (resp) => {
             const respBody = resp.data.data;
+            const { parent, changeParentToRoot } = useParentContext();
             respBody.successes.forEach((id) => {
                 removeItem(id);
             });
+
+            if (respBody.successes.includes(parent.id ?? ""))
+                changeParentToRoot();
+
             notify.popup({
                 level: NotifyLevel.info,
                 message: `${

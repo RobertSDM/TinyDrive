@@ -16,7 +16,7 @@ import { useParams } from "react-router-dom";
 type ActionBarProps = {};
 export default function ActionBar({}: ActionBarProps) {
     const { parentid } = useParams();
-    const { selectedItem, deselectItem, selectedRange } =
+    const { selectedItem, deselectItem, selectedRange, cleanSelectionRange } =
         useDriveItemsContext();
     const { request: downloadFolder } = useDownloadFolder(selectedItem!);
     const { request: downloadFile } = useDonwloadFile(selectedItem!);
@@ -26,8 +26,9 @@ export default function ActionBar({}: ActionBarProps) {
 
     useEffect(() => {
         deselectItem();
+        cleanSelectionRange();
     }, [parentid]);
-    
+
     useEffect(() => {
         function action(e: KeyboardEvent) {
             if (!selectedItem) return;
@@ -50,7 +51,10 @@ export default function ActionBar({}: ActionBarProps) {
 
                 delete_({
                     itemids: ids,
-                }).then(deselectItem);
+                }).then(() => {
+                    deselectItem();
+                    cleanSelectionRange();
+                });
             }
         }
 
@@ -85,7 +89,10 @@ export default function ActionBar({}: ActionBarProps) {
 
                             delete_({
                                 itemids: ids,
-                            }).then(deselectItem);
+                            }).then(() => {
+                                deselectItem();
+                                cleanSelectionRange();
+                            });
                         }}
                     >
                         Delete

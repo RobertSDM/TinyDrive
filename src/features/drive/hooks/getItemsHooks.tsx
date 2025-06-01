@@ -1,7 +1,9 @@
 import useRequest from "@/shared/hooks/useRequest.tsx";
 import { ListItemResponse, SingleItemResponse } from "@/shared/types/types.ts";
 import { ItemAllFromFolder, ItemByIdConfig } from "../api/requestConfig.ts";
-import { useAuthContext } from "@/shared/context/useContext.tsx";
+import { useAuthContext, useNotify } from "@/shared/context/useContext.tsx";
+import { AxiosError } from "axios";
+import { NotifyLevel } from "@/shared/types/enums.ts";
 
 export function useAllFromFolder(
     parentid: string,
@@ -25,9 +27,20 @@ export function useAllFromFolder(
 
 export function useItemById(id: string) {
     const { account, session } = useAuthContext();
+    const notify = useNotify();
 
     const request = useRequest<SingleItemResponse>(
-        ItemByIdConfig(account!.id, id, session!.accessToken ?? "")
+        ItemByIdConfig(account!.id, id, session!.accessToken ?? ""),
+        (resp) => resp.data,
+        (err) => {
+            if (!(err instanceof AxiosError)) return err;
+            if (!err?.response?.data) return err;
+
+            notify.popup({
+                level: NotifyLevel.error,
+                message: err.response.data.error.message,
+            });
+        }
     );
 
     return { ...request };
