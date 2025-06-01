@@ -16,7 +16,7 @@ export default class MockAuthenticationClient implements AuthClientInterface {
             resolve({
                 accessToken:
                     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYWNkNDBhNi1mMzg0LTRlMzQtOGY5NS00NzZhMGRlYzkxYTYifQ.lvOE26ibRYbZ7NW612e1LHQdgNl14GTy91CE4rcBjTc",
-                refreshToken: "djaosb",
+                refreshToken: "",
                 userid: "3acd40a6-f384-4e34-8f95-476a0dec91a6",
             });
         });
@@ -28,7 +28,7 @@ export default class MockAuthenticationClient implements AuthClientInterface {
             resolve({
                 accessToken:
                     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYWNkNDBhNi1mMzg0LTRlMzQtOGY5NS00NzZhMGRlYzkxYTYifQ.lvOE26ibRYbZ7NW612e1LHQdgNl14GTy91CE4rcBjTc",
-                refreshToken: "djaosb",
+                refreshToken: "",
                 userid: "3acd40a6-f384-4e34-8f95-476a0dec91a6",
             });
         });

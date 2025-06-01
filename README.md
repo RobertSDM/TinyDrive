@@ -2,74 +2,84 @@
   <img src="./public/imgs/tiny-drive-logo.svg" />
 </p>
 
-# Welcome to **Tiny Drive**
+# **Tiny Drive (Client)**
 
-Tiny Drive in a personal project to recreate the google's drive in a tiny version \
-Provides a online plataform for saving files and folders, that you can access, download or view on any browser with one click, simple as it sounds
+TinyDrive is a personal project, that is inspired by the Google's Drive interface and cloud storage. This project was developt to explore concepts and apply them is a somewhat real project.
 
-You can access and test the project on [Tiny Drive](https://tiny-drive.vercel.app/login)
+TinyDrive was created for you store files on the cloud in a easy way and download or preview its content.
 
-# How to download
+You can access the project and test it using this link: [Tiny Drive](https://tiny-drive.vercel.app/login)
 
-First you will need to clone the project into your machine or virtual environment
+if you don't want to login with your own email, you can use this login I've created for tests:
+
+```
+Email: tiny.test.drive@gmail.com
+Senha: 12345678
+```
+
+# Main Features
+
+-   **Notification API**: An API to create notifications and exhibit them on the interface. The notifications are stored in a `queue`, and consumed by a context provider.
+-   **Responsive UI and UX**: 
+    -  The UI is responsive, and functions well both on large and smaller screens.
+    -  The client counts with features to enhance the user experient, they are: Use of shortcuts, preview visualization, drag and drop.
+-   **Integrated Authentication**: The user login is managed on the client, using the supabase authentication service.
+
+# How to run locally
+
+First of all, to run this project you will need the server part which is in this repo [Server](https://github.com/RobertSDM/be-tiny-drive)
+
+Clone this repo and move to the folder:
 
 ```bash
 git clone https://github.com/RobertSDM/TinyDrive.git
-```
-
-Once the download completed, go into the directory
-
-```bash
 cd TinyDrive
 ```
 
-Install the project dependencies with your prefered node package manager
+Install the dependencies with your favorite package manager:
 
 ```bash
 npm install
 ```
-or
-```bash
-npm i
-```
 
-This project has some environment varibles, they are: \
-`VITE_URL` = The frontend base url (in your case must be "http://localhost:5173") \
-`VITE_BACKEND_URL` = The backend base url
+This project has some environment varibles, they are:
 
-# Execution
+-   `VITE_BACKEND_URL` The server url
+-   `VITE_SUPABASE_URL`
+-   `VITE_SUPABASE_KEY`
 
-To execute the drive interface you must:
-
-Initialize the frontend project using the vite command: \
+Run with:
 
 ```bash
 npm run dev
 ```
 
+## Mocking
+
+-   The authentication in the mock is static. The data is:
+
+```javascript
+{
+    accessToken:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYWNkNDBhNi1mMzg0LTRlMzQtOGY5NS00NzZhMGRlYzkxYTYifQ.lvOE26ibRYbZ7NW612e1LHQdgNl14GTy91CE4rcBjTc",
+    refreshToken: "",
+    userid: "3acd40a6-f384-4e34-8f95-476a0dec91a6",
+}
+```
+
 ## Technologies
 
-### Frameworks
+### Bundler
 
--   Vite.js (frontend)
--   Fastapi (backend)
+-   Vite.js
 
 ### Libraries
 
--   React.js (frontend)
--   Typescript (frontend)
--   Tailwind (frontend)
--   Axios (frontend)
--   Bcrypt (backend)
--   SQLAlchemy (backend)
--   Logger (backend)
--   Uvicorn (backend)
-
-### Database
-
--   PostgreSQL (Hosted on Neon)
+-   React.js
+-   Typescript
+-   Tailwind
+-   Axios
 
 ### Host Services
 
--   Vercel (frontend)
--   Azure (backend)
+-   Vercel (Client host)
