@@ -12,13 +12,13 @@ import { ItemDeleteConfig } from "../api/requestConfig.ts";
 export default function useDeleteItem() {
     const { removeItem } = useDriveItemsContext();
     const { account, session } = useAuthContext();
+    const { parent, changeParentToRoot } = useParentContext();
     const notify = useNotify();
 
     const request = useRequest<SingleResponse<FailuresAndSuccesses>>(
         ItemDeleteConfig(account!.id!, session!.accessToken),
         (resp) => {
             const respBody = resp.data.data;
-            const { parent, changeParentToRoot } = useParentContext();
             respBody.successes.forEach((id) => {
                 removeItem(id);
             });
