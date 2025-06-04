@@ -19,7 +19,6 @@ export default function useDeleteItem() {
         ItemDeleteConfig(account!.id!, session!.accessToken),
         (resp) => {
             const respBody = resp.data.data;
-            const { parent, changeParentToRoot } = useParentContext();
             respBody.successes.forEach((id) => {
                 console.log(id);
                 removeItem(id);
