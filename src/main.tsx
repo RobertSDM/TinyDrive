@@ -1,45 +1,38 @@
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import AuthLayout from "./features/auth/layouts/AuthLayout.tsx";
-import Login from "./features/auth/pages/Login.tsx";
-import Register from "./features/auth/pages/Register.tsx";
-import DriveLayout from "./features/drive/layouts/DriveLayout.tsx";
-import Drive from "./features/drive/pages/Drive.tsx";
+import Login from "./features/authentication/Login.tsx";
+import Register from "./features/authentication/Register.tsx";
+import FileViewLayout from "./features/fileView/FileViewLayout.tsx";
+import FileView from "./features/fileView/FileViewPage.tsx";
 import "./index.css";
-import ProtectedPage from "./shared/components/RouteWrapper/ProtectedRoute.tsx";
-import AuthProvider from "./shared/context/AuthContext.tsx";
-import { Notify } from "./shared/context/NotifyContext.tsx";
+import AuthProvider from "./context/AuthContext.tsx";
+import { Notify } from "./context/NotifyContext.tsx";
+import ProtectedPage from "./components/ProtectedRoute.tsx";
 
 const router = createBrowserRouter([
     {
-        path: "/",
+        element: <ProtectedPage />,
         children: [
             {
-                element: <ProtectedPage />,
+                element: <FileViewLayout />,
                 children: [
                     {
-                        element: <DriveLayout />,
-                        children: [
-                            {
-                                path: "/drive?/:parentid",
-                                element: <Drive />,
-                            },
-                        ],
+                        path: "/drive?/:parentid",
+                        element: <FileView />,
                     },
                 ],
             },
+        ],
+    },
+    {
+        children: [
             {
-                element: <AuthLayout />,
-                children: [
-                    {
-                        path: "/register",
-                        element: <Register />,
-                    },
-                    {
-                        path: "/login",
-                        element: <Login />,
-                    },
-                ],
+                path: "/register",
+                element: <Register />,
+            },
+            {
+                path: "/login",
+                element: <Login />,
             },
         ],
     },
