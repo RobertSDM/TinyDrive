@@ -1,19 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { AuthContext, NotifyContext } from "@/context/useContext.tsx";
-import useTitle from "@/hooks/useTitle.tsx";
+import { useSessionContext, useNotifyContext } from "@/context/useContext.tsx";
 import AuthForm from "./components/AuthForm.tsx";
 import { NotifyLevel } from "@/types.ts";
 
 const Login = () => {
-    const { logInPassword, isLoading, account } = AuthContext();
+    const { login: logInPassword, isLoading, account } = useSessionContext();
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const notify = NotifyContext();
+    const notify = useNotifyContext();
     const navigate = useNavigate();
 
-    useTitle("Login | Tiny Drive");
+    useEffect(() => {
+        document.title = "Login | Tiny Drive";
+    }, []);
 
     return (
         <div className="h-screen w-72 md:w-96 mx-auto items-center justify-center flex space-y-32 flex-col">
@@ -28,7 +29,7 @@ const Login = () => {
 
                     if (email === "") {
                         notify.popup({
-                            level: NotifyLevel.error,
+                            level: NotifyLevel.ERROR,
                             message: "Cannot send blank inputs",
                         });
                         return;
@@ -40,7 +41,7 @@ const Login = () => {
                         ).test(email)
                     ) {
                         notify.popup({
-                            level: NotifyLevel.error,
+                            level: NotifyLevel.ERROR,
                             message: "The email is not a valid email",
                         });
                         return;
@@ -49,7 +50,7 @@ const Login = () => {
                     const success = await logInPassword(email, password);
                     if (!success) {
                         notify.popup({
-                            level: NotifyLevel.error,
+                            level: NotifyLevel.ERROR,
                             message: "Email or password are wrong",
                         });
                         return;

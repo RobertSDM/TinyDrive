@@ -7,9 +7,10 @@
         "skipLibCheck": true,
         "paths": {
             "@/*": ["./src/*"],
-            "@rootComponents/*": ["src/components/*"],
-            "@auth/*": ["./src/modules/auth/*"],
-            "@drive/*": ["./src/modules/drive/*"],
+            "@auth/*": ["./src/features/authentication/*"],
+            "@fileHandling/*": ["./src/features/fileHandling/*"],
+            "@notification/*": ["./src/features/notification/*"],
+            "@modal/*": ["./src/features/modal/*"],
         },
 
         /* Bundler mode */

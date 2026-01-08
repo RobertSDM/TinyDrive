@@ -1,28 +1,17 @@
 import ReactDOM from "react-dom/client";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Login from "./features/authentication/Login.tsx";
-import Register from "./features/authentication/Register.tsx";
-import FileViewLayout from "./features/fileView/FileViewLayout.tsx";
-import FileView from "./features/fileView/FileViewPage.tsx";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Login from "@auth/Login.tsx";
+import Register from "@auth/Register.tsx";
 import "./index.css";
-import AuthProvider from "./context/AuthContext.tsx";
-import { Notify } from "./context/NotifyContext.tsx";
-import ProtectedPage from "./components/ProtectedRoute.tsx";
+import { Notify } from "@notification/context/NotifyContext.tsx";
+import DrivePage from "@/pages/DrivePage.tsx";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./lib/reactQuery.ts";
 
 const router = createBrowserRouter([
     {
-        element: <ProtectedPage />,
-        children: [
-            {
-                element: <FileViewLayout />,
-                children: [
-                    {
-                        path: "/drive?/:parentid",
-                        element: <FileView />,
-                    },
-                ],
-            },
-        ],
+        path: "/drive",
+        element: <DrivePage />,
     },
     {
         children: [
@@ -42,9 +31,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     // <React.StrictMode>
     <section className="w-dvw h-dvh relative flex flex-col">
         <Notify>
-            <AuthProvider>
+            <QueryClientProvider client={queryClient}> 
                 <RouterProvider router={router} />
-            </AuthProvider>
+            </QueryClientProvider>
         </Notify>
     </section>
     // </React.StrictMode>

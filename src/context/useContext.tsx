@@ -1,12 +1,10 @@
 import { useContext } from "react";
-import { NotifyContext } from "./NotifyContext.tsx";
-import { ParentItemContext } from "@/features/fileView/context/ParentItemContext.tsx";
-import { ModalContext } from "./ModalContext.tsx";
-import { DriveItemsContext } from "@/features/fileView/context/DriveItemsContext.tsx";
-import { AuthContext } from "./AuthContext.tsx";
+import { NotifyContext } from "../features/notification/context/NotifyContext.tsx";
+import { ParentItemContext } from "@/features/fileHandling/context/ParentItemContext.tsx";
+import { DriveItemsContext } from "@/features/fileHandling/context/DriveItemsContext.tsx";
+import { SessionContext } from "@/features/authentication/context/SessionContext.tsx";
 
-export const notifyContext = useContext(NotifyContext);
-export const authContext = useContext(AuthContext);
-export const parentContext = useContext(ParentItemContext);
-export const modalContext = useContext(ModalContext);
-export const driveItemsContext = useContext(DriveItemsContext);
+export const useNotifyContext = () => useContext(NotifyContext);
+export const useSessionContext = () => useContext(SessionContext);
+export const useParentContext = () => useContext(ParentItemContext);
+export const useDriveItemsContext = () => useContext(DriveItemsContext);

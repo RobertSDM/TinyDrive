@@ -1,5 +1,29 @@
-import { AxiosInstance } from "axios";
+export enum NotifyLevel {
+    INFO,
+    ERROR,
+}
 
+export enum ModalType {
+    CONFIRM,
+    TEXT_INPUT,
+}
+
+export enum ItemType {
+    FOLDER = "FOLDER",
+    FILE = "FILE",
+}
+
+export enum HTTPMethods {
+    POST = "POST",
+    GET = "GET",
+    PUT = "PUT",
+    DELETE = "DELETE",
+}
+
+export enum ProjectMode {
+    PROD = "prod",
+    DEV = "dev",
+}
 export type Item = {
     id: string | null;
     name: string;
@@ -21,21 +45,9 @@ export type Account = {
     creation_date: string;
 };
 
-export type Client = AxiosInstance;
-
 export type FailuresAndSuccesses = {
     successes: string[];
     failures: string[];
-};
-
-export type RequestConfig = {
-    path: string;
-    method: HTTPMethods;
-    body?: Object | Object[];
-    headers?: {
-        [key: string]: string;
-    };
-    blob?: boolean;
 };
 
 export type AuthResult = {
@@ -63,45 +75,9 @@ export type SingleResponse<T> = DefaultResponse & {
 export type ListItemResponse = ListResponse<Item> & {};
 export type SingleItemResponse = SingleResponse<Item> & {};
 
-export type BaseNotification = {
+export type NotificationData = {
     level: NotifyLevel;
     message: string;
+    type: "popup" | "progress";
+    total?: number;
 };
-
-export type PopupNotification = BaseNotification & {};
-
-export type ProgressGenerator = AsyncGenerator<number, void, any>;
-export type ProgressNotification = BaseNotification & {
-    target: number;
-    progress: () => ProgressGenerator;
-};
-
-export type TimedNotification = BaseNotification & {
-    duration: number;
-};
-
-export type Sort = {
-    exhibitionTitle: string;
-    title: string;
-};
-export enum NotifyLevel {
-    info,
-    error,
-}
-
-export enum ItemType {
-    FOLDER = "FOLDER",
-    FILE = "FILE",
-}
-
-export enum HTTPMethods {
-    POST = "POST",
-    GET = "GET",
-    PUT = "PUT",
-    DELETE = "DELETE",
-}
-
-export enum ProjectMode {
-    PROD = "prod",
-    DEV = "dev",
-}

@@ -1,5 +1,3 @@
-import { EmailRegex } from "./constants.ts";
-
 export const cleanFileFolderName = (name: string) => {
     name = name.replace(/[\/\\\0<>\?"'\*:\']/g, "");
 
@@ -24,7 +22,9 @@ export const passwordValidation = (
 ) => {
     if (pass && pass !== confirmPass) {
         return false;
-    } else if (!EmailRegex.test(email)) {
+    } else if (
+        !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
+    ) {
         return false;
     }
     return true;

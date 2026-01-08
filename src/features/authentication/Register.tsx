@@ -1,20 +1,21 @@
-import useTitle from "@/hooks/useTitle.tsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthForm from "./components/AuthForm.tsx";
-import useRegisterHook from "./hooks/registerHooks.tsx";
-import { NotifyContext } from "@/context/useContext.tsx";
+import { useRegisterHook } from "./hooks/authenticationHooks.tsx";
+import { useNotifyContext } from "@/context/useContext.tsx";
 import { NotifyLevel } from "@/types.ts";
 
 const Register = () => {
-    const notify = NotifyContext();
+    const notify = useNotifyContext();
     const [username, setUsername] = useState<string>("");
     const [email, setEmail] = useState<string>("");
-    const { request: register, isLoading } = useRegisterHook();
+    const { request: register, isRequesting } = useRegisterHook();
     const [password, setPassword] = useState<string>("");
     const [confirmPass, setConfirmPass] = useState<string>("");
 
-    useTitle("Register | Tiny Drive");
+    useEffect(() => {
+        document.title = "Register | Tiny Drive";
+    }, []);
 
     return (
         <div className="h-screen w-72 md:w-96 mx-auto items-center justify-center flex space-y-32 flex-col">
@@ -28,7 +29,7 @@ const Register = () => {
                     event.preventDefault();
                     if (email === "" || username === "") {
                         notify.popup({
-                            level: NotifyLevel.error,
+                            level: NotifyLevel.ERROR,
                             message: "Cannot send blank inputs",
                         });
                         return;
@@ -40,7 +41,7 @@ const Register = () => {
                         ).test(email)
                     ) {
                         notify.popup({
-                            level: NotifyLevel.error,
+                            level: NotifyLevel.ERROR,
                             message: "The email is not a valid email",
                         });
                         return;
@@ -82,8 +83,8 @@ const Register = () => {
 
                 <section className="space-y-10 w-full text-center">
                     <AuthForm.Button
-                        disabled={isLoading}
-                        text={isLoading ? "Loading" : "Register"}
+                        disabled={isRequesting}
+                        text={isRequesting ? "Loading" : "Register"}
                     />
                 </section>
                 <div className="flex items-center flex-col">
