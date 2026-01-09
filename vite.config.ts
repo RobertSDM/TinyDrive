@@ -12,7 +12,7 @@ export default defineConfig({
                 __dirname,
                 "./src/features/fileHandling"
             ),
-            "@notification": path.resolve(
+            "@notify": path.resolve(
                 __dirname,
                 "./src/features/notification"
             ),

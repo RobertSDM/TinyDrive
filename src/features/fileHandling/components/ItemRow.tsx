@@ -1,5 +1,4 @@
 import Preview from "@/features/fileHandling/components/Preview.tsx";
-import { useModalContext } from "@/context/useContext.tsx";
 import { ItemType } from "@/types.ts";
 import { Item } from "@/types.ts";
 import { MouseEvent } from "react";

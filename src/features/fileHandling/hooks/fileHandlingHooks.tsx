@@ -2,7 +2,6 @@ import {
     useSessionContext,
     useDriveItemsContext,
     useNotifyContext,
-    useParentContext,
 } from "@/context/useContext.tsx";
 import {
     HTTPMethods,
@@ -21,7 +20,6 @@ export default function useDeleteFolderById() {
 
     const { removeItem } = useDriveItemsContext();
     const { account, session } = useSessionContext();
-    const { parent, changeParentToRoot } = useParentContext();
 
     const [data, setData] =
         useState<SingleResponse<FailuresAndSuccesses> | null>(null);
@@ -246,7 +244,7 @@ export function useSearch(query: string, type: string | null) {
 
 export function useBreadcrumb() {
     const { account, session } = useSessionContext();
-    const { parent } = useParentContext();
+    const { parent } = useParentFolderContext();
 
     const [data, setData] = useState<ListItemResponse | null>(null);
     const [isRequesting, setIsRequesting] = useState<boolean>(false);

@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "@auth/Login.tsx";
 import Register from "@auth/Register.tsx";
 import "./index.css";
-import { Notify } from "@notification/context/NotifyContext.tsx";
+import { Notify } from "@notify/context/NotifyContext.tsx";
 import DrivePage from "@/pages/DrivePage.tsx";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/reactQuery.ts";

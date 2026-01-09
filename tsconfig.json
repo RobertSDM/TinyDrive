@@ -9,7 +9,7 @@
             "@/*": ["./src/*"],
             "@auth/*": ["./src/features/authentication/*"],
             "@fileHandling/*": ["./src/features/fileHandling/*"],
-            "@notification/*": ["./src/features/notification/*"],
+            "@notify/*": ["./src/features/notification/*"],
             "@modal/*": ["./src/features/modal/*"],
         },
 

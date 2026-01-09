@@ -1,22 +1,12 @@
 import TextModal from "@/features/modal/components/TextModal.tsx";
-import {
-    useSessionContext,
-    useModalContext,
-    useParentContext,
-} from "@/context/useContext.tsx";
 import { useState } from "react";
-import { MdExpandLess, MdExpandMore } from "react-icons/md";
-
-import DropDown, { FileOptionType } from "./DropDown.tsx";
 import { useUploadFolder, useUploadItem } from "../hooks/fileHandlingHooks.tsx";
 
 export default function ButtonUpload() {
     const [isOpen, setIsOpen] = useState(false);
     const { request: uploadItem } = useUploadItem();
     const { request: uploadFolder } = useUploadFolder();
-    const { parent } = useParentContext();
     const { account } = useSessionContext();
-    const { open: openModal, close: closeModal } = useModalContext();
 
     function open() {
         setIsOpen(true);
