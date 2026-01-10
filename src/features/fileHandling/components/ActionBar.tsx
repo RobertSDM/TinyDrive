@@ -3,7 +3,7 @@ import {
     useModalContext,
     useSessionContext,
 } from "@/context/useContext.tsx";
-import { Item } from "@/types.ts";
+import { File } from "@/types.ts";
 
 import {
     deleteFolderById,
@@ -15,7 +15,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 type ActionBarProps = {
     parentFolderId: string;
-    selectionRange: Item[];
+    selectionRange: File[];
 };
 export default function ActionBar({
     parentFolderId,

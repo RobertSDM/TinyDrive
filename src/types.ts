@@ -3,12 +3,7 @@ export enum NotifyLevel {
     ERROR,
 }
 
-export enum ModalType {
-    CONFIRM,
-    TEXT_INPUT,
-}
-
-export enum ItemType {
+export enum FileType {
     FOLDER = "FOLDER",
     FILE = "FILE",
 }
@@ -20,18 +15,14 @@ export enum HTTPMethods {
     DELETE = "DELETE",
 }
 
-export enum ProjectMode {
-    PROD = "prod",
-    DEV = "dev",
-}
-export type Item = {
+export type File = {
     id: string | null;
     name: string;
     extension: string;
     size: number;
     size_prefix: string;
     content_type: string;
-    type: ItemType;
+    type: FileType;
     path: string;
     parentid: string | null;
     update_date: number;
@@ -56,24 +47,11 @@ export type AuthResult = {
     userid: string;
 };
 
-export type DefaultResponse = {
-    error?: {
-        message: string;
-    };
-    success: boolean;
+export type FileResponse = {
+    files: File[];
+    parent?: File;
+    message?: string; // exists when an error occur
 };
-
-export type ListResponse<T> = DefaultResponse & {
-    data: T[];
-    count: number;
-};
-
-export type SingleResponse<T> = DefaultResponse & {
-    data: T;
-};
-
-export type ListItemResponse = ListResponse<Item> & {};
-export type SingleItemResponse = SingleResponse<Item> & {};
 
 export type NotificationData = {
     level: NotifyLevel;

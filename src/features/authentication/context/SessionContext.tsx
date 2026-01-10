@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { AuthResult, ProjectMode } from "@/types.ts";
+import { AuthResult } from "@/types.ts";
 import {
     AuthenticationClientInterface,
     SupabaseAuthenticationClient,
@@ -22,7 +22,7 @@ type SessionProviderProps = { children: ReactNode };
 export default function SessionProvider({ children }: SessionProviderProps) {
     let authClient: AuthenticationClientInterface;
 
-    if (Mode === ProjectMode.PROD) {
+    if (Mode === "prod") {
         authClient = new SupabaseAuthenticationClient(SupabaseURL, SupabaseKey);
     } else authClient = new MockAuthenticationClient();
 

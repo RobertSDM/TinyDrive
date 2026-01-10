@@ -1,9 +1,4 @@
-import {
-    HTTPMethods,
-    Item,
-    ListItemResponse,
-    SingleItemResponse,
-} from "@/types.ts";
+import { HTTPMethods, File, FileResponse } from "@/types.ts";
 import { axiosClient } from "@/lib/axios.ts";
 
 export async function deleteFolderById(userid: string, body: Object) {
@@ -26,10 +21,7 @@ export async function downloadFolder(itemid: string, userid: string) {
     return resp.data;
 }
 
-export async function downloadFile(
-    itemid: string,
-    userid: string,
-) {
+export async function downloadFile(itemid: string, userid: string) {
     const resp = await axiosClient({
         url: `/item/download/${userid}/${itemid}`,
         method: HTTPMethods.DELETE,
@@ -44,7 +36,7 @@ export async function filesFromFolder(
     parentid: string,
     page: number = 0,
     sort: string = "name"
-): Promise<Item[]> {
+): Promise<File[]> {
     const resp = await axiosClient({
         url: `/item/all/${userid}${
             parentid === "" ? "" : `/${parentid}`
@@ -71,13 +63,13 @@ export async function search(
 export async function breadcrumb(
     userid: string,
     parentid: string
-): Promise<Item[]> {
-    const resp = await axiosClient<ListItemResponse>({
+): Promise<FileResponse> {
+    const resp = await axiosClient<FileResponse>({
         url: `/item/breadcrumb/${userid}/${parentid}`,
         method: HTTPMethods.GET,
     });
 
-    return resp.data.data;
+    return resp.data;
 }
 
 export async function preview(itemid: string, userid: string, body: Object) {
@@ -128,7 +120,7 @@ export async function uploadFile(body: Object) {
 export async function folderById(
     userid: string,
     parentid: string
-): Promise<SingleItemResponse> {
+): Promise<FileResponse> {
     const resp = await axiosClient({
         url: `/item/${userid}${parentid === "" ? "" : "/" + parentid}`,
     });

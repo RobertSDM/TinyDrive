@@ -1,11 +1,11 @@
-import { Item } from "@/types.ts";
+import { File } from "@/types.ts";
 import { createContext, useReducer } from "react";
 
 type context = {
-    items: Item[];
+    items: File[];
     update: React.Dispatch<{
         type: "add" | "del" | "update" | "clear";
-        item: Item;
+        item: File;
     }>;
 };
 export const DriveItemsContext = createContext<context>({} as context);
@@ -15,7 +15,7 @@ export function DriveItemsProvider({
 }: {
     children: React.ReactNode;
 }) {
-    const [items, update] = useReducer(itemsReducer, [] as Item[]);
+    const [items, update] = useReducer(itemsReducer, [] as File[]);
 
     return (
         <DriveItemsContext.Provider value={{ items, update }}>
@@ -25,9 +25,9 @@ export function DriveItemsProvider({
 }
 
 function itemsReducer(
-    state: Item[],
-    action: { type: string; item: Item }
-): Item[] {
+    state: File[],
+    action: { type: string; item: File }
+): File[] {
     switch (action.type) {
         case "add":
             return [...state, action.item];

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useModalContext, useSessionContext } from "@/context/useContext.tsx";
 import DropDown from "./DropDown.tsx";
 import { MdExpandMore, MdExpandLess } from "react-icons/md";
-import { ItemType } from "@/types.ts";
+import { FileType } from "@/types.ts";
 import { useMutation } from "@tanstack/react-query";
 import { uploadFile, uploadFolder } from "../requests/fileRequests.ts";
 
@@ -22,7 +22,7 @@ export default function ButtonUpload() {
 
     return (
         <div
-            className={`inline relative`}
+            className={`inline relative select-none`}
             onClick={() =>
                 isDropdownOpen
                     ? setIsDropdownOpen(false)
@@ -37,25 +37,29 @@ export default function ButtonUpload() {
                 <p>{"+ New"}</p>
                 {isDropdownOpen ? <MdExpandMore /> : <MdExpandLess />}
             </span>
-            <DropDown className="max-w-32 border" isOpen={isDropdownOpen}>
+            <DropDown
+                className="max-w-32 border absolute w-full"
+                isOpen={isDropdownOpen}
+            >
                 <DropDown.FileOption
                     text="Upload File"
                     onchange={(filelist: FileList) => {
                         uploadFileMut.mutate(filelist);
                     }}
-                    type={ItemType.FILE}
+                    type={FileType.FILE}
+                    maxFiles={10}
                 />
                 <DropDown.FileOption
                     text="Upload Folder"
                     onchange={(filelist: FileList) => {
+                        setIsDropdownOpen(false);
                         uploadFolderMut.mutate(filelist);
                     }}
-                    type={ItemType.FOLDER}
+                    type={FileType.FOLDER}
                 />
                 <DropDown.Option
                     className="border-t border-slate-300"
                     onclick={() => {
-                        setIsDropdownOpen(false);
                         openModal("text", {
                             fn: (text) => {
                                 uploadFolder({

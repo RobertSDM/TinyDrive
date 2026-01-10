@@ -3,7 +3,7 @@ import {
     useSessionContext,
 } from "@/context/useContext.tsx";
 import { MouseEvent, useEffect, useRef, useState } from "react";
-import { Item, ItemType } from "@/types.ts";
+import { File, FileType } from "@/types.ts";
 import { useQuery } from "@tanstack/react-query";
 import { filesFromFolder } from "../requests/fileRequests.ts";
 import { FaFile } from "react-icons/fa";
@@ -45,7 +45,7 @@ const FileList = ({}: ItemsViewProps) => {
     //         creation_date: new Date().getTime(),
     //         extension: "txt",
     //         id: "321",
-    //         name: "senhas muito importates             dsadsadawdwadsawdsawd wadsassssssssssssssssssssssssssssssssssssss",
+    //         name: "senhas muitwo importates             dsadsadawdwadsawdsawd wadsassssssssssssssssssssssssssssssssssssss",
     //         parentid: null,
     //         path: "/",
     //         size: 10,
@@ -74,7 +74,7 @@ const FileList = ({}: ItemsViewProps) => {
     useEffect(() => {
         if (isFetching || isError) return;
 
-        update({ type: "clear", item: {} as Item });
+        update({ type: "clear", item: {} as File });
         files!.forEach((f) => update({ item: f, type: "add" }));
     }, [files]);
 
@@ -112,7 +112,7 @@ const FileList = ({}: ItemsViewProps) => {
                 ref={itemsContainer}
             >
                 {items
-                    .filter((item) => item.type === ItemType.FOLDER)
+                    .filter((item) => item.type === FileType.FOLDER)
                     .map((item) => (
                         <ItemRow
                             onclick={(e: MouseEvent) => {
@@ -129,7 +129,7 @@ const FileList = ({}: ItemsViewProps) => {
                         />
                     ))}
                 {items
-                    .filter((item) => item.type === ItemType.FILE)
+                    .filter((item) => item.type === FileType.FILE)
                     .map((item) => (
                         <ItemRow
                             onclick={(e: MouseEvent) => {
@@ -159,7 +159,7 @@ const FileList = ({}: ItemsViewProps) => {
 };
 
 type ItemRowProps = {
-    item: Item;
+    item: File;
     isSelected: boolean;
     onclick: (e: MouseEvent) => void;
 };
@@ -172,7 +172,7 @@ function ItemRow({ item, onclick, isSelected }: ItemRowProps) {
             onClick={onclick}
             onDoubleClick={(e) => {
                 e.preventDefault();
-                if (item.type === ItemType.FOLDER) return;
+                if (item.type === FileType.FOLDER) return;
 
                 setIsPreviewOpen(true);
             }}
@@ -187,7 +187,7 @@ function ItemRow({ item, onclick, isSelected }: ItemRowProps) {
                 item={item}
             /> */}
 
-            {item.type === ItemType.FILE ? (
+            {item.type === FileType.FILE ? (
                 <div className={`flex items-center`}>
                     <FaFile
                         className={`mr-2 min-h-4 min-w-4 text-slate-500 ${
