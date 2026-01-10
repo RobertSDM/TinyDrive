@@ -1,9 +1,9 @@
 import {
     useDriveItemsContext,
+    useModalContext,
     useSessionContext,
 } from "@/context/useContext.tsx";
-import { Item, ItemType } from "@/types.ts";
-import { useEffect, useState } from "react";
+import { Item } from "@/types.ts";
 
 import {
     deleteFolderById,
@@ -12,8 +12,6 @@ import {
     updateName,
 } from "../requests/fileRequests.ts";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import ConfirmModal from "@/components/ConfirmModal.tsx";
-import TextModal from "@/components/TextModal.tsx";
 
 type ActionBarProps = {
     parentFolderId: string;
@@ -25,6 +23,7 @@ export default function ActionBar({
 }: ActionBarProps) {
     const { update: updateItems } = useDriveItemsContext();
     const { session } = useSessionContext();
+    const { openModal } = useModalContext();
 
     const { refetch: downloadFolderQ } = useQuery({
         queryKey: ["downloadFolder"],
@@ -44,9 +43,6 @@ export default function ActionBar({
     const updateFileMut = useMutation({
         mutationFn: (body: Object) => updateName("", session!.userid, body),
     });
-
-    const [isNameModalOpen, setIsNameModalOpen] = useState(false);
-    const [isConfirmDeleteModalOpen, setIsConfirmModalOpen] = useState(false);
 
     // useEffect(() => {
     //     function action(e: KeyboardEvent) {
@@ -83,35 +79,35 @@ export default function ActionBar({
 
     return (
         <div className={"h-10 px-1 rounded-md flex items-center gap-x-2"}>
-            <ConfirmModal
-                close={() => setIsConfirmModalOpen(false)}
-                fn={() => {
-                    deleteFileMut.mutate({
-                        itemids: [...selectionRange.map((item) => item.id)],
-                    });
-                    // .then(() => {
-                    //     deselectItem();
-                    //     cleanSelectionRange();
-                    // });
-                }}
-                isOpen={isConfirmDeleteModalOpen}
-                title="Are you sure? All the data from the folder will be lost"
-            />
-            <TextModal
-                close={() => setIsNameModalOpen(false)}
-                fn={(name) => updateFileMut.mutate({ name })}
-                isOpen={isNameModalOpen}
-                title="Type the name"
-            />
             <button
                 className="bg-red-200 hover:bg-red-500 hover:text-white p-2"
-                onClick={() => setIsConfirmModalOpen(true)}
+                onClick={() =>
+                    openModal("confirm", {
+                        fn: () => {
+                            deleteFileMut.mutate({
+                                itemids: [
+                                    ...selectionRange.map((item) => item.id),
+                                ],
+                            });
+                            // .then(() => {
+                            //     deselectItem();
+                            //     cleanSelectionRange();
+                            // });
+                        },
+                        title: "Are you sure? All the data from the folder will be lost",
+                    })
+                }
             >
                 Delete
             </button>
             <button
                 className="bg-slate-200 hover:bg-slate-500 hover:text-white p-2"
-                onClick={() => setIsNameModalOpen(true)}
+                onClick={() =>
+                    openModal("text", {
+                        fn: (name) => updateFileMut.mutate({ name }),
+                        title: "Type the name",
+                    })
+                }
             >
                 Rename
             </button>

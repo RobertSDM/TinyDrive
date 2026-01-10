@@ -5,6 +5,7 @@ import { Notify } from "@notify/context/NotifyContext.tsx";
 import DrivePage from "@/pages/DrivePage.tsx";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/reactQuery.ts";
+import { ModalProvider } from "./features/modal/context/modalContext.tsx";
 
 const router = createBrowserRouter([
     {
@@ -29,8 +30,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     // <React.StrictMode>
     <section className="w-dvw h-dvh relative flex flex-col">
         <Notify>
-            <QueryClientProvider client={queryClient}> 
-                <RouterProvider router={router} />
+            <QueryClientProvider client={queryClient}>
+                <ModalProvider>
+                    <RouterProvider router={router} />
+                </ModalProvider>
             </QueryClientProvider>
         </Notify>
     </section>
