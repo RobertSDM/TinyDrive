@@ -1,25 +1,25 @@
-import { useEffect, useState } from "react";
-import { Item } from "@/types.ts";
 import { Link } from "react-router-dom";
-import { useBreadcrumb } from "../hooks/fileHandlingHooks.tsx";
+import { useQuery } from "@tanstack/react-query";
+import { breadcrumb } from "../requests/fileRequests.ts";
+import { useSessionContext } from "@/context/useContext.tsx";
 
 type BreadcrumbProps = {};
 export default function Breadcrumb({}: BreadcrumbProps) {
-    const { data } = useBreadcrumb();
-    const [breadcrumb, setBreadcrumb] = useState<Item[]>([]);
+    const { session } = useSessionContext();
 
-    useEffect(() => {
-        if (!data) return;
+    const { data, isFetching, isError } = useQuery({
+        queryKey: ["breadcrumb"],
+        queryFn: () => breadcrumb(session!.userid, ""),
+    });
 
-        setBreadcrumb(data.data);
-    }, [data]);
+    if (isFetching || isError) return null;
 
     return (
         <div className="my-10 font-semibold text-slate-400 flex gap-x-1 text-lg ">
             <Link to={"/drive"} className="hover:text-purple-500">
                 /
             </Link>
-            {breadcrumb.map((b, i) => (
+            {data!.map((b, i) => (
                 <Link
                     key={b.id}
                     to={`/drive/${b.id}`}

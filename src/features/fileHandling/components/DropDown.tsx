@@ -1,59 +1,63 @@
+import { ItemType } from "@/types.ts";
+
 type DropDown = {
     children: React.ReactNode;
     isOpen: boolean;
+    className: string;
 };
-function DropDown({ children, isOpen }: DropDown) {
-    return (
-        <div
-            className="relative bg-white w-full border border-black/30 border-t-0 rounded-b-md overflow-hidden"
-            hidden={!isOpen}
-        >
-            {children}
-        </div>
-    );
+function DropDown({ children, isOpen, className }: DropDown) {
+    if (!isOpen) return null;
+
+    return <div className={className}>{children}</div>;
 }
 
 type OptionProps = {
     text: string;
     onclick: () => void;
+    className?: string;
 };
-DropDown.Option = ({ onclick, text }: OptionProps) => {
+DropDown.Option = ({ onclick, text, className }: OptionProps) => {
     return (
         <p
-            onClick={onclick}
-            className="hover:bg-purple-500 p-2 py-1 hover:text-white cursor-pointer w-full mx-auto inline-block text-sm"
+            className={`hover:bg-purple-500 p-2 py-1 hover:text-white cursor-pointer w-full mx-auto inline-block text-sm ${className}`}
+            onClick={(e) => {
+                e.stopPropagation();
+                onclick();
+            }}
         >
             {text}
         </p>
     );
 };
 
-export enum FileOptionType {
-    FILE,
-    FOLDER,
-}
 type FileOptionProps = {
     text: string;
     onchange: (list: FileList) => void;
-    type: FileOptionType;
+    type: ItemType;
+    className?: string;
 };
-DropDown.FileOption = ({ text, type, onchange }: FileOptionProps) => {
+DropDown.FileOption = ({
+    text,
+    type,
+    onchange,
+    className,
+}: FileOptionProps) => {
     return (
-        <>
+        <div onClick={(e) => e.stopPropagation()}>
             <label
                 htmlFor={text}
-                className="hover:bg-purple-500 p-2 py-1 hover:text-white cursor-pointer w-full inline-block text-sm"
+                className={`hover:bg-purple-500 p-2 py-1 hover:text-white cursor-pointer w-full inline-block text-sm ${className}`}
             >
                 {text}
             </label>
             <input
                 id={text}
                 type="file"
-                multiple={type === FileOptionType.FILE}
+                multiple={type === ItemType.FILE}
                 minLength={1}
-                maxLength={type === FileOptionType.FILE ? 10 : 1}
+                maxLength={type === ItemType.FILE ? 10 : 1}
                 onClick={(e) => {
-                    if (type === FileOptionType.FILE) return;
+                    if (type === ItemType.FILE) return;
 
                     e.currentTarget.webkitdirectory = true;
                 }}
@@ -64,7 +68,7 @@ DropDown.FileOption = ({ text, type, onchange }: FileOptionProps) => {
                 }}
                 hidden
             />
-        </>
+        </div>
     );
 };
 

@@ -6,17 +6,12 @@ export default defineConfig({
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "./src"),
-            "@components": path.resolve(__dirname, "./src/components"),
             "@auth": path.resolve(__dirname, "./src/features/authentication"),
             "@fileHandling": path.resolve(
                 __dirname,
                 "./src/features/fileHandling"
             ),
-            "@notify": path.resolve(
-                __dirname,
-                "./src/features/notification"
-            ),
-            "@modal": path.resolve(__dirname, "./src/features/modal"),
+            "@notify": path.resolve(__dirname, "./src/features/notification"),
         },
     },
     plugins: [react()],

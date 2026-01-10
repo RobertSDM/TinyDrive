@@ -39,7 +39,7 @@ const ConfirmModal = ({
                 }}
                 onClick={(e) => e.stopPropagation()}
             >
-                <p className="text-center text-md w-52 text-slate-700 font-semibold">
+                <p className="text-center text-sm w-52 text-slate-700 font-semibold">
                     {title}
                 </p>
                 <div className="flex justify-end gap-x-4 mt-6">

@@ -4,7 +4,7 @@ import { createContext, useReducer } from "react";
 type context = {
     items: Item[];
     update: React.Dispatch<{
-        type: string;
+        type: "add" | "del" | "update" | "clear";
         item: Item;
     }>;
 };
@@ -40,6 +40,9 @@ function itemsReducer(
             let tmp = [...state];
             tmp = tmp.filter((item) => item.id !== action.item.id);
             return [...tmp, action.item];
+        }
+        case "clear": {
+            return [];
         }
     }
     return state;

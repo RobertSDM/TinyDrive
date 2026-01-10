@@ -1,67 +1,76 @@
-import TextModal from "@/features/modal/components/TextModal.tsx";
+import TextModal from "@/components/TextModal.tsx";
 import { useState } from "react";
-import { useUploadFolder, useUploadItem } from "../hooks/fileHandlingHooks.tsx";
+import { useSessionContext } from "@/context/useContext.tsx";
+import DropDown from "./DropDown.tsx";
+import { MdExpandMore, MdExpandLess } from "react-icons/md";
+import { ItemType } from "@/types.ts";
+import { useMutation } from "@tanstack/react-query";
+import { uploadFile, uploadFolder } from "../requests/fileRequests.ts";
 
 export default function ButtonUpload() {
-    const [isOpen, setIsOpen] = useState(false);
-    const { request: uploadItem } = useUploadItem();
-    const { request: uploadFolder } = useUploadFolder();
-    const { account } = useSessionContext();
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isNameModalOpen, setIsNameModalOpen] = useState(false);
 
-    function open() {
-        setIsOpen(true);
-    }
+    const uploadFileMut = useMutation({
+        mutationFn: uploadFile,
+    });
 
-    function close() {
-        setIsOpen(false);
-    }
+    const uploadFolderMut = useMutation({
+        mutationFn: uploadFolder,
+    });
+
+    const { session } = useSessionContext();
 
     return (
         <div
-            className={`inline relative ${isOpen ? "border-black/30" : ""}`}
-            onClick={() => (isOpen ? close() : open())}
-            onMouseEnter={open}
-            onMouseLeave={close}
+            className={`inline relative`}
+            onClick={() =>
+                isDropdownOpen
+                    ? setIsDropdownOpen(false)
+                    : setIsDropdownOpen(true)
+            }
         >
+            <TextModal
+                fn={(text) => {
+                    uploadFolder({
+                        name: text,
+                        parentid: "",
+                        ownerid: session!.userid,
+                    });
+                }}
+                close={() => setIsNameModalOpen(false)}
+                isOpen={isNameModalOpen}
+                title={`Type the name`}
+            />
             <span
-                className={`items-center gap-x-2 border-purple-500 text-black border hover:bg-purple-500 active:bg-purple-500 w-32 hover:text-white  inline-flex cursor-pointer rounded-sm justify-around p-2 ${
-                    isOpen && "rounded-b-none"
-                }`}
+                className={
+                    "items-center gap-x-2 text-black border hover:bg-purple-500 hover:border-none w-32 min-w-32 max-w-32 hover:text-white flex cursor-pointer justify-center p-2"
+                }
             >
-                <p>{`+ New`}</p>
-                {isOpen ? <MdExpandMore /> : <MdExpandLess />}
+                <p>{"+ New"}</p>
+                {isDropdownOpen ? <MdExpandMore /> : <MdExpandLess />}
             </span>
-            <DropDown {...{ isOpen }}>
+            <DropDown className="max-w-32 border" isOpen={isDropdownOpen}>
                 <DropDown.FileOption
                     text="Upload File"
                     onchange={(filelist: FileList) => {
-                        uploadItem(filelist);
+                        uploadFileMut.mutate(filelist);
                     }}
-                    type={FileOptionType.FILE}
+                    type={ItemType.FILE}
                 />
                 <DropDown.FileOption
                     text="Upload Folder"
                     onchange={(filelist: FileList) => {
-                        uploadItem(filelist);
+                        uploadFolderMut.mutate(filelist);
                     }}
-                    type={FileOptionType.FOLDER}
+                    type={ItemType.FOLDER}
                 />
                 <DropDown.Option
-                    onclick={() =>
-                        openModal(
-                            <TextModal
-                                callback={(text) => {
-                                    uploadFolder({
-                                        name: text,
-                                        parentid: parent.id,
-                                        ownerid: account!.id,
-                                    });
-                                }}
-                                close={closeModal}
-                                isOpen={isOpen}
-                            />
-                        )
-                    }
+                className="border-t border-slate-300"
+                    onclick={() => {
+                        setIsDropdownOpen(false)
+                        setIsNameModalOpen(true);
+                    }}
                     text="New Folder"
                 />
             </DropDown>

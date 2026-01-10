@@ -12,7 +12,6 @@
             "@auth/*": ["./src/features/authentication/*"],
             "@fileHandling/*": ["./src/features/fileHandling/*"],
             "@notify/*": ["./src/features/notification/*"],
-            "@modal/*": ["./src/features/modal/*"],
         },
     },
     "include": ["vite.config.ts"]

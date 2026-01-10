@@ -7,9 +7,9 @@ import {
 import { Mode, SupabaseKey, SupabaseURL } from "@/constants.ts";
 import MockAuthenticationClient from "@/features/authentication/lib/AuthenticationMock.ts";
 import { useQuery } from "@tanstack/react-query";
+import { axiosClient } from "@/lib/axios.ts";
 
 type AuthContext = {
-    // logOut: () => void;
     login: (email: string, password: string) => void;
     error: boolean;
     isLoading: boolean;
@@ -42,6 +42,25 @@ export default function SessionProvider({ children }: SessionProviderProps) {
     useEffect(() => {
         if (isError || isFetching) return;
         setIsAuthenticated(true);
+
+        // Inserting the JWT acess token into all axios requests
+        // TODO: add only to protected routes
+        const authHeaderInterceptor = axiosClient.interceptors.request.use(
+            (config) => {
+                const configCopy = {
+                    ...config,
+                };
+
+                configCopy.headers.Authorization = `Bearer ${
+                    session!.accessToken
+                }`;
+
+                return configCopy;
+            }
+        );
+
+        return () =>
+            axiosClient.interceptors.request.eject(authHeaderInterceptor);
     }, [session]);
 
     function login() {

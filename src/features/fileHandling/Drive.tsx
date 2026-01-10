@@ -1,8 +1,28 @@
-import Breadcrumb from "./components/Breadcrumb.tsx";
+import { ItemType } from "@/types.ts";
+import ActionBar from "./components/ActionBar.tsx";
 
 type DriveProps = {};
 export default function Drive({}: DriveProps) {
-    return <Breadcrumb></Breadcrumb>;
+    return (
+        <ActionBar
+            parentFolderId=""
+            selectionRange={[
+                {
+                    content_type: "text/plain ",
+                    creation_date: new Date().getTime(),
+                    extension: "txt",
+                    id: "123",
+                    name: "não abra!",
+                    parentid: null,
+                    path: "/",
+                    size: 10,
+                    size_prefix: "kb",
+                    type: ItemType.FILE,
+                    update_date: new Date().getTime(),
+                },
+            ]}
+        ></ActionBar>
+    );
     // let { parentid: paramsParentFolderId } = useParams();
     // const parentid =
     //     paramsParentFolderId === "drive" ? "" : paramsParentFolderId!;

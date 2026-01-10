@@ -1,53 +1,32 @@
 import { axiosClient } from "@/lib/axios.ts";
-import { Account, AuthResult, HTTPMethods, SingleResponse } from "@/types.ts";
-import { useState } from "react";
+import { Account, HTTPMethods, SingleResponse } from "@/types.ts";
 
-export function useRegisterHook() {
-    const [isRequesting, setIsRequesting] = useState<boolean>(false);
-    const [success, setSuccess] = useState<boolean>(false);
+export async function registerHook(body: Object) {
+    const resp = await axiosClient({
+        url: "/auth/register",
+        data: body,
+        method: HTTPMethods.POST,
+    });
 
-    function request(body: Object) {
-        setIsRequesting(true);
-        axiosClient({
-            url: "/auth/register",
-            data: body,
-            method: HTTPMethods.POST,
-        })
-            .then(() => setSuccess(true))
-            .finally(() => setIsRequesting(false));
-    }
-
-    return { request, isRequesting, success };
+    return resp.data;
 }
 
-export function useLoginHook() {
-    const [isRequesting, setIsRequesting] = useState<boolean>(false);
-    const [success, setSuccess] = useState<boolean>(false);
+export async function loginHook(body: Object) {
+    const resp = await axiosClient({
+        url: "/auth/login",
+        data: body,
+        method: HTTPMethods.POST,
+    });
 
-    function request(body: Object) {
-        setIsRequesting(true);
-        axiosClient({
-            url: "/auth/login",
-            data: body,
-            method: HTTPMethods.POST,
-        })
-            .then(() => setSuccess(true))
-            .finally(() => setIsRequesting(false));
-    }
-
-    return { request, isRequesting, success };
+    return resp.data;
 }
 
-export async function getAccountById(
-    userid: string,
-    token: string
+export async function accountById(
+    userid: string
 ): Promise<SingleResponse<Account>> {
     const resp = await axiosClient({
         url: `account/${userid}`,
         method: HTTPMethods.GET,
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
     });
 
     return resp.data;

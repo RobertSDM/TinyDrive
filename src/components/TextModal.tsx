@@ -40,6 +40,7 @@ export default function TextModal({
 
         close();
         fn(text);
+        setText("");
     }
 
     if (!isOpen) return null;
