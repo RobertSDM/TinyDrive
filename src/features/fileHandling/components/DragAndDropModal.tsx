@@ -1,37 +1,55 @@
-// import { useUploadItem } from "../requests/file.tsx";
+import { useNotifyContext, useSessionContext } from "@/context/useContext.tsx";
+import { uploadFile } from "../requests/fileRequests.ts";
+import { useMutation } from "@tanstack/react-query";
+import { NotifyLevel } from "@/types.ts";
 
-// type DragOverModalProps = {
-//     close: () => void;
-//     isOpen: boolean;
-// };
-// export default function DragAndDropModal({
-//     close,
-//     isOpen,
-// }: DragOverModalProps) {
-//     const { request: uploadItem } = useUploadItem();
+type DragAndDrop = {
+    close: () => void;
+    isOpen: boolean;
+    parentid: string;
+};
+export default function DragAndDrop({ close, isOpen, parentid }: DragAndDrop) {
+    const { session } = useSessionContext();
+    const { notify } = useNotifyContext();
 
-//     return (
-//         <div
-//             className={`fixed flex bg-purple-400/50 w-full h-full top-0 left-0 items-center justify-center z-50`}
-//             onDragEnter={(e) => e.stopPropagation()}
-//             onDragLeave={(e) => {
-//                 e.stopPropagation();
-//                 close();
-//             }}
-//             onDragOver={(e) => {
-//                 e.preventDefault();
-//             }}
-//             onDrop={async (e) => {
-//                 e.preventDefault();
-//                 close();
-//                 const filelist = e.dataTransfer.files;
-//                 uploadItem(filelist);
-//             }}
-//             hidden={!isOpen}
-//         >
-//             <p className="font-semibold text-purple-900">
-//                 Drop the file to save
-//             </p>
-//         </div>
-//     );
-// }
+    const uploadFileMut = useMutation({
+        mutationFn: (filelist: FileList) =>
+            uploadFile(session!.userid, parentid, filelist),
+    });
+
+    if (!isOpen) return null;
+
+    return (
+        <div
+            className={`absolute flex bg-purple-400/50 w-full h-full top-0 left-0 items-center justify-center z-50`}
+            onDragEnter={(e) => e.stopPropagation()}
+            onDragLeave={(e) => {
+                e.stopPropagation();
+                close();
+            }}
+            onDragOver={(e) => {
+                e.preventDefault();
+            }}
+            onDrop={(e) => {
+                e.preventDefault();
+                close();
+
+                const filelist = e.dataTransfer.files;
+                if (Array.from(filelist).some((f) => f.type === "")) {
+                    notify({
+                        level: NotifyLevel.ERROR,
+                        message: "Drag and Drop não suporta pastas",
+                        type: "popup",
+                    });
+                    return;
+                }
+
+                uploadFileMut.mutate(filelist);
+            }}
+        >
+            <p className="font-semibold text-purple-900">
+                Drop the file to save
+            </p>
+        </div>
+    );
+}

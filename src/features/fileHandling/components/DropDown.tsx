@@ -1,5 +1,3 @@
-import { FileType } from "@/types.ts";
-
 type DropDown = {
     children: React.ReactNode;
     isOpen: boolean;
@@ -33,13 +31,13 @@ DropDown.Option = ({ onclick, text, className }: OptionProps) => {
 type FileOptionProps = {
     text: string;
     onchange: (list: FileList) => void;
-    type: FileType;
+    isDirOption: boolean;
     maxFiles?: number;
     className?: string;
 };
 DropDown.FileOption = ({
     text,
-    type,
+    isDirOption,
     onchange,
     maxFiles = 1,
     className,
@@ -55,11 +53,11 @@ DropDown.FileOption = ({
             <input
                 id={text}
                 type="file"
-                multiple={type === FileType.FILE}
+                multiple={!isDirOption}
                 minLength={1}
-                maxLength={type === FileType.FILE ? maxFiles : 1}
+                maxLength={!isDirOption ? maxFiles : 1}
                 onClick={(e) => {
-                    if (type === FileType.FILE) return;
+                    if (!isDirOption) return;
                     e.currentTarget.webkitdirectory = true;
                 }}
                 onChange={(e) => {

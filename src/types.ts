@@ -17,16 +17,15 @@ export enum HTTPMethods {
 
 export type File = {
     id: string | null;
-    name: string;
+    filename: string;
     extension: string;
     size: number;
     size_prefix: string;
     content_type: string;
-    type: FileType;
-    path: string;
+    is_dir: boolean;
     parentid: string | null;
-    update_date: number;
-    creation_date: number;
+    updated_at: number;
+    created_at: number;
 };
 
 export type Account = {
@@ -34,11 +33,6 @@ export type Account = {
     username: string;
     email: string;
     creation_date: string;
-};
-
-export type FailuresAndSuccesses = {
-    successes: string[];
-    failures: string[];
 };
 
 export type AuthResult = {
@@ -50,7 +44,6 @@ export type AuthResult = {
 export type FileResponse = {
     files: File[];
     parent?: File;
-    message?: string; // exists when an error occur
 };
 
 export type NotificationData = {
@@ -58,4 +51,17 @@ export type NotificationData = {
     message: string;
     type: "popup" | "progress";
     total?: number;
+};
+
+export type FilenameRequest = {
+    filename: string;
+};
+
+export type BreadcrumbResponse = {
+    id: string;
+    filename: string;
+}[];
+
+export type UrlResponse = {
+    url: string;
 };

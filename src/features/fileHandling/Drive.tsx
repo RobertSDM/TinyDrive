@@ -1,61 +1,27 @@
-import { ItemType } from "@/types.ts";
-import ActionBar from "./components/ActionBar.tsx";
+import { useParams } from "react-router-dom";
+import Breadcrumb from "./components/Breadcrumb.tsx";
+import ButtonUpload from "./components/ButtonUpload.tsx";
+import { useSessionContext } from "@/context/useContext.tsx";
+import LogoLoader from "@/components/LogoLoader.tsx";
+import FileList from "./components/FileList.tsx";
+import Header from "./components/Header.tsx";
 
 type DriveProps = {};
 export default function Drive({}: DriveProps) {
+    let { parentid: paramsParentFolderId } = useParams();
+    const { isLoading, isAuthenticated } = useSessionContext();
+    const parentid = !!paramsParentFolderId ? paramsParentFolderId! : "";
+
+    if (!isAuthenticated || isLoading) return <LogoLoader />;
+
     return (
-        <ActionBar
-            parentFolderId=""
-            selectionRange={[
-                {
-                    content_type: "text/plain ",
-                    creation_date: new Date().getTime(),
-                    extension: "txt",
-                    id: "123",
-                    name: "não abra!",
-                    parentid: null,
-                    path: "/",
-                    size: 10,
-                    size_prefix: "kb",
-                    type: ItemType.FILE,
-                    update_date: new Date().getTime(),
-                },
-            ]}
-        ></ActionBar>
+        <section className="mx-auto w-full max-w-7xl overflow-hidden">
+            <Header />
+            <main className="mt-20">
+                <Breadcrumb parentid={parentid} />
+                <ButtonUpload parentid={parentid} />
+                <FileList parentid={parentid} />
+            </main>
+        </section>
     );
-    // let { parentid: paramsParentFolderId } = useParams();
-    // const parentid =
-    //     paramsParentFolderId === "drive" ? "" : paramsParentFolderId!;
-    // const { closeModal, isOpen, openModal } = useModalContext();
-    // const { changeParent, changeParentToRoot } = useParentContext();
-    // const { request: parentFolderRequest, data: parentData } = useFolderById();
-    // useEffect(() => {
-    //     if (paramsParentFolderId === "drive") {
-    //         changeParentToRoot();
-    //         return;
-    //     }
-    //     parentFolderRequest(parentid);
-    // }, [paramsParentFolderId]);
-    // useEffect(() => {
-    //     if (parentData!.success) return;
-    //     changeParent(parentData!.data);
-    //     document.title = "Tiny Drive |" + parentData?.data.name || "Tiny Drive";
-    // }, [parentData]);
-    // return (
-    //     <section
-    //         className="max-w-7xl mx-auto mb-20 px-10 w-full flex-1"
-    //         onDragEnter={(e) => {
-    //             if (e.dataTransfer.types.includes("Files")) {
-    //                 openModal(
-    //                     <DragAndDropModal close={closeModal} isOpen={isOpen} />
-    //                 );
-    //             }
-    //         }}
-    //     >
-    //         <Breadcrumb />
-    //         <ButtonUpload />
-    //         <ActionBar {...{ parentFolderId: parentid }} />
-    //         <ItemsView />
-    //     </section>
-    // );
 }

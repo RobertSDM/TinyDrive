@@ -1,129 +1,153 @@
-import { HTTPMethods, File, FileResponse } from "@/types.ts";
+import {
+    HTTPMethods,
+    File,
+    FileResponse,
+    FilenameRequest,
+    BreadcrumbResponse,
+    UrlResponse,
+} from "@/types.ts";
 import { axiosClient } from "@/lib/axios.ts";
 
-export async function deleteFolderById(userid: string, body: Object) {
+export async function deleteFolderById(userid: string, fileids: string[]) {
     const resp = await axiosClient({
-        url: `item/delete/${userid}`,
+        url: `/files/account/${userid}`,
         method: HTTPMethods.DELETE,
-        data: body,
-    });
-
-    return resp.data;
-}
-
-export async function downloadFolder(itemid: string, userid: string) {
-    const resp = await axiosClient({
-        url: `item/download/folder/${userid}/${itemid}`,
-        method: HTTPMethods.GET,
-        responseType: "blob",
-    });
-
-    return resp.data;
-}
-
-export async function downloadFile(itemid: string, userid: string) {
-    const resp = await axiosClient({
-        url: `/item/download/${userid}/${itemid}`,
-        method: HTTPMethods.DELETE,
-        responseType: "blob",
-    });
-
-    return resp.data;
-}
-
-export async function filesFromFolder(
-    userid: string,
-    parentid: string,
-    page: number = 0,
-    sort: string = "name"
-): Promise<File[]> {
-    const resp = await axiosClient({
-        url: `/item/all/${userid}${
-            parentid === "" ? "" : `/${parentid}`
-        }?p=${page}&sort=${sort}`,
-        method: HTTPMethods.DELETE,
-    });
-
-    return resp.data.data;
-}
-
-export async function search(
-    userid: string,
-    query: string,
-    type: string | null
-) {
-    const resp = await axiosClient({
-        url: `item/search/${userid}?q=${query}&${type ? `type=${type}` : ""}`,
-        method: HTTPMethods.GET,
-    });
-
-    return resp.data;
-}
-
-export async function breadcrumb(
-    userid: string,
-    parentid: string
-): Promise<FileResponse> {
-    const resp = await axiosClient<FileResponse>({
-        url: `/item/breadcrumb/${userid}/${parentid}`,
-        method: HTTPMethods.GET,
-    });
-
-    return resp.data;
-}
-
-export async function preview(itemid: string, userid: string, body: Object) {
-    const resp = await axiosClient({
-        url: `item/preview/${userid}/${itemid}`,
-        method: HTTPMethods.GET,
-        data: body,
-    });
-
-    return resp.data;
-}
-
-export async function updateName(itemid: string, userid: string, body: Object) {
-    const resp = await axiosClient({
-        url: `/item/update/${userid}/${itemid}/name`,
-        method: HTTPMethods.DELETE,
-        data: body,
-        responseType: "blob",
-    });
-
-    return resp.data;
-}
-
-export async function uploadFolder(body: Object) {
-    const resp = await axiosClient({
-        url: "/item/save/folder",
-        method: HTTPMethods.POST,
-        data: body,
-        responseType: "blob",
-    });
-
-    return resp.data;
-}
-
-export async function uploadFile(body: Object) {
-    const resp = await axiosClient({
-        url: "/item/save",
-        method: HTTPMethods.POST,
-        data: body,
-        headers: {
-            "Content-Type": "multipart/form-data",
+        data: {
+            fileids,
         },
     });
 
     return resp.data;
 }
 
-export async function folderById(
+export async function downloadFile(fileids: string[], userid: string) {
+    const resp = await axiosClient<Blob>({
+        url: `/files/account/${userid}/download`,
+        method: HTTPMethods.POST,
+        responseType: "blob",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        data: {
+            fileids,
+        },
+    });
+
+    let filename = (resp.headers["content-disposition"] as string)
+        .split("=")[1]
+        .replaceAll('"', "")
+        .trim();
+
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(resp.data);
+    a.download = filename;
+    a.hidden = true;
+
+    a.click();
+    a.remove();
+
+    return;
+}
+
+export async function filesInFolder(
     userid: string,
-    parentid: string
-): Promise<FileResponse> {
-    const resp = await axiosClient({
-        url: `/item/${userid}${parentid === "" ? "" : "/" + parentid}`,
+    parentid: string,
+    page: number = 0,
+    sort: string = "name"
+): Promise<File[]> {
+    const resp = await axiosClient<FileResponse>({
+        url: `/files/account/${userid}/parent${
+            parentid === "" ? "" : `/${parentid}`
+        }?p=${page}&sort=${sort}`,
+        method: HTTPMethods.GET,
+    });
+
+    return resp.data.files;
+}
+
+export async function search(
+    userid: string,
+    query: string,
+    type: string | null
+): Promise<File[]> {
+    const resp = await axiosClient<FileResponse>({
+        url: `/files/account/${userid}/search?q=${query}&${
+            type ? `type=${type}` : ""
+        }`,
+        method: HTTPMethods.GET,
+    });
+
+    return resp.data.files;
+}
+
+export async function breadcrumb(
+    userid: string,
+    fileid: string
+): Promise<BreadcrumbResponse> {
+    const resp = await axiosClient<BreadcrumbResponse>({
+        url: `/files/${fileid}/account/${userid}/breadcrumb`,
+        method: HTTPMethods.GET,
     });
 
     return resp.data;
+}
+
+export async function preview(
+    itemid: string,
+    userid: string
+): Promise<UrlResponse> {
+    const resp = await axiosClient({
+        url: `/files/${itemid}/account/${userid}/preview`,
+        method: HTTPMethods.GET,
+    });
+
+    return resp.data;
+}
+
+export async function updateName(
+    itemid: string,
+    userid: string,
+    body: FilenameRequest
+) {
+    const resp = await axiosClient({
+        url: `/files/${itemid}/account/${userid}/name`,
+        method: HTTPMethods.PUT,
+        data: body,
+    });
+
+    return resp.data;
+}
+
+export async function uploadFolder(userid: string, body: FilenameRequest) {
+    const resp = await axiosClient({
+        url: `/files/account/${userid}/parent/folder`,
+        method: HTTPMethods.POST,
+        data: body,
+    });
+
+    return resp.data;
+}
+
+export async function uploadFile(
+    userid: string,
+    parentid: string,
+    filelist: FileList
+): Promise<File[]> {
+    let filedata;
+    filedata = new FormData();
+
+    for (let file of filelist) filedata.append("filedata", file);
+
+    const resp = await axiosClient<FileResponse>({
+        url: `/files/account/${userid}/parent${
+            parentid !== "" ? `/${parentid}` : ""
+        }`,
+        method: HTTPMethods.POST,
+        data: filedata,
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+
+    return resp.data.files;
 }

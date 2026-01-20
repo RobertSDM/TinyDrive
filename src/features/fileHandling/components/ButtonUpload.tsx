@@ -2,27 +2,32 @@ import { useState } from "react";
 import { useModalContext, useSessionContext } from "@/context/useContext.tsx";
 import DropDown from "./DropDown.tsx";
 import { MdExpandMore, MdExpandLess } from "react-icons/md";
-import { FileType } from "@/types.ts";
 import { useMutation } from "@tanstack/react-query";
 import { uploadFile, uploadFolder } from "../requests/fileRequests.ts";
+import { FilenameRequest } from "@/types.ts";
 
-export default function ButtonUpload() {
+type ButtonUploadProps = {
+    parentid: string;
+};
+export default function ButtonUpload({ parentid }: ButtonUploadProps) {
+    const { session } = useSessionContext();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const uploadFileMut = useMutation({
-        mutationFn: uploadFile,
+        mutationFn: (body: FileList) =>
+            uploadFile(session!.userid, parentid, body),
     });
 
     const uploadFolderMut = useMutation({
-        mutationFn: uploadFolder,
+        mutationFn: (body: FilenameRequest) =>
+            uploadFolder(session!.userid, body),
     });
 
-    const { session } = useSessionContext();
     const { openModal } = useModalContext();
 
     return (
         <div
-            className={`inline relative select-none`}
+            className={`inline w-fit relative select-none`}
             onClick={() =>
                 isDropdownOpen
                     ? setIsDropdownOpen(false)
@@ -38,7 +43,7 @@ export default function ButtonUpload() {
                 {isDropdownOpen ? <MdExpandMore /> : <MdExpandLess />}
             </span>
             <DropDown
-                className="max-w-32 border absolute w-full"
+                className="max-w-32 border absolute w-full bg-white z-50"
                 isOpen={isDropdownOpen}
             >
                 <DropDown.FileOption
@@ -46,26 +51,24 @@ export default function ButtonUpload() {
                     onchange={(filelist: FileList) => {
                         uploadFileMut.mutate(filelist);
                     }}
-                    type={FileType.FILE}
+                    isDirOption={false}
                     maxFiles={10}
                 />
                 <DropDown.FileOption
                     text="Upload Folder"
                     onchange={(filelist: FileList) => {
                         setIsDropdownOpen(false);
-                        uploadFolderMut.mutate(filelist);
+                        uploadFileMut.mutate(filelist);
                     }}
-                    type={FileType.FOLDER}
+                    isDirOption={true}
                 />
                 <DropDown.Option
                     className="border-t border-slate-300"
                     onclick={() => {
                         openModal("text", {
                             fn: (text) => {
-                                uploadFolder({
-                                    name: text,
-                                    parentid: "",
-                                    ownerid: session!.userid,
+                                uploadFolderMut.mutate({
+                                    filename: text,
                                 });
                             },
                             title: "Type the name",
