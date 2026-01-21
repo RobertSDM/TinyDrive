@@ -1,7 +1,6 @@
-import { useNotifyContext, useSessionContext } from "@/context/useContext.tsx";
-import { uploadFile } from "../requests/fileRequests.ts";
-import { useMutation } from "@tanstack/react-query";
+import { useNotifyContext } from "@/context/useContext.tsx";
 import { NotifyLevel } from "@/types.ts";
+import { useUploadFile } from "../hooks/fileServices.tsx";
 
 type DragAndDrop = {
     close: () => void;
@@ -9,13 +8,9 @@ type DragAndDrop = {
     parentid: string;
 };
 export default function DragAndDrop({ close, isOpen, parentid }: DragAndDrop) {
-    const { session } = useSessionContext();
     const { notify } = useNotifyContext();
 
-    const uploadFileMut = useMutation({
-        mutationFn: (filelist: FileList) =>
-            uploadFile(session!.userid, parentid, filelist),
-    });
+    const uploadFileMut = useUploadFile(parentid);
 
     if (!isOpen) return null;
 

@@ -1,8 +1,9 @@
 import { File, UrlResponse } from "@/types.ts";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { downloadFile, preview } from "../requests/fileRequests.ts";
+import { preview } from "../requests/fileRequests.ts";
 import { useSessionContext } from "@/context/useContext.tsx";
+import { useDownloadFile } from "../hooks/fileServices.tsx";
 
 type PreviewProps = {
     file: File;
@@ -12,12 +13,7 @@ type PreviewProps = {
 export default function Preview({ file, isOpen, close }: PreviewProps) {
     const { session } = useSessionContext();
 
-    const downloadFileMut = useMutation({
-        mutationKey: ["downloadFile"],
-        mutationFn: (fileids: string[]) =>
-            downloadFile(fileids, session!.userid),
-    });
-
+    const downloadFileMut = useDownloadFile();
 
     useEffect(() => {
         document.body.style.overflow = "hidden";

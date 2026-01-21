@@ -15,9 +15,9 @@ export default function Drive({}: DriveProps) {
     if (!isAuthenticated || isLoading) return <LogoLoader />;
 
     return (
-        <section className="mx-auto w-full max-w-7xl overflow-hidden">
+        <section className="mx-auto w-full max-w-7xl overflow-hidden px-10">
             <Header />
-            <main className="mt-20">
+            <main className="mt-20 flex flex-col gap-y-2">
                 <Breadcrumb parentid={parentid} />
                 <ButtonUpload parentid={parentid} />
                 <FileList parentid={parentid} />

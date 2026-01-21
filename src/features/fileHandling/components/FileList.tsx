@@ -26,12 +26,14 @@ const FileList = ({ parentid }: ItemsViewProps) => {
 
     const currentPage = useRef<number>(0);
     const [filter, setFilter] = useState(0);
-    const [isDragAndDropOpen, setIsDragAndDropOpen] = useState(false);
-    const { openModal } = useModalContext();
 
-    const { items, update } = useDriveItemsContext();
+    const [isDragAndDropOpen, setIsDragAndDropOpen] = useState(false);
+
+    const { openModal } = useModalContext();
+    const { files: filesDrive, update } = useDriveItemsContext();
+
     const filesOrdered = useMemo(() => {
-        let fs = [...items];
+        let fs = [...filesDrive];
         let tmp;
         for (let i = 0; i < fs.length; i++) {
             if (!fs[i].is_dir) continue;
@@ -44,14 +46,14 @@ const FileList = ({ parentid }: ItemsViewProps) => {
         }
 
         return fs;
-    }, [items]);
+    }, [filesDrive]);
 
     const { session } = useSessionContext();
 
     const [selectedRange, setSelectedRange] = useState<number[]>([]);
 
     function selectionRange(start: number, end: number = -1) {
-        if (end >= items.length)
+        if (end >= filesDrive.length)
             throw new Error("End index cannot be greater than the items list");
 
         if (end === -1 && selectedRange[0] === start) {
@@ -84,8 +86,8 @@ const FileList = ({ parentid }: ItemsViewProps) => {
     useEffect(() => {
         if (isFetching || isError) return;
 
-        update({ type: "clear", item: {} as File });
-        files!.forEach((f) => update({ item: f, type: "add" }));
+        update({ type: "clear", file: {} as File });
+        files!.forEach((f) => update({ file: f, type: "add" }));
     }, [files]);
 
     useEffect(() => {
@@ -113,7 +115,7 @@ const FileList = ({ parentid }: ItemsViewProps) => {
 
     return (
         <div
-            className="relative h-[648px] space-y-2 mt-2"
+            className="relative h-[648px] space-y-2"
             onDragEnter={(e) => {
                 if (!e.dataTransfer.types.includes("Files")) return;
 
@@ -126,7 +128,7 @@ const FileList = ({ parentid }: ItemsViewProps) => {
                 parentid={parentid}
             />
             <ActionBar selectionRange={selectedRange} files={filesOrdered} />
-            <div >
+            <div>
                 <span className="mr-2">Filter by</span>
                 <button
                     className="w-40 border text-center select-none h-8"
@@ -170,7 +172,7 @@ const FileList = ({ parentid }: ItemsViewProps) => {
                     );
                 })}
             </section>
-            {items.length === 0 && (
+            {filesDrive.length === 0 && (
                 <div>
                     <span className="mx-auto flex justify-center text-black/30 font-semibold">
                         Nothing was found. Upload something!
@@ -225,7 +227,7 @@ function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
                 <Link
                     to={`/drive/${file.id}`}
                     onClick={() => {
-                        update({ type: "clear", item: {} as File });
+                        update({ type: "clear", file: {} as File });
                     }}
                     className={`flex items-center`}
                 >

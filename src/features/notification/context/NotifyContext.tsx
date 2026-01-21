@@ -54,7 +54,7 @@ export const Notify = ({ children }: { children: ReactNode }) => {
     return (
         <NotifyContext.Provider value={{ notify, setProgress }}>
             {!!notificationShown && (
-                <div className="fixed bottom-0 right-0 z-[60] w-full h-full">
+                <div className="fixed top-0 left-0 right-0 z-[60] w-fit h-fit">
                     {notificationShown.type === "popup" ? (
                         <Popup {...{ done, notification: notificationShown }} />
                     ) : (

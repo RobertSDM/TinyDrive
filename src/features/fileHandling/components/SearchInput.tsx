@@ -133,7 +133,7 @@ type FileRowViewProps = { file: File };
 function FileRowView({ file }: FileRowViewProps) {
     if (!file.is_dir)
         return (
-            <div className={`flex items-center`}>
+            <div className={`flex items-center gap-x-2`}>
                 <FaFile className={`min-h-4 min-w-4 text-slate-500`} />
                 <span
                     className={`whitespace-nowrap text-ellipsis overflow-hidden`}

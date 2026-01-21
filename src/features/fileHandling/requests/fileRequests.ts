@@ -8,8 +8,11 @@ import {
 } from "@/types.ts";
 import { axiosClient } from "@/lib/axios.ts";
 
-export async function deleteFolderById(userid: string, fileids: string[]) {
-    const resp = await axiosClient({
+export async function deleteFile(
+    userid: string,
+    fileids: string[]
+): Promise<File[]> {
+    const resp = await axiosClient<FileResponse>({
         url: `/files/account/${userid}`,
         method: HTTPMethods.DELETE,
         data: {
@@ -17,7 +20,7 @@ export async function deleteFolderById(userid: string, fileids: string[]) {
         },
     });
 
-    return resp.data;
+    return resp.data.files;
 }
 
 export async function downloadFile(fileids: string[], userid: string) {
@@ -108,14 +111,14 @@ export async function updateName(
     itemid: string,
     userid: string,
     body: FilenameRequest
-) {
-    const resp = await axiosClient({
+): Promise<File[]> {
+    const resp = await axiosClient<FileResponse>({
         url: `/files/${itemid}/account/${userid}/name`,
         method: HTTPMethods.PUT,
         data: body,
     });
 
-    return resp.data;
+    return resp.data.files;
 }
 
 export async function uploadFolder(userid: string, body: FilenameRequest) {

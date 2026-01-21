@@ -1,4 +1,4 @@
-import { NotificationData } from "@/types.ts";
+import { NotificationData, NotifyLevel } from "@/types.ts";
 import { Notification } from "./Notification.tsx";
 import { useEffect } from "react";
 
@@ -13,11 +13,15 @@ export function Progress({ notification, progress, done }: ProgressProps) {
     }, [progress]);
 
     return (
-        <div className="mr-10 mb-5 bg-white pt-1 rounded-sm border border-slate-400 border-b-transparent shadow-md w-full">
+        <div
+            className={`m-3 bg-purple-500 rounded-sm border border-white shadow-md px-3 inline-block ${
+                notification.level === NotifyLevel.ERROR && "bg-red-500"
+            } `}
+        >
             <Notification notification={notification} close={done} />
             <div
                 style={{ width: `${progress}%` }}
-                className="h-[3px] bg-purple-500"
+                className="h-[3px] bg-white"
             ></div>
         </div>
     );

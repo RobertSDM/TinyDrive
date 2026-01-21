@@ -1,4 +1,4 @@
-import { NotificationData } from "@/types.ts";
+import { NotificationData, NotifyLevel } from "@/types.ts";
 import { useEffect, useRef } from "react";
 import { Notification } from "./Notification.tsx";
 
@@ -17,7 +17,11 @@ export function Popup({ done, notification }: PopupProps) {
     }, [notification]);
 
     return (
-        <div className="mr-10 mb-5 bg-white pt-1 rounded-sm border border-slate-400 shadow-md px-3">
+        <div
+            className={`m-3 bg-purple-500 rounded-sm border border-white shadow-md px-3 inline-block ${
+                notification.level === NotifyLevel.ERROR && "bg-red-500"
+            } `}
+        >
             <Notification notification={notification} close={done} />
         </div>
     );

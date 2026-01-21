@@ -1,12 +1,14 @@
-import { useModalContext, useSessionContext } from "@/context/useContext.tsx";
+import { useModalContext } from "@/context/useContext.tsx";
 
-import {
-    deleteFolderById,
-    downloadFile,
-    updateName,
-} from "../requests/fileRequests.ts";
-import { useMutation } from "@tanstack/react-query";
-import { File, FilenameRequest } from "@/types.ts";
+import { File } from "@/types.ts";
+import useUpdateName, {
+    useDeleteFile,
+    useDownloadFile,
+} from "../hooks/fileServices.tsx";
+import { FaTrash } from "react-icons/fa";
+import { MdDownload } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
+import React from "react";
 
 type ActionBarProps = {
     selectionRange: number[];
@@ -16,28 +18,13 @@ export default function ActionBar({
     selectionRange,
     files: filesOrdered,
 }: ActionBarProps) {
-    const { session } = useSessionContext();
     const { openModal } = useModalContext();
 
-    const downloadFileMut = useMutation({
-        mutationKey: ["downloadFile"],
-        mutationFn: (fileids: string[]) =>
-            downloadFile(fileids, session!.userid),
-    });
-
-    const deleteFileMut = useMutation({
-        mutationFn: (fileids: string[]) =>
-            deleteFolderById(session!.userid, fileids),
-    });
-
-    const updateFileMut = useMutation({
-        mutationFn: (body: FilenameRequest) =>
-            updateName(
-                filesOrdered[selectionRange[0]].id!,
-                session!.userid,
-                body
-            ),
-    });
+    const downloadFileMut = useDownloadFile();
+    const deleteFileMut = useDeleteFile();
+    const updateFileMut = useUpdateName(
+        filesOrdered[selectionRange[0]]?.id ?? ""
+    );
 
     // useEffect(() => {
     //     function action(e: KeyboardEvent) {
@@ -78,9 +65,9 @@ export default function ActionBar({
                 "h-10 px-1 rounded-md flex items-center gap-x-2 select-none"
             }
         >
-            <button
-                className="bg-red-200 hover:bg-red-500 hover:text-white p-2"
-                onClick={() =>
+            <SimpleButton
+                classname="bg-red-200 hover:bg-red-500 hover:text-white group"
+                onclick={() =>
                     openModal("confirm", {
                         fn: () => {
                             deleteFileMut.mutate([
@@ -95,23 +82,32 @@ export default function ActionBar({
                         title: "Are you sure? All the data from the folder will be lost",
                     })
                 }
-            >
-                Delete
-            </button>
-            <button
-                className="bg-slate-200 hover:bg-slate-500 hover:text-white p-2"
-                onClick={() =>
+                icon={
+                    <FaTrash
+                        className="text-red-500 group-hover:text-white"
+                        size={20}
+                    />
+                }
+            />
+
+            <SimpleButton
+                classname="bg-slate-200 hover:bg-slate-500 group"
+                onclick={() =>
                     openModal("text", {
                         fn: (name) => updateFileMut.mutate({ filename: name }),
                         title: "Type the name",
                     })
                 }
-            >
-                Rename
-            </button>
-            <button
-                className="bg-slate-200 hover:bg-slate-500 hover:text-white p-2"
-                onClick={() => {
+                icon={
+                    <MdEdit
+                        size={20}
+                        className="text-slate-500 group-hover:text-white"
+                    />
+                }
+            />
+            <SimpleButton
+                classname="bg-slate-200 hover:bg-slate-500 group"
+                onclick={() => {
                     if (
                         selectionRange[0] === selectionRange[1] &&
                         filesOrdered[selectionRange[0]].is_dir
@@ -134,9 +130,29 @@ export default function ActionBar({
 
                     downloadFileMut.mutate(files);
                 }}
-            >
-                Download
-            </button>
+                icon={
+                    <MdDownload
+                        size={20}
+                        className="text-slate-500 group-hover:text-white"
+                    />
+                }
+            />
         </div>
+    );
+}
+
+type SimpleButtonProps = {
+    onclick: () => void;
+    icon: React.ReactNode;
+    classname?: string;
+};
+function SimpleButton({ onclick, icon, classname }: SimpleButtonProps) {
+    return (
+        <button
+            className={`hover:text-white p-2 rounded-sm ${classname}`}
+            onClick={onclick}
+        >
+            {icon}
+        </button>
     );
 }

@@ -2,44 +2,47 @@ import { File } from "@/types.ts";
 import { createContext, useReducer } from "react";
 
 type context = {
-    items: File[];
+    files: File[];
     update: React.Dispatch<{
         type: "add" | "del" | "update" | "clear";
-        item: File;
+        file: File;
     }>;
 };
-export const DriveItemsContext = createContext<context>({} as context);
+export const DriveFilesContext = createContext<context>({} as context);
 
-export function DriveItemsProvider({
+export function DriveFilesProvider({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const [items, update] = useReducer(itemsReducer, [] as File[]);
+    const [files, update] = useReducer(filessReducer, [] as File[]);
 
     return (
-        <DriveItemsContext.Provider value={{ items, update }}>
+        <DriveFilesContext.Provider value={{ files, update }}>
             {children}
-        </DriveItemsContext.Provider>
+        </DriveFilesContext.Provider>
     );
 }
 
-function itemsReducer(
+function filessReducer(
     state: File[],
-    action: { type: string; item: File }
+    action: { type: string; file: File }
 ): File[] {
     switch (action.type) {
         case "add":
-            return [...state, action.item];
+            return [...state, action.file];
         case "del": {
             let tmp = [...state];
-            tmp = tmp.filter((item) => item.id !== action.item.id);
+            tmp = tmp.filter((file) => file.id !== action.file.id);
             return tmp;
         }
         case "update": {
             let tmp = [...state];
-            tmp = tmp.filter((item) => item.id !== action.item.id);
-            return [...tmp, action.item];
+
+            let index = tmp.findIndex((file) => file.id === action.file.id);
+            tmp[index] = action.file;
+
+            return tmp;
         }
         case "clear": {
             return [];
