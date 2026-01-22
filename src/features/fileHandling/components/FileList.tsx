@@ -215,11 +215,11 @@ function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
                         }`}
                     />
                     <span
-                        className={`whitespace-nowrap text-ellipsis overflow-hidden`}
+                        className={`whitespace-nowrap text-ellipsis overflow-hidden `}
                     >
                         {`${file.filename}`}
                     </span>
-                    <span>
+                    <span className="text-nowrap">
                         {`${file.extension} - ${file.size} ${file.size_prefix}`}
                     </span>
                 </div>
@@ -237,19 +237,19 @@ function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
                         }`}
                     />
                     <span
-                        className={`whitespace-nowrap text-ellipsis overflow-hidden max-w-60`}
+                        className={`whitespace-nowrap  text-ellipsis overflow-hidden max-w-60`}
                     >
                         {file.filename}
                     </span>
                 </Link>
             )}
             <div
-                className={`text-slate-500 hidden md:block ${
+                className={`text-slate-500 hidden md:block text-nowrap ${
                     isSelected && "text-white"
                 }`}
             >
                 {`Updated at: ${new Date(file.updated_at)
-                    .toLocaleDateString()
+                    .toLocaleDateString("pt-BR")
                     .split("/")
                     .map((d) => d.padStart(2, "0"))
                     .join("/")}`}

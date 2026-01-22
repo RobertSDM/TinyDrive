@@ -22,27 +22,26 @@ function useRequiredContext() {
 }
 
 export function useDeleteFile() {
-    const { session } = useRequiredContext();
+    const { session, notify, update } = useRequiredContext();
 
     return useMutation({
         mutationFn: (fileids: string[]) => deleteFile(session!.userid, fileids),
-        onSuccess: (_, variables) => {
-            console.log(variables);
-            // for (let file of files) {
-            //     update({
-            //         type: "del",
-            //         file: file,
-            //     });
-            // }
+        onSuccess: (files) => {
+            for (let file of files) {
+                update({
+                    type: "del",
+                    file: file,
+                });
+            }
 
-            // notify({
-            //     level: NotifyLevel.INFO,
-            //     message:
-            //         files.length > 1
-            //             ? "Todos os arquivos foram deletados"
-            //             : "O arquivo foi deletado",
-            //     type: "popup",
-            // });
+            notify({
+                level: NotifyLevel.INFO,
+                message:
+                    files.length > 1
+                        ? "Todos os arquivos foram deletados"
+                        : "O arquivo foi deletado",
+                type: "popup",
+            });
         },
     });
 }
@@ -116,7 +115,7 @@ export function useUploadFolder() {
 
             notify({
                 level: NotifyLevel.INFO,
-                message: "Foi feito o upload de todos os arquivos",
+                message: "A pasta foi criada",
                 type: "popup",
             });
         },

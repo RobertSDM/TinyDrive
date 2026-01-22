@@ -121,14 +121,17 @@ export async function updateName(
     return resp.data.files;
 }
 
-export async function uploadFolder(userid: string, body: FilenameRequest) {
-    const resp = await axiosClient({
+export async function uploadFolder(
+    userid: string,
+    body: FilenameRequest
+): Promise<File[]> {
+    const resp = await axiosClient<FileResponse>({
         url: `/files/account/${userid}/parent/folder`,
         method: HTTPMethods.POST,
         data: body,
     });
 
-    return resp.data;
+    return resp.data.files;
 }
 
 export async function uploadFile(
