@@ -106,12 +106,10 @@ export function useUploadFolder() {
         mutationFn: (body: FilenameRequest) =>
             uploadFolder(session!.userid, body),
         onSuccess: (files: File[]) => {
-            for (let file of files) {
-                update({
-                    type: "add",
-                    file: file,
-                });
-            }
+            update({
+                type: "add",
+                file: files[0],
+            });
 
             notify({
                 level: NotifyLevel.INFO,

@@ -10,7 +10,7 @@ type BreadcrumbProps = {
 export default function Breadcrumb({ parentid }: BreadcrumbProps) {
     const { session } = useSessionContext();
 
-    const { data, refetch } = useQuery({
+    const { data, refetch, isFetching } = useQuery({
         queryKey: ["breadcrumb"],
         queryFn: () => breadcrumb(session!.userid, parentid),
         enabled: false,
@@ -23,31 +23,22 @@ export default function Breadcrumb({ parentid }: BreadcrumbProps) {
         refetch();
     }, [parentid]);
 
-    if (parentid === "")
-        return (
-            <Link
-                to={"/drive"}
-                className="hover:text-purple-500 font-semibold text-slate-400  text-lg"
-            >
-                /
-            </Link>
-        );
-
     return (
         <div className="font-semibold text-slate-400 flex gap-x-1 text-lg ">
             <Link to={"/drive"} className="hover:text-purple-500">
                 /
             </Link>
-            {data?.map((b, i) => (
-                <Link
-                    key={b.id}
-                    to={`/drive/${b.id}`}
-                    className="space-x-1 hover:text-purple-500"
-                >
-                    <span>{b.filename}</span>
-                    <span>{i < breadcrumb.length - 1 ? "/" : ""}</span>
-                </Link>
-            ))}
+            {(parentid !== "" && !isFetching) &&
+                data?.map((b, i) => (
+                    <Link
+                        key={b.id}
+                        to={`/drive/${b.id}`}
+                        className="space-x-1 hover:text-purple-500"
+                    >
+                        <span>{b.filename}</span>
+                        <span>{i < breadcrumb.length - 1 ? "/" : ""}</span>
+                    </Link>
+                ))}
         </div>
     );
 }

@@ -6,8 +6,8 @@ export default class MockAuthenticationClient
     implements AuthenticationClientInterface
 {
     public async logIn(
-        email: string,
-        password: string
+        // email: string,
+        // password: string
     ): Promise<AuthResult | null> {
         await sleep(2);
         return new Promise((resolve) => {

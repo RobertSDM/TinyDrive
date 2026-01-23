@@ -1,5 +1,5 @@
 import { axiosClient } from "@/lib/axios.ts";
-import { Account, HTTPMethods, SingleResponse } from "@/types.ts";
+import { Account, HTTPMethods } from "@/types.ts";
 
 export async function registerHook(body: Object) {
     const resp = await axiosClient({
@@ -21,9 +21,7 @@ export async function loginHook(body: Object) {
     return resp.data;
 }
 
-export async function accountById(
-    userid: string
-): Promise<SingleResponse<Account>> {
+export async function accountById(userid: string): Promise<Account> {
     const resp = await axiosClient({
         url: `account/${userid}`,
         method: HTTPMethods.GET,
