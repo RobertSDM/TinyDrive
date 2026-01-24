@@ -66,7 +66,7 @@ export default function Preview({ file, isOpen, close }: PreviewProps) {
             </header>
 
             {file.content_type.startsWith("image") ? (
-                <ImagePreview fileid={file.id!} userid={session!.userid} />
+                <ImagePreview fileid={file.id!} userid={session.id} />
             ) : (
                 <p className="font-semibold text-slate-400">Soon</p>
             )}

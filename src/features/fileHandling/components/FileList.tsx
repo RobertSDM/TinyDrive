@@ -79,7 +79,7 @@ const FileList = ({ parentid }: ItemsViewProps) => {
         queryKey: ["fileList"],
         queryFn: () =>
             filesInFolder(
-                session!.userid,
+                session.id,
                 parentid,
                 currentPage.current,
                 filterOrder[filter].value

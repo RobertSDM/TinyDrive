@@ -1,96 +1,82 @@
-// import { useEffect, useState } from "react";
-// import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
-// import { useSessionContext, useNotifyContext } from "@/context/useContext.tsx";
-// import AuthForm from "./components/AuthForm.tsx";
-// import { NotifyLevel } from "@/types.ts";
+import { useNotifyContext } from "@/context/useContext.tsx";
+import AuthForm from "./components/AuthForm.tsx";
+import { NotifyLevel } from "@/types.ts";
+import { useLogin } from "./hooks/authenticationHooks.tsx";
 
-// const Login = () => {
-//     const { session } = useSessionContext();
-//     const [email, setEmail] = useState<string>("");
-//     const [password, setPassword] = useState<string>("");
-//     const notify = useNotifyContext();
-//     const navigate = useNavigate();
+const Login = () => {
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
 
-//     useEffect(() => {
-//         document.title = "Login | Tiny Drive";
-//     }, []);
+    const notify = useNotifyContext();
 
-//     return (
-//         <div className="h-screen w-72 md:w-96 mx-auto items-center justify-center flex space-y-32 flex-col">
-//             <section className="flex gap-x-1">
-//                 <p className="text-4xl font-bold text-purple-600">Tiny</p>
-//                 <p className="text-4xl font-bold">Login</p>
-//             </section>
-//             <AuthForm
-//                 style="w-full space-y-5 flex justify-center flex-col items-center"
-//                 onsubmit={async (event) => {
-//                     event.preventDefault();
+    const loginMut = useLogin();
 
-//                     if (email === "") {
-//                         notify.notify({
-//                             level: NotifyLevel.ERROR,
-//                             message: "Cannot send blank inputs",
-//                             type: "popup",
-//                         });
-//                         return;
-//                     }
+    useEffect(() => {
+        document.title = "Tiny Drive | Login";
+    }, []);
 
-//                     if (
-//                         !RegExp(
-//                             "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$"
-//                         ).test(email)
-//                     ) {
-//                         notify.notify({
-//                             level: NotifyLevel.ERROR,
-//                             message: "The email is not a valid email",
-//                             type: "popup",
-//                         });
-//                         return;
-//                     }
+    return (
+        <div className="h-screen w-72 md:w-96 mx-auto items-center justify-center flex space-y-32 flex-col">
+            <section className="flex gap-x-1">
+                <p className="text-4xl font-bold text-purple-600">Tiny</p>
+                <p className="text-4xl font-bold">Login</p>
+            </section>
+            <AuthForm
+                style="w-full space-y-5 flex justify-center flex-col items-center"
+                onsubmit={(e) => {
+                    e.preventDefault();
 
-//                     notify.notify({
-//                         level: NotifyLevel.ERROR,
-//                         message: "Email or password are wrong",
-//                         type: "popup",
-//                     });
-//                     return;
-//                     navigate("/drive");
-//                 }}
-//             >
-//                 <AuthForm.Input
-//                     value={email}
-//                     setValue={(email: string) => {
-//                         setEmail(email.trimEnd().toLowerCase());
-//                     }}
-//                     title="Email"
-//                     maxLength={100}
-//                     minLength={4}
-//                 />
-//                 <AuthForm.PasswordInput
-//                     value={password}
-//                     setValue={setPassword}
-//                     title="Senha"
-//                     minLength={8}
-//                 />
-//                 <section className="space-y-10 w-full">
-//                     <AuthForm.Button
-//                         disabled={isLoading && !!account}
-//                         text={isLoading && !!account ? "Loading" : "Login"}
-//                     />
-//                 </section>
-//                 <div className="flex items-center flex-col">
-//                     <p>Not signed?</p>
-//                     <Link
-//                         to={"/register"}
-//                         className="text-blue-400 font-semibold"
-//                     >
-//                         Sign up
-//                     </Link>
-//                 </div>
-//             </AuthForm>
-//         </div>
-//     );
-// };
+                    if (email === "") {
+                        notify.notify({
+                            level: NotifyLevel.ERROR,
+                            message: "Email não pode estar em branco",
+                            type: "popup",
+                        });
+                        return;
+                    }
 
-// export default Login;
+                    loginMut.mutate({
+                        email,
+                        password,
+                    });
+                }}
+            >
+                <AuthForm.Input
+                    value={email}
+                    setValue={(email: string) => {
+                        setEmail(email.trimEnd().toLowerCase());
+                    }}
+                    title="Email"
+                    maxLength={100}
+                    minLength={4}
+                />
+                <AuthForm.PasswordInput
+                    value={password}
+                    setValue={setPassword}
+                    title="Senha"
+                    minLength={8}
+                />
+                <section className="space-y-10 w-full">
+                    <AuthForm.Button
+                        disabled={loginMut.isPending}
+                        text={"Login"}
+                    />
+                </section>
+                <div className="flex items-center flex-col">
+                    <p>Not signed?</p>
+                    <Link
+                        to={"/register"}
+                        className="text-purple-500 font-medium"
+                    >
+                        Sign up
+                    </Link>
+                </div>
+            </AuthForm>
+        </div>
+    );
+};
+
+export default Login;

@@ -12,7 +12,7 @@ export default function Breadcrumb({ parentid }: BreadcrumbProps) {
 
     const { data, refetch, isFetching } = useQuery({
         queryKey: ["breadcrumb"],
-        queryFn: () => breadcrumb(session!.userid, parentid),
+        queryFn: () => breadcrumb(session.id, parentid),
         enabled: false,
         refetchOnWindowFocus: false,
     });
@@ -28,7 +28,8 @@ export default function Breadcrumb({ parentid }: BreadcrumbProps) {
             <Link to={"/drive"} className="hover:text-purple-500">
                 /
             </Link>
-            {(parentid !== "" && !isFetching) &&
+            {parentid !== "" &&
+                !isFetching &&
                 data?.map((b, i) => (
                     <Link
                         key={b.id}

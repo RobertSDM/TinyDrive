@@ -36,12 +36,16 @@ AuthForm.PasswordInput = ({
 
     return (
         <div className="w-full flex flex-col">
-            <label htmlFor={`form-inp_${title.toLowerCase()}`}>{title}</label>
-            <div className="flex items-center px-2 border border-slate-500 gap-x-2 py-1">
+            <label
+                htmlFor={`form-inp_${title.toLowerCase()}`}
+                className="text-slate-800 font-semibold"
+            >
+                {title}
+            </label>
+            <div className="flex items-center p-2 bg-slate-100 gap-x-2 rounded-sm">
                 <input
                     id={`form-inp_${title.toLowerCase()}`}
                     className="outline-none bg-transparent w-full"
-                    placeholder={title}
                     value={value}
                     onChange={(event) => {
                         setValue(event.target.value);
@@ -83,12 +87,16 @@ AuthForm.Input = ({
 }: InputProps) => {
     return (
         <div className="w-full">
-            <label htmlFor={`form-inp_${title.toLowerCase}`}>{title}</label>
-            <div className="flex items-center gap-x-2 border  border-slate-500 px-2 py-1 w-full">
+            <label
+                htmlFor={`form-inp_${title.toLowerCase}`}
+                className="text-slate-800 font-semibold"
+            >
+                {title}
+            </label>
+            <div className="flex items-center gap-x-2 bg-slate-100 p-2 w-full rounded-sm">
                 <input
                     id={`form-inp_${title.toLowerCase}`}
                     className="outline-none flex-grow bg-transparent "
-                    placeholder={title}
                     value={value}
                     onChange={(event) => {
                         setValue(event.target.value);
@@ -112,9 +120,9 @@ AuthForm.Button = ({ disabled, text }: ButtonProps) => {
         <button
             disabled={disabled}
             type="submit"
-            className="px-4 py-2 w-full bg-purple-500 text-white font-semibold hover:bg-white hover:border hover:border-purple-500 hover:text-purple-500
+            className="px-4 py-2 w-full bg-purple-500 text-white font-semibold hover:bg-purple-700
 
-                disabled:bg-slate-500 disabled:text-slate-300 disabled:hover:bg-slate-500 disabled:hover:border-slate-500 disabled:hover:text-slate-300"
+            disabled:bg-slate-500 disabled:text-white"
         >
             {text}
         </button>

@@ -65,3 +65,14 @@ export type BreadcrumbResponse = {
 export type UrlResponse = {
     url: string;
 };
+
+export type LoginBody = {
+    email: string;
+    password: string;
+};
+
+export type LoginResponse = {
+    access_token: string;
+    refresh_token: string;
+    user: Account;
+};

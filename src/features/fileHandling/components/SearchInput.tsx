@@ -37,7 +37,7 @@ const SearchInput = () => {
         queryKey: ["search", queryString],
         queryFn: () =>
             search(
-                session!.userid,
+                session.id,
                 query.current,
                 typeFilter[typeFilterIndex] === "all"
                     ? null

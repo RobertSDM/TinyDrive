@@ -9,10 +9,10 @@ import Header from "./components/Header.tsx";
 type DriveProps = {};
 export default function Drive({}: DriveProps) {
     let { parentid: paramsParentFolderId } = useParams();
-    const { isLoading, isAuthenticated } = useSessionContext();
     const parentid = !!paramsParentFolderId ? paramsParentFolderId! : "";
+    const { isLoading } = useSessionContext();
 
-    if (!isAuthenticated || isLoading) return <LogoLoader />;
+    if (isLoading) return <LogoLoader />;
 
     return (
         <section className="mx-auto w-full max-w-7xl overflow-hidden px-10">
