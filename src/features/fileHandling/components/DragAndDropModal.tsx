@@ -8,7 +8,7 @@ type DragAndDrop = {
     parentid: string;
 };
 export default function DragAndDrop({ close, isOpen, parentid }: DragAndDrop) {
-    const { notify } = useNotifyContext();
+    const notify = useNotifyContext();
 
     const uploadFileMut = useUploadFile(parentid);
 

@@ -29,8 +29,17 @@ const Login = () => {
                 onsubmit={(e) => {
                     e.preventDefault();
 
+                    if (!!localStorage.getItem("access_")) {
+                        notify({
+                            level: NotifyLevel.ERROR,
+                            message: "Você já está logado",
+                            type: "popup",
+                        });
+                        return;
+                    }
+
                     if (email === "") {
-                        notify.notify({
+                        notify({
                             level: NotifyLevel.ERROR,
                             message: "Email não pode estar em branco",
                             type: "popup",

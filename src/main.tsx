@@ -9,6 +9,7 @@ import { ModalProvider } from "./features/modal/context/modalContext.tsx";
 import SessionProvider from "./features/authentication/context/SessionContext.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import AuthRenderingManager from "./components/AuthRenderingManager.tsx";
+import RegisterPage from "./pages/RegisterPage.tsx";
 
 const router = createBrowserRouter([
     {
@@ -20,11 +21,10 @@ const router = createBrowserRouter([
             },
         ],
     },
-
-    //         {
-    //             path: "/register",
-    //             element: <Register />,
-    //         },
+    {
+        path: "/register",
+        element: <RegisterPage />,
+    },
     {
         path: "/login",
         element: <LoginPage />,

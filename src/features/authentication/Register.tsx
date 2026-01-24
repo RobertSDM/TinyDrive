@@ -1,104 +1,98 @@
-// import { useEffect, useState } from "react";
-// import { Link } from "react-router-dom";
-// import AuthForm from "./components/AuthForm.tsx";
-// import { useNotifyContext } from "@/context/useContext.tsx";
-// import { NotifyLevel } from "@/types.ts";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import AuthForm from "./components/AuthForm.tsx";
+import { useNotifyContext } from "@/context/useContext.tsx";
+import { NotifyLevel } from "@/types.ts";
+import { useRegister } from "./hooks/authenticationHooks.tsx";
 
-// const Register = () => {
-//     const notify = useNotifyContext();
-//     const [username, setUsername] = useState<string>("");
-//     const [email, setEmail] = useState<string>("");
-//     const [password, setPassword] = useState<string>("");
-//     const [confirmPass, setConfirmPass] = useState<string>("");
+const Register = () => {
+    const notify = useNotifyContext();
 
-//     useEffect(() => {
-//         document.title = "Register | Tiny Drive";
-//     }, []);
+    const registerMut = useRegister();
 
-//     return (
-//         <div className="h-screen w-72 md:w-96 mx-auto items-center justify-center flex space-y-32 flex-col">
-//             <section className="flex gap-x-1">
-//                 <p className="text-4xl font-bold text-purple-600">Tiny</p>
-//                 <p className="text-4xl font-bold">Register</p>
-//             </section>
-//             <AuthForm
-//                 style="w-full space-y-5 flex justify-center flex-col items-center"
-//                 onsubmit={(event) => {
-//                     event.preventDefault();
-//                     if (email === "" || username === "") {
-//                         notify.popup({
-//                             level: NotifyLevel.ERROR,
-//                             message: "Cannot send blank inputs",
-//                         });
-//                         return;
-//                     }
+    const [username, setUsername] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [confirmPass, setConfirmPass] = useState<string>("");
 
-//                     if (
-//                         !RegExp(
-//                             "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$"
-//                         ).test(email)
-//                     ) {
-//                         notify.popup({
-//                             level: NotifyLevel.ERROR,
-//                             message: "The email is not a valid email",
-//                         });
-//                         return;
-//                     }
+    useEffect(() => {
+        document.title = "Tiny Drive | Register";
+    }, []);
 
-//                     register({
-//                         email,
-//                         password,
-//                         username,
-//                     });
-//                 }}
-//             >
-//                 <AuthForm.Input
-//                     value={username}
-//                     setValue={setUsername}
-//                     title="Nome Usuário"
-//                     minLength={4}
-//                 />
-//                 <AuthForm.Input
-//                     value={email}
-//                     setValue={setEmail}
-//                     email={true}
-//                     title="Email"
-//                     maxLength={100}
-//                     minLength={4}
-//                 />
-//                 <AuthForm.PasswordInput
-//                     value={password}
-//                     setValue={setPassword}
-//                     title="Senha"
-//                     minLength={8}
-//                 />
-//                 <AuthForm.PasswordInput
-//                     value={confirmPass}
-//                     setValue={setConfirmPass}
-//                     title="Confirmar Senha"
-//                     minLength={8}
-//                 />
+    return (
+        <div className="h-screen w-72 md:w-96 mx-auto items-center justify-center flex space-y-32 flex-col">
+            <section className="flex gap-x-1">
+                <p className="text-4xl font-bold text-purple-600">Tiny</p>
+                <p className="text-4xl font-bold">Register</p>
+            </section>
+            <AuthForm
+                style="w-full space-y-5 flex justify-center flex-col items-center"
+                onsubmit={(event) => {
+                    event.preventDefault();
+                    if (email === "" || username === "") {
+                        notify({
+                            level: NotifyLevel.ERROR,
+                            message:
+                                "Todos os campos precisam estar preenchidos",
+                            type: "popup",
+                        });
+                        return;
+                    }
 
-//                 <section className="space-y-10 w-full text-center">
-//                     <AuthForm.Button
-//                         disabled={isRequesting}
-//                         text={isRequesting ? "Loading" : "Register"}
-//                     />
-//                 </section>
-//                 <div className="flex items-center flex-col">
-//                     <div className="text-center">
-//                         <p>Already Signed?</p>
-//                         <Link
-//                             to={"/login"}
-//                             className="text-blue-400 font-semibold"
-//                         >
-//                             Login
-//                         </Link>
-//                     </div>
-//                 </div>
-//             </AuthForm>
-//         </div>
-//     );
-// };
+                    registerMut.mutate({
+                        email,
+                        password,
+                        username,
+                    });
+                }}
+            >
+                <AuthForm.Input
+                    value={username}
+                    setValue={setUsername}
+                    title="Nome Usuário"
+                    minLength={4}
+                />
+                <AuthForm.Input
+                    value={email}
+                    setValue={setEmail}
+                    email={true}
+                    title="Email"
+                    maxLength={100}
+                    minLength={4}
+                />
+                <AuthForm.PasswordInput
+                    value={password}
+                    setValue={setPassword}
+                    title="Senha"
+                    minLength={8}
+                />
+                <AuthForm.PasswordInput
+                    value={confirmPass}
+                    setValue={setConfirmPass}
+                    title="Confirmar Senha"
+                    minLength={8}
+                />
 
-// export default Register;
+                <section className="space-y-10 w-full text-center">
+                    <AuthForm.Button
+                        disabled={registerMut.isPending}
+                        text={"Register"}
+                    />
+                </section>
+                <div className="flex items-center flex-col">
+                    <div className="text-center">
+                        <p>Already Signed?</p>
+                        <Link
+                            to={"/login"}
+                            className="text-purple-500 font-medium"
+                        >
+                            Sign up
+                        </Link>
+                    </div>
+                </div>
+            </AuthForm>
+        </div>
+    );
+};
+
+export default Register;

@@ -1,5 +1,5 @@
 import { axiosClient } from "@/lib/axios.ts";
-import { Account, HTTPMethods, LoginBody, LoginResponse } from "@/types.ts";
+import { Account, HTTPMethods, LoginBody, LoginResponse, RegisterBody } from "@/types.ts";
 
 export async function login(body: LoginBody) {
     const resp = await axiosClient<LoginResponse>({
@@ -12,8 +12,8 @@ export async function login(body: LoginBody) {
     return resp.data;
 }
 
-export async function register(body: Object) {
-    const resp = await axiosClient({
+export async function register(body: RegisterBody) {
+    const resp = await axiosClient<Account>({
         url: "/auth/register",
         data: body,
         method: HTTPMethods.POST,

@@ -18,7 +18,7 @@ export default function TextModal({
     nullable?: boolean;
 }) {
     const [text, setText] = useState<string>(initialText);
-    const { notify } = useNotifyContext();
+    const notify = useNotifyContext();
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {

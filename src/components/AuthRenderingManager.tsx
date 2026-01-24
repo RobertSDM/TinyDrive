@@ -19,7 +19,7 @@ export default () => {
             navigate("/login");
             return;
         }
-    }, [isLoading]);
+    }, [isLoading, session]);
 
     return <Outlet />;
 };

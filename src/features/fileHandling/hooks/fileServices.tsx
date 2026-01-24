@@ -15,7 +15,7 @@ import { File, FilenameRequest, NotifyLevel } from "@/types.ts";
 
 function useRequiredContext() {
     const { session } = useSessionContext();
-    const { notify } = useNotifyContext();
+    const notify = useNotifyContext();
     const { update } = useDriveItemsContext();
 
     return { session, notify, update };
