@@ -14,8 +14,8 @@ import ActionBar from "./ActionBar.tsx";
 import DragAndDrop from "./DragAndDropModal.tsx";
 
 const filterOrder = [
-    { title: "Name", value: "name" },
-    { title: "Update date", value: "updated.at" },
+    { title: "Nome", value: "name" },
+    { title: "Data atualização", value: "updated.at" },
 ];
 
 type ItemsViewProps = {
@@ -29,7 +29,9 @@ const FileList = ({ parentid }: ItemsViewProps) => {
     const [filter, setFilter] = useState(0);
 
     const [isDragAndDropOpen, setIsDragAndDropOpen] = useState(false);
+    const [selectedRange, setSelectedRange] = useState<number[]>([]);
 
+    const { session } = useSessionContext();
     const { openModal } = useModalContext();
     const { files: filesDrive, update } = useDriveItemsContext();
 
@@ -53,10 +55,6 @@ const FileList = ({ parentid }: ItemsViewProps) => {
         return filesCopy;
     }, [filesDrive]);
 
-    const { session } = useSessionContext();
-
-    const [selectedRange, setSelectedRange] = useState<number[]>([]);
-
     function selectionRange(start: number, end: number = -1) {
         if (end >= filesDrive.length)
             throw new Error("End index cannot be greater than the items list");
@@ -76,15 +74,16 @@ const FileList = ({ parentid }: ItemsViewProps) => {
         isError,
         refetch,
     } = useQuery({
-        queryKey: ["fileList"],
+        queryKey: ["fileList", parentid],
         queryFn: () =>
             filesInFolder(
-                session.id,
+                session!.id,
                 parentid,
                 currentPage.current,
                 filterOrder[filter].value
             ),
         retry: false,
+        enabled: !!session,
         refetchOnWindowFocus: false,
     });
 
@@ -96,18 +95,18 @@ const FileList = ({ parentid }: ItemsViewProps) => {
 
     useEffect(() => {
         setSelectedRange([]);
-        refetch();
         currentPage.current = 0;
     }, [parentid]);
 
     useEffect(() => {
+        if (isFetching) return;
+
         const loaderObserver = new IntersectionObserver(
             (entries) => {
                 const entry = entries[0];
 
                 if (
                     !entry.isIntersecting ||
-                    isFetching ||
                     files!.length % 12 !== 0 ||
                     files!.length === 0
                 )
@@ -143,7 +142,7 @@ const FileList = ({ parentid }: ItemsViewProps) => {
             />
             <ActionBar selectionRange={selectedRange} files={filesOrdered} />
             <div>
-                <span className="mr-2">Filter by</span>
+                <span className="mr-2">Filtro</span>
                 <button
                     className="w-40 border text-center select-none h-8"
                     onClick={() => {
@@ -190,7 +189,7 @@ const FileList = ({ parentid }: ItemsViewProps) => {
             {filesDrive.length === 0 && (
                 <div>
                     <span className="mx-auto flex justify-center text-black/30 font-semibold">
-                        Nothing was found. Upload something!
+                        Nada foi encontrado. Salve algo!
                     </span>
                 </div>
             )}
@@ -267,7 +266,7 @@ function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
                     isSelected && "text-white"
                 }`}
             >
-                {`Updated at: ${new Date(file.updated_at)
+                {`Ultima atualização: ${new Date(file.updated_at)
                     .toLocaleDateString("pt-BR")
                     .split("/")
                     .map((d) => d.padStart(2, "0"))

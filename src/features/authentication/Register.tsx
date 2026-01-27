@@ -76,17 +76,17 @@ const Register = () => {
                 <section className="space-y-10 w-full text-center">
                     <AuthForm.Button
                         disabled={registerMut.isPending}
-                        text={"Register"}
+                        text={"Registrar"}
                     />
                 </section>
                 <div className="flex items-center flex-col">
                     <div className="text-center">
-                        <p>Already Signed?</p>
+                        <p>Já está registrado?</p>
                         <Link
                             to={"/login"}
                             className="text-purple-500 font-medium"
                         >
-                            Sign up
+                            Entrar
                         </Link>
                     </div>
                 </div>

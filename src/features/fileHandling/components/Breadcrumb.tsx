@@ -12,7 +12,7 @@ export default function Breadcrumb({ parentid }: BreadcrumbProps) {
 
     const { data, refetch, isFetching } = useQuery({
         queryKey: ["breadcrumb"],
-        queryFn: () => breadcrumb(session.id, parentid),
+        queryFn: () => breadcrumb(session!.id, parentid),
         enabled: false,
         refetchOnWindowFocus: false,
     });

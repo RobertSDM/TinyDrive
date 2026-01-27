@@ -1,18 +1,18 @@
 import { useParams } from "react-router-dom";
 import Breadcrumb from "./components/Breadcrumb.tsx";
 import ButtonUpload from "./components/ButtonUpload.tsx";
-import { useSessionContext } from "@/context/useContext.tsx";
-import LogoLoader from "@/components/LogoLoader.tsx";
 import FileList from "./components/FileList.tsx";
 import Header from "./components/Header.tsx";
+import { useEffect } from "react";
 
 type DriveProps = {};
 export default function Drive({}: DriveProps) {
     let { parentid: paramsParentFolderId } = useParams();
     const parentid = !!paramsParentFolderId ? paramsParentFolderId! : "";
-    const { isLoading } = useSessionContext();
 
-    if (isLoading) return <LogoLoader />;
+    useEffect(() => {
+        document.title = "TinyDrive";
+    }, []);
 
     return (
         <section className="mx-auto w-full max-w-7xl overflow-hidden px-10">

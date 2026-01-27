@@ -12,6 +12,8 @@ export default () => {
         logoutMut.mutate();
     }
 
+    if (!session) return null
+
     return (
         <header className="flex items-center mx-auto justify-between h-20 min-w-80">
             <Link to={"/drive"} className="cursor-pointer">
@@ -30,7 +32,7 @@ export default () => {
                         className="p-1 w-full rounded-sm text-red-500 font-semibold bg-red-200 hover:bg-red-500 hover:text-white text-sm"
                         onClick={logout}
                     >
-                        Logout
+                        Sair
                     </button>
                 </div>
             </div>

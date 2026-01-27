@@ -71,16 +71,16 @@ const Login = () => {
                 <section className="space-y-10 w-full">
                     <AuthForm.Button
                         disabled={loginMut.isPending}
-                        text={"Login"}
+                        text={"Entrar"}
                     />
                 </section>
                 <div className="flex items-center flex-col">
-                    <p>Not signed?</p>
+                    <p>Não está registrado?</p>
                     <Link
                         to={"/register"}
                         className="text-purple-500 font-medium"
                     >
-                        Sign up
+                        Registrar
                     </Link>
                 </div>
             </AuthForm>

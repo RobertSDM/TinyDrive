@@ -10,8 +10,10 @@ import SessionProvider from "./features/authentication/context/SessionContext.ts
 import LoginPage from "./pages/LoginPage.tsx";
 import AuthRenderingManager from "./components/AuthRenderingManager.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
+import HomePage from "./pages/HomePage.tsx";
 
 const router = createBrowserRouter([
+    { index: true, element: <HomePage /> },
     {
         element: <AuthRenderingManager />,
         children: [

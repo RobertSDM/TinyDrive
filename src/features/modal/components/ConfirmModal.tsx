@@ -48,13 +48,13 @@ const ConfirmModal = ({
                         onClick={confirm}
                         className="text-sm text-purple-500 rounded-md px-4 py-2 font-semibold bg-purple-200"
                     >
-                        Confirm
+                        Confirmar
                     </button>
                     <button
                         onClick={close}
                         className="text-sm rounded-md px-4 py-2 font-semibold bg-slate-200 text-slate-500"
                     >
-                        Cancel
+                        Cancelar
                     </button>
                 </div>
             </div>

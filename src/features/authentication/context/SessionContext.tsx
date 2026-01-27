@@ -5,18 +5,25 @@ import { axiosClient } from "@/lib/axios.ts";
 
 type AuthContext = {
     isLoading: boolean;
-    session: Account;
+    session: Account | undefined;
     isError: boolean;
+    refetch: () => void;
 };
 export const SessionContext = createContext<AuthContext>({} as AuthContext);
 
 type SessionProviderProps = { children: ReactNode };
 export default function SessionProvider({ children }: SessionProviderProps) {
-    const { data: session, isFetching, isError } = useAccount();
+    const { data: session, isFetching, isError, refetch } = useAccount();
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (isFetching) return;
+        if (!isFetching) return;
+
+        setIsLoading(true);
+    }, [isFetching]);
+
+    useEffect(() => {
+        if (!session) return;
 
         // Inserting the JWT acess token into all axios requests
         const authHeaderInterceptor = axiosClient.interceptors.request.use(
@@ -43,8 +50,9 @@ export default function SessionProvider({ children }: SessionProviderProps) {
         <SessionContext.Provider
             value={{
                 isLoading,
-                session: session!,
+                session,
                 isError,
+                refetch,
             }}
         >
             {children}

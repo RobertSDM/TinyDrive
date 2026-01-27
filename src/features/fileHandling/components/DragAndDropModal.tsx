@@ -43,7 +43,7 @@ export default function DragAndDrop({ close, isOpen, parentid }: DragAndDrop) {
             }}
         >
             <p className="font-semibold text-purple-900">
-                Drop the file to save
+                Solte para salvar o arquivo
             </p>
         </div>
     );

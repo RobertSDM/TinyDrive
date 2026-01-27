@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { preview } from "../requests/fileRequests.ts";
 import { useSessionContext } from "@/context/useContext.tsx";
 import { useDownloadFile } from "../hooks/fileServices.tsx";
+import { MdDownload } from "react-icons/md";
+import SimpleButton from "./SimpleButton.tsx";
 
 type PreviewProps = {
     file: File;
@@ -54,19 +56,25 @@ export default function Preview({ file, isOpen, close }: PreviewProps) {
                 >
                     <p>{file.extension}</p>
                 </section>
-                <button
-                    className="bg-black px-4 ml-4 py-1"
-                    onClick={(e) => {
+                <SimpleButton
+                    classname="bg-black ml-2 group"
+                    onclick={(
+                        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                    ) => {
                         e.stopPropagation();
                         downloadFileMut.mutate([file.id!]);
                     }}
-                >
-                    Download
-                </button>
+                    icon={
+                        <MdDownload
+                            size={16}
+                            className="text-slate-500 group-hover:text-white"
+                        />
+                    }
+                />
             </header>
 
             {file.content_type.startsWith("image") ? (
-                <ImagePreview fileid={file.id!} userid={session.id} />
+                <ImagePreview fileid={file.id!} userid={session!.id} />
             ) : (
                 <p className="font-semibold text-slate-400">Soon</p>
             )}
@@ -85,7 +93,7 @@ function ImagePreview({ fileid, userid }: ImagePreviewProps) {
     });
 
     if (isFetching)
-        return <p className="font-semibold text-slate-400">Loading...</p>;
+        return <p className="font-semibold text-slate-400">carregando...</p>;
 
     return (
         <section className="flex-1 flex items-center justify-center">

@@ -8,7 +8,7 @@ import useUpdateName, {
 import { FaTrash } from "react-icons/fa";
 import { MdDownload } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
-import React from "react";
+import SimpleButton from "./SimpleButton.tsx";
 
 type ActionBarProps = {
     selectionRange: number[];
@@ -25,37 +25,6 @@ export default function ActionBar({
     const updateFileMut = useUpdateName(
         filesOrdered[selectionRange[0]]?.id ?? ""
     );
-
-    // useEffect(() => {
-    //     function action(e: KeyboardEvent) {
-    //         if (!selectedItem) return;
-
-    //         if (e.key === "Delete") {
-    //             e.stopPropagation();
-    //             e.preventDefault();
-
-    //             const confirmDelete = confirm(
-    //                 "Are you sure? All the data from the folder will be lost"
-    //             );
-    //             if (!confirmDelete) return;
-
-    //             let ids;
-    //             if (selectedRange.length > 0) {
-    //                 ids = [...selectedRange.map((item) => item.id)];
-    //             } else {
-    //                 ids = [selectedItem.id];
-    //             }
-
-    //             delete_({
-    //                 itemids: ids,
-    //             });
-    //             //.then(() => {
-    //             //     deselectItem();
-    //             //     cleanSelectionRange();
-    //             // });
-    //         }
-    //     }
-    // }, [selectedItem, selectedRange]);
 
     if (selectionRange.length === 0) return <div className={"h-10 p-1"}></div>;
 
@@ -79,7 +48,7 @@ export default function ActionBar({
                                     .map((item) => item.id!),
                             ]);
                         },
-                        title: "Are you sure? All the data from the folder will be lost",
+                        title: "Tem certeza? Todos os arquivos serão excluidos?",
                     })
                 }
                 icon={
@@ -95,7 +64,7 @@ export default function ActionBar({
                 onclick={() =>
                     openModal("text", {
                         fn: (name) => updateFileMut.mutate({ filename: name }),
-                        title: "Type the name",
+                        title: "Digite o nome",
                     })
                 }
                 icon={
@@ -141,18 +110,4 @@ export default function ActionBar({
     );
 }
 
-type SimpleButtonProps = {
-    onclick: () => void;
-    icon: React.ReactNode;
-    classname?: string;
-};
-function SimpleButton({ onclick, icon, classname }: SimpleButtonProps) {
-    return (
-        <button
-            className={`hover:text-white p-2 rounded-sm ${classname}`}
-            onClick={onclick}
-        >
-            {icon}
-        </button>
-    );
-}
+

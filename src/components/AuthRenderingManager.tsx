@@ -1,25 +1,31 @@
 import { useSessionContext } from "@/context/useContext.tsx";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import LogoLoader from "./LogoLoader.tsx";
 
 export default () => {
     const navigate = useNavigate();
 
-    const { session, isError, isLoading } = useSessionContext();
+    const { isError, isLoading } = useSessionContext();
 
     useEffect(() => {
+        if (isLoading) return;
+
+        if (isError) {
+            localStorage.removeItem("access_");
+            localStorage.removeItem("refresh_");
+
+            navigate("/login");
+            return;
+        }
+
         if (!localStorage.getItem("access_")) {
             navigate("/login");
             return;
         }
+    }, [isLoading, isError]);
 
-        if (isLoading) return;
-
-        if (!session || isError) {
-            navigate("/login");
-            return;
-        }
-    }, [isLoading, session]);
+    if (isLoading) return <LogoLoader />;
 
     return <Outlet />;
 };

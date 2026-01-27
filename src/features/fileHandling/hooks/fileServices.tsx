@@ -25,7 +25,7 @@ export function useDeleteFile() {
     const { session, notify, update } = useRequiredContext();
 
     return useMutation({
-        mutationFn: (fileids: string[]) => deleteFile(session.id, fileids),
+        mutationFn: (fileids: string[]) => deleteFile(session!.id, fileids),
         onSuccess: (files) => {
             for (let file of files) {
                 update({
@@ -51,7 +51,7 @@ export default function useUpdateName(fileid: string) {
 
     return useMutation({
         mutationFn: (body: FilenameRequest) =>
-            updateName(fileid, session.id, body),
+            updateName(fileid, session!.id, body),
         onSuccess: (files: File[]) => {
             for (let file of files) {
                 update({
@@ -73,7 +73,7 @@ export function useUploadFile(parentid: string) {
     const { session, notify, update } = useRequiredContext();
 
     return useMutation({
-        mutationFn: (body: FileList) => uploadFile(session.id, parentid, body),
+        mutationFn: (body: FileList) => uploadFile(session!.id, parentid, body),
         onMutate: () => {
             notify({
                 level: NotifyLevel.INFO,
@@ -102,7 +102,7 @@ export function useUploadFolder() {
     const { session, notify, update } = useRequiredContext();
 
     return useMutation({
-        mutationFn: (body: FilenameRequest) => uploadFolder(session.id, body),
+        mutationFn: (body: FilenameRequest) => uploadFolder(session!.id, body),
         onSuccess: (files: File[]) => {
             update({
                 type: "add",
@@ -130,6 +130,6 @@ export function useDownloadFile() {
 
     return useMutation({
         mutationKey: ["downloadFile"],
-        mutationFn: (fileids: string[]) => downloadFile(fileids, session.id),
+        mutationFn: (fileids: string[]) => downloadFile(fileids, session!.id),
     });
 }

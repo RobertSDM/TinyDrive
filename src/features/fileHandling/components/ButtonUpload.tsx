@@ -29,7 +29,7 @@ export default function ButtonUpload({ parentid }: ButtonUploadProps) {
                     "items-center gap-x-2 text-black border hover:bg-purple-500 hover:border-purple-500 w-32 min-w-32 max-w-32 hover:text-white flex cursor-pointer justify-center p-2 rounded-sm"
                 }
             >
-                <p>{"+ New"}</p>
+                <p>{"+ Novo"}</p>
                 {isDropdownOpen ? <MdExpandMore /> : <MdExpandLess />}
             </span>
             <DropDown
@@ -37,7 +37,7 @@ export default function ButtonUpload({ parentid }: ButtonUploadProps) {
                 isOpen={isDropdownOpen}
             >
                 <DropDown.FileOption
-                    text="Upload File"
+                    text="Enviar arquivo"
                     onchange={(filelist: FileList) => {
                         uploadFileMut.mutate(filelist);
                     }}
@@ -45,7 +45,7 @@ export default function ButtonUpload({ parentid }: ButtonUploadProps) {
                     maxFiles={10}
                 />
                 <DropDown.FileOption
-                    text="Upload Folder"
+                    text="Enviar pasta"
                     onchange={(filelist: FileList) => {
                         setIsDropdownOpen(false);
                         uploadFileMut.mutate(filelist);
@@ -61,10 +61,10 @@ export default function ButtonUpload({ parentid }: ButtonUploadProps) {
                                     filename: text,
                                 });
                             },
-                            title: "Type the name",
+                            title: "Digite o nome",
                         });
                     }}
-                    text="New Folder"
+                    text="Nova pasta"
                 />
             </DropDown>
         </div>

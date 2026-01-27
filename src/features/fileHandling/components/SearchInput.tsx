@@ -15,7 +15,11 @@ const SearchInput = () => {
     const query = useRef("");
     let timer = useRef(0);
 
-    const typeFilter = ["all", "FILE", "FOLDER"];
+    const typeFilter = [
+        ["all", "todos"],
+        ["FILE", "arquivo"],
+        ["FOLDER", "pasta"],
+    ];
     const [typeFilterIndex, setTypeOrderIndex] = useState<number>(0);
 
     const searchInput = useRef<HTMLDivElement>(null);
@@ -37,11 +41,11 @@ const SearchInput = () => {
         queryKey: ["search", queryString],
         queryFn: () =>
             search(
-                session.id,
+                session!.id,
                 query.current,
-                typeFilter[typeFilterIndex] === "all"
+                typeFilter[typeFilterIndex][0] === "all"
                     ? null
-                    : typeFilter[typeFilterIndex]
+                    : typeFilter[typeFilterIndex][0]
             ),
         enabled: false,
     });
@@ -102,7 +106,7 @@ const SearchInput = () => {
                 className="w-20 px-2 border rounded-md border-slate-300"
                 onClick={changeType}
             >
-                {typeFilter[typeFilterIndex].toLowerCase()}
+                {typeFilter[typeFilterIndex][1]}
             </button>
             {isSearchResultsOpen && (
                 <div
@@ -110,17 +114,17 @@ const SearchInput = () => {
                 >
                     {isFetching ? (
                         <p className="font-semibold text-slate-400 text-center">
-                            Loading...
+                            carregando...
                         </p>
                     ) : files !== undefined && files.length > 0 ? (
                         <div className="flex-col flex gap-y-2">
-                            {files.map((file) => (
-                                <FileRowView file={file} />
+                            {files.map((file, i) => (
+                                <FileRowView key={i} file={file} />
                             ))}
                         </div>
                     ) : (
                         <p className="font-semibold text-slate-400 text-center">
-                            No items found
+                            Nenhum arquivo encontrado
                         </p>
                     )}
                 </div>
@@ -133,13 +137,15 @@ type FileRowViewProps = { file: File };
 function FileRowView({ file }: FileRowViewProps) {
     if (!file.is_dir)
         return (
-            <div className={`flex items-center gap-x-2`}>
-                <FaFile className={`min-h-4 min-w-4 text-slate-500`} />
-                <span
-                    className={`whitespace-nowrap text-ellipsis overflow-hidden`}
-                >
-                    {`${file.filename}`}
-                </span>
+            <div className="flex items-center">
+                <div className="flex items-center gap-x-1">
+                    <FaFile className={`min-h-4 min-w-4 text-slate-500`} />
+                    <span
+                        className={`whitespace-nowrap text-ellipsis overflow-hidden`}
+                    >
+                        {`${file.filename}`}
+                    </span>
+                </div>
                 <span>
                     {`${file.extension} - ${file.size} ${file.size_prefix}`}
                 </span>
