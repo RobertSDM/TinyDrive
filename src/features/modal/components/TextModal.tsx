@@ -48,7 +48,7 @@ export default function TextModal({
     return (
         <div
             onClick={close}
-            className="flex justify-center items-center bg-black/20 absolute top-0 w-full h-screen z-40"
+            className="flex justify-center items-center bg-black/20 absolute top-0 w-full h-screen z-50"
         >
             <div
                 className={`bg-white p-4 rounded-md space-y-5 w-72 h-44 flex flex-col items-center`}

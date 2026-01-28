@@ -18,25 +18,9 @@ const filterOrder = [
     { title: "Data atualização", value: "updated.at" },
 ];
 
-type ItemsViewProps = {
-    parentid: string;
-};
-const FileList = ({ parentid }: ItemsViewProps) => {
-    const itemsContainer = useRef<HTMLDivElement>(null);
-    const pageLoader = useRef<HTMLDivElement>(null);
-
-    const currentPage = useRef<number>(0);
-    const [filter, setFilter] = useState(0);
-
-    const [isDragAndDropOpen, setIsDragAndDropOpen] = useState(false);
-    const [selectedRange, setSelectedRange] = useState<number[]>([]);
-
-    const { session } = useSessionContext();
-    const { openModal } = useModalContext();
-    const { files: filesDrive, update } = useDriveItemsContext();
-
-    const filesOrdered = useMemo(() => {
-        let filesCopy = [...filesDrive];
+function useBubbleFolders(files: File[]) {
+    return useMemo(() => {
+        let filesCopy = [...files];
         let tmp;
         for (let i = 0; i < filesCopy.length; i++) {
             if (!filesCopy[i].is_dir) continue;
@@ -53,7 +37,41 @@ const FileList = ({ parentid }: ItemsViewProps) => {
         }
 
         return filesCopy;
-    }, [filesDrive]);
+    }, [files]);
+}
+
+type ItemsViewProps = {
+    parentid: string;
+};
+const FileList = ({ parentid }: ItemsViewProps) => {
+    const itemsContainer = useRef<HTMLDivElement>(null);
+    const pageLoader = useRef<HTMLDivElement>(null);
+
+    const currentPage = useRef<number>(0);
+    const [filter, setFilter] = useState(0);
+
+    const [isDragAndDropOpen, setIsDragAndDropOpen] = useState(false);
+    const [selectedRange, setSelectedRange] = useState<number[]>([]);
+
+    const { session, isLoading } = useSessionContext();
+    const { openModal } = useModalContext();
+    const { files: filesDrive, update } = useDriveItemsContext();
+
+    const filesOrdered = useBubbleFolders(filesDrive);
+
+    const { data: files, isFetching } = useQuery({
+        queryKey: ["fileList", parentid],
+        queryFn: () =>
+            filesInFolder(
+                session!.id,
+                parentid,
+                currentPage.current,
+                filterOrder[filter].value
+            ),
+        retry: false,
+        enabled: !isLoading || !!session,
+        refetchOnWindowFocus: false,
+    });
 
     function selectionRange(start: number, end: number = -1) {
         if (end >= filesDrive.length)
@@ -68,38 +86,11 @@ const FileList = ({ parentid }: ItemsViewProps) => {
         else setSelectedRange([start, end]);
     }
 
-    const {
-        data: files,
-        isFetching,
-        isError,
-        refetch,
-    } = useQuery({
-        queryKey: ["fileList", parentid],
-        queryFn: () =>
-            filesInFolder(
-                session!.id,
-                parentid,
-                currentPage.current,
-                filterOrder[filter].value
-            ),
-        retry: false,
-        enabled: !!session,
-        refetchOnWindowFocus: false,
-    });
-
     useEffect(() => {
-        if (isFetching || isError) return;
+        if (!files) return;
 
+        update({ file: {} as File, type: "clear" });
         files!.forEach((f) => update({ file: f, type: "add" }));
-    }, [files]);
-
-    useEffect(() => {
-        setSelectedRange([]);
-        currentPage.current = 0;
-    }, [parentid]);
-
-    useEffect(() => {
-        if (isFetching) return;
 
         const loaderObserver = new IntersectionObserver(
             (entries) => {
@@ -113,7 +104,6 @@ const FileList = ({ parentid }: ItemsViewProps) => {
                     return;
 
                 currentPage.current += 1;
-                refetch();
             },
             {
                 root: itemsContainer.current,
@@ -125,6 +115,11 @@ const FileList = ({ parentid }: ItemsViewProps) => {
 
         return () => loaderObserver.disconnect();
     }, [isFetching]);
+
+    useEffect(() => {
+        setSelectedRange([]);
+        currentPage.current = 0;
+    }, [parentid]);
 
     return (
         <div
@@ -189,7 +184,9 @@ const FileList = ({ parentid }: ItemsViewProps) => {
             {filesDrive.length === 0 && (
                 <div>
                     <span className="mx-auto flex justify-center text-black/30 font-semibold">
-                        Nada foi encontrado. Salve algo!
+                        {isFetching
+                            ? "Carregando..."
+                            : "Nada foi encontrado. Salve algo!"}
                     </span>
                 </div>
             )}
@@ -223,7 +220,7 @@ function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
             }`}
         >
             <div
-                className={`flex items-center w-[clamp(25em,100%,55rem)] overflow-hidden `}
+                className={`flex items-center w-[clamp(25em,100%,55rem)] overflow-hidden`}
             >
                 {file.is_dir ? (
                     <FaFolderClosed
@@ -250,7 +247,7 @@ function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
                         });
                     }}
                     className={`whitespace-nowrap text-ellipsis overflow-hidden 
-                        ${file.is_dir && "cursor-pointer"}`}
+                        ${file.is_dir && "cursor-pointer"} mr-2`}
                 >
                     {`${file.filename}`}
                 </span>

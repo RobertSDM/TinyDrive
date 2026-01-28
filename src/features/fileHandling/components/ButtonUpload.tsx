@@ -11,7 +11,7 @@ export default function ButtonUpload({ parentid }: ButtonUploadProps) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const uploadFileMut = useUploadFile(parentid);
-    const uploadFolderMut = useUploadFolder();
+    const uploadFolderMut = useUploadFolder(parentid);
 
     const { openModal } = useModalContext();
 
@@ -33,7 +33,7 @@ export default function ButtonUpload({ parentid }: ButtonUploadProps) {
                 {isDropdownOpen ? <MdExpandMore /> : <MdExpandLess />}
             </span>
             <DropDown
-                className="max-w-32 border absolute w-full bg-white z-50"
+                className="max-w-32 border absolute w-full bg-white z-40"
                 isOpen={isDropdownOpen}
             >
                 <DropDown.FileOption

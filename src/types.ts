@@ -60,7 +60,7 @@ export type FilenameRequest = {
 export type BreadcrumbResponse = {
     id: string;
     filename: string;
-}[];
+};
 
 export type UrlResponse = {
     url: string;

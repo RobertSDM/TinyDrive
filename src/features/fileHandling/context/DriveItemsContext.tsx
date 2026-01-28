@@ -1,10 +1,12 @@
 import { File } from "@/types.ts";
 import { createContext, useReducer } from "react";
 
+type actionTypes = "add" | "del" | "update" | "clear";
+
 type context = {
     files: File[];
     update: React.Dispatch<{
-        type: "add" | "del" | "update" | "clear";
+        type: actionTypes;
         file: File;
     }>;
 };

@@ -1,14 +1,13 @@
-import { sleep } from "@/utils.ts";
+import { sleep } from "@/utils/utils.ts";
 import { AuthResult } from "../../../types.ts";
 import { AuthenticationClientInterface } from "./SupabaseAuthentication.ts";
 
 export default class MockAuthenticationClient
     implements AuthenticationClientInterface
 {
-    public async logIn(
-        // email: string,
-        // password: string
-    ): Promise<AuthResult | null> {
+    public async logIn(): // email: string,
+    // password: string
+    Promise<AuthResult | null> {
         await sleep(2);
         return new Promise((resolve) => {
             resolve({

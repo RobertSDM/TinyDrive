@@ -2,7 +2,7 @@ import { LoginBody, NotifyLevel, RegisterBody } from "@/types.ts";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { account, logout, login, register } from "../requests/AuthRequests.ts";
 import { useNavigate } from "react-router-dom";
-import { useNotifyContext, useSessionContext } from "@/context/useContext.tsx";
+import { useNotifyContext } from "@/context/useContext.tsx";
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
@@ -27,7 +27,6 @@ export function useRegister() {
 export function useLogin() {
     const navigate = useNavigate();
     const notify = useNotifyContext();
-    const { refetch } = useSessionContext();
 
     return useMutation({
         mutationFn: (body: LoginBody) => login(body),
@@ -35,7 +34,6 @@ export function useLogin() {
             localStorage.setItem("access_", data.access_token);
             localStorage.setItem("refresh_", data.refresh_token);
 
-            refetch();
             navigate("/drive");
         },
         onError: (error: AxiosError) => {
@@ -79,7 +77,8 @@ export function useAccount() {
 
     return useQuery({
         queryKey: ["useAccount"],
-        queryFn: () => account("Bearer " + (token ?? "")),
+        queryFn: () =>
+            account("Bearer " + (localStorage.getItem("access_") ?? "")),
         retry: false,
         enabled: !!token,
         refetchOnWindowFocus: false,

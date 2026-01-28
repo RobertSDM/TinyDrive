@@ -43,6 +43,13 @@ export function useDeleteFile() {
                 type: "popup",
             });
         },
+        onError: () => {
+            notify({
+                level: NotifyLevel.ERROR,
+                message: "Erro ao deletar",
+                type: "popup",
+            });
+        },
     });
 }
 
@@ -62,7 +69,14 @@ export default function useUpdateName(fileid: string) {
 
             notify({
                 level: NotifyLevel.INFO,
-                message: files.length > 1 ? "nomes alterados" : "nome alterado",
+                message: "nome alterado",
+                type: "popup",
+            });
+        },
+        onError: () => {
+            notify({
+                level: NotifyLevel.ERROR,
+                message: "Erro ao atualizar o nome do arquivos",
                 type: "popup",
             });
         },
@@ -95,14 +109,22 @@ export function useUploadFile(parentid: string) {
                 type: "popup",
             });
         },
+        onError: () => {
+            notify({
+                level: NotifyLevel.ERROR,
+                message: "Erro ao enviar um arquivo",
+                type: "popup",
+            });
+        },
     });
 }
 
-export function useUploadFolder() {
+export function useUploadFolder(parentid: string | null) {
     const { session, notify, update } = useRequiredContext();
 
     return useMutation({
-        mutationFn: (body: FilenameRequest) => uploadFolder(session!.id, body),
+        mutationFn: (body: FilenameRequest) =>
+            uploadFolder(session!.id, parentid, body),
         onSuccess: (files: File[]) => {
             update({
                 type: "add",
@@ -126,10 +148,17 @@ export function useUploadFolder() {
 }
 
 export function useDownloadFile() {
-    const { session } = useRequiredContext();
+    const { session, notify } = useRequiredContext();
 
     return useMutation({
         mutationKey: ["downloadFile"],
         mutationFn: (fileids: string[]) => downloadFile(fileids, session!.id),
+        onError: () => {
+            notify({
+                level: NotifyLevel.ERROR,
+                message: "Erro ao fazer o download",
+                type: "popup",
+            });
+        },
     });
 }

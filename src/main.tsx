@@ -8,7 +8,7 @@ import { queryClient } from "./lib/reactQuery.ts";
 import { ModalProvider } from "./features/modal/context/modalContext.tsx";
 import SessionProvider from "./features/authentication/context/SessionContext.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
-import AuthRenderingManager from "./components/AuthRenderingManager.tsx";
+import AuthRenderingManager from "./components/AuthManager.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
 

@@ -44,18 +44,20 @@ export default function Preview({ file, isOpen, close }: PreviewProps) {
                 className=" text-white items-center flex  w-full justify-center"
                 onClick={close}
             >
-                <p
-                    className=" bg-black py-1 pl-4 whitespace-nowrap text-ellipsis overflow-hidden max-w-96"
+                <span
+                    className={`bg-black py-1 px-2 whitespace-nowrap text-ellipsis overflow-hidden max-w-96 ${file.extension !== "" ? "rounded-l-sm" : "rounded-sm"}`}
                     onClick={(e) => e.stopPropagation()}
                 >
                     {file.filename}
-                </p>
-                <section
-                    className="bg-black py-1 pr-4"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <p>{file.extension}</p>
-                </section>
+                </span>
+                {file.extension !== "" && (
+                    <section
+                        className="bg-black py-1 px-2 rounded-r-sm"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <p>{file.extension}</p>
+                    </section>
+                )}
                 <SimpleButton
                     classname="bg-black ml-2 group"
                     onclick={(
@@ -76,7 +78,7 @@ export default function Preview({ file, isOpen, close }: PreviewProps) {
             {file.content_type.startsWith("image") ? (
                 <ImagePreview fileid={file.id!} userid={session!.id} />
             ) : (
-                <p className="font-semibold text-slate-400">Soon</p>
+                <p className="font-semibold text-slate-400">Em breve</p>
             )}
         </div>
     );

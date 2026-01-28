@@ -137,19 +137,17 @@ type FileRowViewProps = { file: File };
 function FileRowView({ file }: FileRowViewProps) {
     if (!file.is_dir)
         return (
-            <div className="flex items-center">
-                <div className="flex items-center gap-x-1">
-                    <FaFile className={`min-h-4 min-w-4 text-slate-500`} />
-                    <span
-                        className={`whitespace-nowrap text-ellipsis overflow-hidden`}
-                    >
-                        {`${file.filename}`}
-                    </span>
-                </div>
-                <span>
-                    {`${file.extension} - ${file.size} ${file.size_prefix}`}
+            <Link
+                to={`/drive/${!!file.parentid ? file.parentid : ""}`}
+                className="flex items-center"
+            >
+                <FaFile className={`min-h-4 min-w-4 text-slate-500`} />
+                <span
+                    className={`whitespace-nowrap text-ellipsis overflow-hidden mx-2`}
+                >
+                    {`${file.filename}`}
                 </span>
-            </div>
+            </Link>
         );
 
     return (

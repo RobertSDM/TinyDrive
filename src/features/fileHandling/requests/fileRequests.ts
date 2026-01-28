@@ -86,8 +86,8 @@ export async function search(
 export async function breadcrumb(
     userid: string,
     fileid: string
-): Promise<BreadcrumbResponse> {
-    const resp = await axiosClient<BreadcrumbResponse>({
+): Promise<BreadcrumbResponse[]> {
+    const resp = await axiosClient<BreadcrumbResponse[]>({
         url: `/files/${fileid}/account/${userid}/breadcrumb`,
         method: HTTPMethods.GET,
     });
@@ -123,10 +123,13 @@ export async function updateName(
 
 export async function uploadFolder(
     userid: string,
+    parentid: string | null,
     body: FilenameRequest
 ): Promise<File[]> {
     const resp = await axiosClient<FileResponse>({
-        url: `/files/account/${userid}/parent/folder`,
+        url: `/files/account/${userid}/parent${
+            !!parentid ? "/" + parentid : ""
+        }/folder`,
         method: HTTPMethods.POST,
         data: body,
     });

@@ -1,3 +1,5 @@
+import { axiosClient } from "../lib/axios.ts";
+
 export const cleanFileFolderName = (name: string) => {
     name = name.replace(/[\/\\\0<>\?"'\*:\']/g, "");
 
