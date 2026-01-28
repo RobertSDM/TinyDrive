@@ -2,25 +2,44 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { breadcrumb } from "../requests/fileRequests.ts";
 import { useSessionContext } from "@/context/useContext.tsx";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useLeastUsed } from "../hooks/leastUsedCache.tsx";
+import { BreadcrumbResponse } from "@/types.ts";
 
 type BreadcrumbProps = {
     parentid: string;
 };
 export default function Breadcrumb({ parentid }: BreadcrumbProps) {
     const { session } = useSessionContext();
+    const { add, get } = useLeastUsed<BreadcrumbResponse[]>(5);
+    const [breadcrumbState, setBreadcrumbState] =
+        useState<BreadcrumbResponse[]>();
 
     const { data, refetch, isFetching } = useQuery({
-        queryKey: ["breadcrumb"],
+        queryKey: ["breadcrumb", parentid],
         queryFn: () => breadcrumb(session!.id, parentid),
         enabled: false,
         refetchOnWindowFocus: false,
     });
 
     useEffect(() => {
+        if (isFetching) return;
+
+        setBreadcrumbState(data!);
+        add(parentid, data!);
+    }, [isFetching]);
+
+    useEffect(() => {
         if (parentid === "") return;
 
-        refetch();
+        const cache = get(parentid);
+
+        if (!cache) {
+            refetch();
+            return;
+        }
+
+        setBreadcrumbState(cache);
     }, [parentid]);
 
     return (
@@ -30,14 +49,14 @@ export default function Breadcrumb({ parentid }: BreadcrumbProps) {
             </Link>
             {parentid !== "" &&
                 !isFetching &&
-                data?.map((b, i) => (
+                breadcrumbState?.map((b, i) => (
                     <Link
                         key={b.id}
                         to={`/drive/${b.id}`}
                         className="space-x-1 hover:text-purple-500"
                     >
                         <span>{b.filename}</span>
-                        <span>{i < breadcrumb.length - 1 ? "/" : ""}</span>
+                        <span>{i < breadcrumbState.length - 1 ? "/" : ""}</span>
                     </Link>
                 ))}
         </div>
