@@ -17,7 +17,7 @@ export function DriveFilesProvider({
 }: {
     children: React.ReactNode;
 }) {
-    const [files, update] = useReducer(filessReducer, [] as File[]);
+    const [files, update] = useReducer(filesReducer, [] as File[]);
 
     return (
         <DriveFilesContext.Provider value={{ files, update }}>
@@ -26,7 +26,7 @@ export function DriveFilesProvider({
     );
 }
 
-function filessReducer(
+function filesReducer(
     state: File[],
     action: { type: string; file: File }
 ): File[] {

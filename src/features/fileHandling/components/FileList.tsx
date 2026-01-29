@@ -1,7 +1,7 @@
 import {
     useDriveItemsContext,
     useModalContext,
-    useSessionContext,
+    useAccountContext,
 } from "@/context/useContext.tsx";
 import { MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 import { File } from "@/types.ts";
@@ -53,7 +53,7 @@ const FileList = ({ parentid }: ItemsViewProps) => {
     const [isDragAndDropOpen, setIsDragAndDropOpen] = useState(false);
     const [selectedRange, setSelectedRange] = useState<number[]>([]);
 
-    const { session, isLoading } = useSessionContext();
+    const { account, isLoading } = useAccountContext();
     const { openModal } = useModalContext();
     const { files: filesDrive, update } = useDriveItemsContext();
 
@@ -63,13 +63,13 @@ const FileList = ({ parentid }: ItemsViewProps) => {
         queryKey: ["fileList", parentid],
         queryFn: () =>
             filesInFolder(
-                session!.id,
+                account!.id,
                 parentid,
                 currentPage.current,
                 filterOrder[filter].value
             ),
         retry: false,
-        enabled: !isLoading || !!session,
+        enabled: !isLoading || !!account,
         refetchOnWindowFocus: false,
     });
 
@@ -247,7 +247,9 @@ function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
                         });
                     }}
                     className={`whitespace-nowrap text-ellipsis overflow-hidden 
-                        ${file.is_dir && "cursor-pointer"} mr-2`}
+                        ${file.is_dir && "cursor-pointer"} ${
+                        file.extension === "" && "mr-2"
+                    }`}
                 >
                     {`${file.filename}`}
                 </span>

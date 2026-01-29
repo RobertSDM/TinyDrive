@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { breadcrumb } from "../requests/fileRequests.ts";
-import { useSessionContext } from "@/context/useContext.tsx";
+import { useAccountContext } from "@/context/useContext.tsx";
 import { useEffect, useState } from "react";
 import { useLeastUsed } from "../hooks/leastUsedCache.tsx";
 import { BreadcrumbResponse } from "@/types.ts";
@@ -10,14 +10,14 @@ type BreadcrumbProps = {
     parentid: string;
 };
 export default function Breadcrumb({ parentid }: BreadcrumbProps) {
-    const { session } = useSessionContext();
+    const { account } = useAccountContext();
     const { add, get } = useLeastUsed<BreadcrumbResponse[]>(5);
     const [breadcrumbState, setBreadcrumbState] =
         useState<BreadcrumbResponse[]>();
 
     const { data, refetch, isFetching } = useQuery({
         queryKey: ["breadcrumb", parentid],
-        queryFn: () => breadcrumb(session!.id, parentid),
+        queryFn: () => breadcrumb(account!.id, parentid),
         enabled: false,
         refetchOnWindowFocus: false,
     });

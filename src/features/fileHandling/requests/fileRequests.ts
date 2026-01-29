@@ -12,7 +12,7 @@ export async function deleteFile(
     userid: string,
     fileids: string[]
 ): Promise<File[]> {
-    const resp = await axiosClient<FileResponse>({
+    const resp = await axiosClient()<FileResponse>({
         url: `/files/account/${userid}`,
         method: HTTPMethods.DELETE,
         data: {
@@ -24,7 +24,7 @@ export async function deleteFile(
 }
 
 export async function downloadFile(fileids: string[], userid: string) {
-    const resp = await axiosClient<Blob>({
+    const resp = await axiosClient()<Blob>({
         url: `/files/account/${userid}/download`,
         method: HTTPMethods.POST,
         responseType: "blob",
@@ -58,7 +58,7 @@ export async function filesInFolder(
     page: number = 0,
     sort: string = "name"
 ): Promise<File[]> {
-    const resp = await axiosClient<FileResponse>({
+    const resp = await axiosClient()<FileResponse>({
         url: `/files/account/${userid}/parent${
             parentid === "" ? "" : `/${parentid}`
         }?p=${page}&sort=${sort}`,
@@ -73,7 +73,7 @@ export async function search(
     query: string,
     type: string | null
 ): Promise<File[]> {
-    const resp = await axiosClient<FileResponse>({
+    const resp = await axiosClient()<FileResponse>({
         url: `/files/account/${userid}/search?q=${query}&${
             type ? `type=${type}` : ""
         }`,
@@ -87,7 +87,7 @@ export async function breadcrumb(
     userid: string,
     fileid: string
 ): Promise<BreadcrumbResponse[]> {
-    const resp = await axiosClient<BreadcrumbResponse[]>({
+    const resp = await axiosClient()<BreadcrumbResponse[]>({
         url: `/files/${fileid}/account/${userid}/breadcrumb`,
         method: HTTPMethods.GET,
     });
@@ -99,7 +99,7 @@ export async function preview(
     itemid: string,
     userid: string
 ): Promise<UrlResponse> {
-    const resp = await axiosClient({
+    const resp = await axiosClient()({
         url: `/files/${itemid}/account/${userid}/preview`,
         method: HTTPMethods.GET,
     });
@@ -112,7 +112,7 @@ export async function updateName(
     userid: string,
     body: FilenameRequest
 ): Promise<File[]> {
-    const resp = await axiosClient<FileResponse>({
+    const resp = await axiosClient()<FileResponse>({
         url: `/files/${itemid}/account/${userid}/name`,
         method: HTTPMethods.PUT,
         data: body,
@@ -126,7 +126,7 @@ export async function uploadFolder(
     parentid: string | null,
     body: FilenameRequest
 ): Promise<File[]> {
-    const resp = await axiosClient<FileResponse>({
+    const resp = await axiosClient()<FileResponse>({
         url: `/files/account/${userid}/parent${
             !!parentid ? "/" + parentid : ""
         }/folder`,
@@ -147,7 +147,7 @@ export async function uploadFile(
 
     for (let file of filelist) filedata.append("filedata", file);
 
-    const resp = await axiosClient<FileResponse>({
+    const resp = await axiosClient()<FileResponse>({
         url: `/files/account/${userid}/parent${
             parentid !== "" ? `/${parentid}` : ""
         }`,

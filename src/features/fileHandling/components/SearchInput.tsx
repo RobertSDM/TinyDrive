@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { search } from "../requests/fileRequests.ts";
-import { useSessionContext } from "@/context/useContext.tsx";
+import { useAccountContext } from "@/context/useContext.tsx";
 import { FaFile } from "react-icons/fa";
 import { File } from "@/types.ts";
 import { Link } from "react-router-dom";
 import { FaFolderClosed } from "react-icons/fa6";
 
 const SearchInput = () => {
-    const { session } = useSessionContext();
+    const { account } = useAccountContext();
 
     const [queryString, setQueryString] = useState<string>("");
 
@@ -41,7 +41,7 @@ const SearchInput = () => {
         queryKey: ["search", queryString],
         queryFn: () =>
             search(
-                session!.id,
+                account!.id,
                 query.current,
                 typeFilter[typeFilterIndex][0] === "all"
                     ? null

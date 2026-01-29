@@ -2,7 +2,7 @@ import { File, UrlResponse } from "@/types.ts";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { preview } from "../requests/fileRequests.ts";
-import { useSessionContext } from "@/context/useContext.tsx";
+import { useAccountContext } from "@/context/useContext.tsx";
 import { useDownloadFile } from "../hooks/fileServices.tsx";
 import { MdDownload } from "react-icons/md";
 import SimpleButton from "./SimpleButton.tsx";
@@ -13,7 +13,7 @@ type PreviewProps = {
     close: () => void;
 };
 export default function Preview({ file, isOpen, close }: PreviewProps) {
-    const { session } = useSessionContext();
+    const { account } = useAccountContext();
 
     const downloadFileMut = useDownloadFile();
 
@@ -45,7 +45,9 @@ export default function Preview({ file, isOpen, close }: PreviewProps) {
                 onClick={close}
             >
                 <span
-                    className={`bg-black py-1 px-2 whitespace-nowrap text-ellipsis overflow-hidden max-w-96 ${file.extension !== "" ? "rounded-l-sm" : "rounded-sm"}`}
+                    className={`bg-black py-1 px-2 whitespace-nowrap text-ellipsis overflow-hidden max-w-96 ${
+                        file.extension !== "" ? "rounded-l-sm" : "rounded-sm"
+                    }`}
                     onClick={(e) => e.stopPropagation()}
                 >
                     {file.filename}
@@ -76,7 +78,7 @@ export default function Preview({ file, isOpen, close }: PreviewProps) {
             </header>
 
             {file.content_type.startsWith("image") ? (
-                <ImagePreview fileid={file.id!} userid={session!.id} />
+                <ImagePreview fileid={file.id!} userid={account!.id} />
             ) : (
                 <p className="font-semibold text-slate-400">Em breve</p>
             )}

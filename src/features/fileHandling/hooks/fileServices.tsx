@@ -1,7 +1,7 @@
 import {
     useDriveItemsContext,
     useNotifyContext,
-    useSessionContext,
+    useAccountContext,
 } from "@/context/useContext.tsx";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -14,18 +14,18 @@ import {
 import { File, FilenameRequest, NotifyLevel } from "@/types.ts";
 
 function useRequiredContext() {
-    const { session } = useSessionContext();
+    const { account } = useAccountContext();
     const notify = useNotifyContext();
     const { update } = useDriveItemsContext();
 
-    return { session, notify, update };
+    return { account, notify, update };
 }
 
 export function useDeleteFile() {
-    const { session, notify, update } = useRequiredContext();
+    const { account, notify, update } = useRequiredContext();
 
     return useMutation({
-        mutationFn: (fileids: string[]) => deleteFile(session!.id, fileids),
+        mutationFn: (fileids: string[]) => deleteFile(account!.id, fileids),
         onSuccess: (files) => {
             for (let file of files) {
                 update({
@@ -54,11 +54,11 @@ export function useDeleteFile() {
 }
 
 export default function useUpdateName(fileid: string) {
-    const { session, notify, update } = useRequiredContext();
+    const { account, notify, update } = useRequiredContext();
 
     return useMutation({
         mutationFn: (body: FilenameRequest) =>
-            updateName(fileid, session!.id, body),
+            updateName(fileid, account!.id, body),
         onSuccess: (files: File[]) => {
             for (let file of files) {
                 update({
@@ -76,7 +76,7 @@ export default function useUpdateName(fileid: string) {
         onError: () => {
             notify({
                 level: NotifyLevel.ERROR,
-                message: "Erro ao atualizar o nome do arquivos",
+                message: "Erro ao atualizar o nome do arquivo",
                 type: "popup",
             });
         },
@@ -84,10 +84,10 @@ export default function useUpdateName(fileid: string) {
 }
 
 export function useUploadFile(parentid: string) {
-    const { session, notify, update } = useRequiredContext();
+    const { account, notify, update } = useRequiredContext();
 
     return useMutation({
-        mutationFn: (body: FileList) => uploadFile(session!.id, parentid, body),
+        mutationFn: (body: FileList) => uploadFile(account!.id, parentid, body),
         onMutate: () => {
             notify({
                 level: NotifyLevel.INFO,
@@ -120,11 +120,11 @@ export function useUploadFile(parentid: string) {
 }
 
 export function useUploadFolder(parentid: string | null) {
-    const { session, notify, update } = useRequiredContext();
+    const { account, notify, update } = useRequiredContext();
 
     return useMutation({
         mutationFn: (body: FilenameRequest) =>
-            uploadFolder(session!.id, parentid, body),
+            uploadFolder(account!.id, parentid, body),
         onSuccess: (files: File[]) => {
             update({
                 type: "add",
@@ -148,11 +148,11 @@ export function useUploadFolder(parentid: string | null) {
 }
 
 export function useDownloadFile() {
-    const { session, notify } = useRequiredContext();
+    const { account, notify } = useRequiredContext();
 
     return useMutation({
         mutationKey: ["downloadFile"],
-        mutationFn: (fileids: string[]) => downloadFile(fileids, session!.id),
+        mutationFn: (fileids: string[]) => downloadFile(fileids, account!.id),
         onError: () => {
             notify({
                 level: NotifyLevel.ERROR,

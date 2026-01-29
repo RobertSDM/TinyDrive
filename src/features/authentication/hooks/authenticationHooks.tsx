@@ -1,10 +1,14 @@
-import { LoginBody, NotifyLevel, RegisterBody } from "@/types.ts";
+import { File, LoginBody, NotifyLevel, RegisterBody } from "@/types.ts";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { account, logout, login, register } from "../requests/AuthRequests.ts";
 import { useNavigate } from "react-router-dom";
-import { useNotifyContext } from "@/context/useContext.tsx";
+import {
+    useAccountContext,
+    useDriveItemsContext,
+    useNotifyContext,
+} from "@/context/useContext.tsx";
 import { AxiosError } from "axios";
-import { useEffect, useState } from "react";
+import { queryClient } from "@/lib/reactQuery.ts";
 
 export function useRegister() {
     const notify = useNotifyContext();
@@ -27,6 +31,7 @@ export function useRegister() {
 export function useLogin() {
     const navigate = useNavigate();
     const notify = useNotifyContext();
+    const { refetch } = useAccountContext();
 
     return useMutation({
         mutationFn: (body: LoginBody) => login(body),
@@ -34,6 +39,7 @@ export function useLogin() {
             localStorage.setItem("access_", data.access_token);
             localStorage.setItem("refresh_", data.refresh_token);
 
+            refetch();
             navigate("/drive");
         },
         onError: (error: AxiosError) => {
@@ -55,7 +61,9 @@ export function useLogin() {
 }
 
 export function useLogout() {
+    const { update } = useDriveItemsContext();
     const navigate = useNavigate();
+    const { logout: logoutAccount } = useAccountContext();
 
     return useMutation({
         mutationFn: () => logout(),
@@ -63,24 +71,21 @@ export function useLogout() {
             localStorage.removeItem("access_");
             localStorage.removeItem("refresh_");
 
+            update({ type: "clear", file: {} as File });
+            logoutAccount();
+            queryClient.invalidateQueries();
             navigate("/login");
         },
     });
 }
 
 export function useAccount() {
-    const [token, setToken] = useState<string | null>(null);
-
-    useEffect(() => {
-        setToken(localStorage.getItem("access_"));
-    }, []);
-
     return useQuery({
         queryKey: ["useAccount"],
-        queryFn: () =>
-            account("Bearer " + (localStorage.getItem("access_") ?? "")),
+        queryFn: () => account(),
+        throwOnError: true,
         retry: false,
-        enabled: !!token,
+        enabled: false,
         refetchOnWindowFocus: false,
     });
 }
