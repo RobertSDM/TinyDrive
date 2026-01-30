@@ -7,7 +7,7 @@ type PopupProps = {
     notification: NotificationData;
 };
 export function Popup({ done, notification }: PopupProps) {
-    const timer = useRef<NodeJS.Timeout>();
+    const timer = useRef<number>();
 
     useEffect(() => {
         clearTimeout(timer.current);
