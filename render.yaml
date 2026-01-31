@@ -1,0 +1,13 @@
+services: 
+  - type: "web"
+    name: "tiny-drive"
+    runtime: static
+    buildCommand: "pnpm install; pnpm run build"
+    staticPublishPath: "./dist"
+    routes:
+      - type: "redirect"
+        source: "/"
+        destination: "/drive"
+      - type: "rewrite"
+        source: "/*"
+        destination: "/index.html"
