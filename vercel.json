@@ -1,19 +1,12 @@
 {
+    "$schema": "https://openapi.vercel.sh/vercel.json",
     "rewrites": [
         {
             "source": "/",
-            "destination": "/index.html"
+            "destination": "/home"
         },
         {
-            "source": "/drive/:id",
-            "destination": "/index.html"
-        },
-        {
-            "source": "/drive",
-            "destination": "/index.html"
-        },
-        {
-            "source": "/(.*)",
+            "source": "/(.*)*",
             "destination": "/index.html"
         }
     ]

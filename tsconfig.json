@@ -1,19 +1,20 @@
 {
     "compilerOptions": {
-        "target": "ES6",
+        "target": "es6",
         "useDefineForClassFields": true,
-        "lib": ["ES6", "DOM", "DOM.Iterable",  "ES2021.String"],
+        "lib": ["DOM", "ES2021", "ES6", "DOM.Iterable"],
         "module": "NodeNext",
         "skipLibCheck": true,
         "paths": {
             "@/*": ["./src/*"],
-            "@rootComponents/*": ["./src/components/*"],
-            "@auth/*": ["./src/modules/auth/*"],
-            "@drive/*": ["./src/modules/drive/*"],
+            "@auth/*": ["./src/features/authentication/*"],
+            "@fileHandling/*": ["./src/features/fileHandling/*"],
+            "@notify/*": ["./src/features/notification/*"],
         },
-
+        "declaration": true,
+        
         /* Bundler mode */
-        "moduleResolution": "NodeNext",
+        "moduleResolution": "node16",
         "allowImportingTsExtensions": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
@@ -27,5 +28,5 @@
         "noFallthroughCasesInSwitch": true,
     },
     "include": ["src", "src/utils/filterFunctions.ts"],
-    "references": [{ "path": "./tsconfig.node.json" }]
+    "references": [{ "path": "./tsconfig.vite.json" }]
 }

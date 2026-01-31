@@ -6,9 +6,12 @@ export default defineConfig({
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "./src"),
-            "@rootComponents": path.resolve(__dirname, "./src/components"),
-            "@auth": path.resolve(__dirname, "./src/modules/auth"),
-            "@drive": path.resolve(__dirname, "./src/modules/drive"),
+            "@auth": path.resolve(__dirname, "./src/features/authentication"),
+            "@fileHandling": path.resolve(
+                __dirname,
+                "./src/features/fileHandling"
+            ),
+            "@notify": path.resolve(__dirname, "./src/features/notification"),
         },
     },
     plugins: [react()],

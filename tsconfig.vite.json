@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "skipLibCheck": true,
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "lib": ["DOM"],
+        "paths": {
+            "@/*": ["./src/*"],
+            "@auth/*": ["./src/features/authentication/*"],
+            "@fileHandling/*": ["./src/features/fileHandling/*"],
+            "@notify/*": ["./src/features/notification/*"],
+        },
+    },
+    "include": ["vite.config.ts"]
+}
