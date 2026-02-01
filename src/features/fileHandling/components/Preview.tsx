@@ -96,6 +96,8 @@ function ImagePreview({ fileid, userid }: ImagePreviewProps) {
     const { data, isFetching } = useQuery<UrlResponse>({
         queryKey: ["imagePreview"],
         queryFn: () => preview(fileid, userid),
+        retry: false,
+        refetchOnWindowFocus: false,
     });
 
     if (isFetching)

@@ -27,8 +27,10 @@ export function axiosClient() {
             return config;
         },
         async (error: AxiosError) => {
+            const status = error.response?.status ?? 0;
+
             // Refresh on 401 errors, because I know the server doesn't return 401 for other reasons
-            if (error.response!.status === 401) {
+            if (status === 401) {
                 const requestConfig = { ...error.config };
                 const refreshToken = localStorage.getItem("refresh_");
 

@@ -119,6 +119,7 @@ const FileList = ({ parentid }: ItemsViewProps) => {
     useEffect(() => {
         setSelectedRange([]);
         currentPage.current = 0;
+        update({ file: {} as File, type: "clear" });
     }, [parentid]);
 
     return (
@@ -137,9 +138,9 @@ const FileList = ({ parentid }: ItemsViewProps) => {
             />
             <ActionBar selectionRange={selectedRange} files={filesOrdered} />
             <div>
-                <span className="mr-2">Filtro</span>
+                <span className="mr-2 text-sm md:text-base">Filtro</span>
                 <button
-                    className="w-40 border text-center select-none h-8"
+                    className="px-4 border text-center select-none h-8 text-sm md:text-base"
                     onClick={() => {
                         if (filter === filterOrder.length - 1) setFilter(0);
                         else setFilter((prev) => prev + 1);
@@ -214,7 +215,7 @@ function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
 
                 previewFile(file);
             }}
-            className={`border-b hover:bg-purple-100 hover:border-none hover:border-purple-100 flex items-center h-12 max-h-12 min-h-12 p-4 cursor-default select-none justify-between overflow-hidden gap-x-4 ${
+            className={`border-b text-sm md:text-base hover:bg-purple-100 hover:border-none hover:border-purple-100 flex items-center h-12 max-h-12 min-h-12 p-4 cursor-default select-none justify-between overflow-hidden gap-x-4 ${
                 isSelected &&
                 "bg-purple-300 hover:bg-purple-400 border-none text-white"
             }`}
@@ -237,7 +238,8 @@ function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
                 )}
                 <span
                     onClick={(e) => {
-                        e.stopPropagation();
+                        if (file.is_dir) e.stopPropagation();
+
                         if (!file.is_dir) return;
 
                         navigate(`/drive/${file.id}`);

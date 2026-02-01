@@ -10,7 +10,12 @@ export default () => {
     useEffect(() => {
         if (isLoading) return;
 
-        if (!account) navigate("/login");
+        if (!account && !localStorage.getItem("access_")) navigate("/login");
+        if (
+            account &&
+            ["/login", "/register"].includes(window.location.pathname)
+        )
+            navigate("/drive");
     }, [account, isLoading]);
 
     if (isLoading) return <LogoLoader />;

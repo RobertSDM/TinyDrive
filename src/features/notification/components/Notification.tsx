@@ -7,7 +7,7 @@ type NotificationProps = {
 export function Notification({ notification, close }: NotificationProps) {
     return (
         <div className="flex max-w-72 p-1 items-start justify-between">
-            <p className="text-white">{notification.message}</p>
+            <p className="text-white break-all">{notification.message}</p>
             <div className="flex items-start">
                 <p
                     className="cursor-pointer font-semibold text-lg px-1 text-white"

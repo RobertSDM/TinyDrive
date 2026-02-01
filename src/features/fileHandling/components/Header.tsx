@@ -14,7 +14,7 @@ export default () => {
     if (!account) return null;
 
     return (
-        <header className="flex items-center mx-auto justify-between h-20 min-w-80">
+        <header className="flex items-center mx-auto justify-between h-20">
             <Link to={"/drive"} className="cursor-pointer">
                 <img
                     src="/icons/tiny-drive-logo.svg"

@@ -32,7 +32,7 @@ const ConfirmModal = ({
             className="flex justify-center items-center bg-black/20 absolute top-0 w-full h-screen z-50"
         >
             <div
-                className="bg-white border border-slate-200 p-4 rounded-md space-y-5 w-72 h-32 flex flex-col items-center"
+                className="bg-white p-4 rounded-md space-y-5 text-sm md:text-base w-60 md:w-72 h-fit flex flex-col items-center"
                 onKeyDown={(e) => {
                     if (e.key === "Enter") confirm();
                     if (e.key === "Escape") close();
