@@ -11,6 +11,7 @@ import LoginPage from "./pages/LoginPage.tsx";
 import AuthRenderingManager from "./components/AuthRenderingManager.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
+import React from "react";
 
 const router = createBrowserRouter([
     { index: true, element: <HomePage /> },
@@ -34,15 +35,15 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-    // <React.StrictMode>
-    <Notify>
-        <QueryClientProvider client={queryClient}>
-            <AccountProvider>
-                <ModalProvider>
-                    <RouterProvider router={router} />
-                </ModalProvider>
-            </AccountProvider>
-        </QueryClientProvider>
-    </Notify>
-    // </React.StrictMode>
+    <React.StrictMode>
+        <Notify>
+            <QueryClientProvider client={queryClient}>
+                <AccountProvider>
+                    <ModalProvider>
+                        <RouterProvider router={router} />
+                    </ModalProvider>
+                </AccountProvider>
+            </QueryClientProvider>
+        </Notify>
+    </React.StrictMode>
 );
