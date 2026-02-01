@@ -45,8 +45,10 @@ export default function Preview({ file, isOpen, close }: PreviewProps) {
                 onClick={close}
             >
                 <span
-                    className={`bg-black py-1 px-2 whitespace-nowrap text-ellipsis overflow-hidden max-w-96 ${
-                        file.extension !== "" ? "rounded-l-sm" : "rounded-sm"
+                    className={`bg-black whitespace-nowrap text-ellipsis overflow-hidden max-w-96 py-1 px-2 ${
+                        file.extension !== ""
+                            ? "rounded-l-sm pr-0"
+                            : "rounded-sm"
                     }`}
                     onClick={(e) => e.stopPropagation()}
                 >
@@ -54,7 +56,7 @@ export default function Preview({ file, isOpen, close }: PreviewProps) {
                 </span>
                 {file.extension !== "" && (
                     <section
-                        className="bg-black py-1 px-2 rounded-r-sm"
+                        className="bg-black py-1 px-2 pl-0 rounded-r-sm"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <p>{file.extension}</p>
