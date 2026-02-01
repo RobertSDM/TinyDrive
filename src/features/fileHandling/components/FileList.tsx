@@ -51,7 +51,8 @@ const FileList = ({ parentid }: ItemsViewProps) => {
     const [filter, setFilter] = useState(0);
 
     const [isDragAndDropOpen, setIsDragAndDropOpen] = useState(false);
-    const [selectedRange, setSelectedRange] = useState<number[]>([]);
+    const [selectedRange, setSelectedRange] = useState<Set<File>>(new Set());
+    const selectionPivot = useRef<number>(-1);
 
     const { account, isLoading } = useAccountContext();
     const { openModal } = useModalContext();
@@ -74,16 +75,26 @@ const FileList = ({ parentid }: ItemsViewProps) => {
     });
 
     function selectionRange(start: number, end: number = -1) {
-        if (end >= filesDrive.length)
+        if (end >= filesOrdered.length)
             throw new Error("End index cannot be greater than the items list");
 
-        if (end === -1 && selectedRange[0] === start) {
-            setSelectedRange([]);
+        if (end === -1 && start === selectionPivot.current) {
+            setSelectedRange(new Set());
+            selectionPivot.current = -1;
             return;
         }
 
-        if (end === -1) setSelectedRange([start, start]);
-        else setSelectedRange([start, end]);
+        selectionPivot.current = start;
+        if (end === -1) {
+            setSelectedRange(new Set([filesOrdered[start]]));
+            return;
+        }
+
+        const filesSelected = [];
+        for (let i = Math.min(start, end); i <= Math.max(start, end); i++) {
+            filesSelected.push(filesOrdered[i]);
+        }
+        setSelectedRange(new Set(filesSelected));
     }
 
     useEffect(() => {
@@ -117,9 +128,10 @@ const FileList = ({ parentid }: ItemsViewProps) => {
     }, [isFetching]);
 
     useEffect(() => {
-        setSelectedRange([]);
+        setSelectedRange(new Set());
         currentPage.current = 0;
         update({ file: {} as File, type: "clear" });
+        setSelectedRange(new Set());
     }, [parentid]);
 
     return (
@@ -136,7 +148,7 @@ const FileList = ({ parentid }: ItemsViewProps) => {
                 isOpen={isDragAndDropOpen}
                 parentid={parentid}
             />
-            <ActionBar selectionRange={selectedRange} files={filesOrdered} />
+            <ActionBar selectedRange={Array.from(selectedRange)} />
             <div>
                 <span className="mr-2 text-sm md:text-base">Filtro</span>
                 <button
@@ -164,19 +176,20 @@ const FileList = ({ parentid }: ItemsViewProps) => {
                                 });
                             }}
                             onclick={(e: MouseEvent) => {
-                                if (e.shiftKey) {
-                                    e.preventDefault();
-                                    selectionRange(selectedRange[0], index);
+                                e.preventDefault();
+
+                                if (!e.shiftKey) {
+                                    selectionRange(index);
                                     return;
                                 }
-                                selectionRange(index);
+
+                                selectionRange(selectionPivot.current, index);
                             }}
                             key={item.id}
                             file={item}
-                            isSelected={
-                                index >= selectedRange[0] &&
-                                index <= selectedRange[1]
-                            }
+                            isSelected={(() => {
+                                return selectedRange.has(item);
+                            })()}
                         />
                     );
                 })}
@@ -203,15 +216,14 @@ type ItemRowProps = {
 };
 
 function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
-    const { update } = useDriveItemsContext();
     const navigate = useNavigate();
 
     return (
         <section
             onClick={onclick}
             onDoubleClick={(e) => {
-                e.preventDefault();
                 if (file.is_dir) return;
+                e.preventDefault();
 
                 previewFile(file);
             }}
@@ -243,10 +255,6 @@ function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
                         if (!file.is_dir) return;
 
                         navigate(`/drive/${file.id}`);
-                        update({
-                            type: "clear",
-                            file: {} as File,
-                        });
                     }}
                     className={`whitespace-nowrap text-ellipsis overflow-hidden 
                         ${file.is_dir && "cursor-pointer"} ${
