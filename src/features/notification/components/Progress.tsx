@@ -14,7 +14,7 @@ export function Progress({ notification, progress, done }: ProgressProps) {
 
     return (
         <div
-            className={`m-3 bg-purple-500 rounded-sm border border-white shadow-md px-3 inline-block ${
+            className={`m-3 bg-purple-500 rounded-sm border border-white shadow-md px-3 inline-block max-w-60 md:max-w-72 ${
                 notification.level === NotifyLevel.ERROR && "bg-red-500"
             } `}
         >

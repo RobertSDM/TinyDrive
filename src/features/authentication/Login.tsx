@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useNotifyContext } from "@/context/useContext.tsx";
 import AuthForm from "./components/AuthForm.tsx";
@@ -11,6 +11,7 @@ const Login = () => {
     const [password, setPassword] = useState<string>("");
 
     const notify = useNotifyContext();
+    const navigate = useNavigate();
 
     const loginMut = useLogin();
 
@@ -35,6 +36,8 @@ const Login = () => {
                             message: "Você já está logado",
                             type: "popup",
                         });
+                        navigate("/drive");
+
                         return;
                     }
 
