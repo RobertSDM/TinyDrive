@@ -19,7 +19,7 @@ const Login = () => {
     }, []);
 
     return (
-        <div className="h-screen w-72 md:w-96 mx-auto items-center justify-center flex space-y-32 flex-col">
+        <div className="h-screen w-72 md:w-96 mx-auto md:items-center md:justify-center flex space-y-32 mt-10 md:mt-0 flex-col overflow-hidden">
             <section className="flex gap-x-1">
                 <p className="text-4xl font-bold text-purple-600">Tiny</p>
                 <p className="text-4xl font-bold">Login</p>
