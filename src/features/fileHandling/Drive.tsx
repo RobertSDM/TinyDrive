@@ -17,7 +17,7 @@ export default function Drive({}: DriveProps) {
     return (
         <section className="mx-auto w-full max-w-7xl overflow-hidden px-4 md:px-10">
             <Header />
-            <main className="mt-20 flex flex-col gap-y-2">
+            <main className="mt-5 md:mt-20 flex flex-col gap-y-2">
                 <Breadcrumb parentid={parentid} />
                 <ButtonUpload parentid={parentid} />
                 <FileList parentid={parentid} />

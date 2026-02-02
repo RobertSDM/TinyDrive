@@ -48,10 +48,10 @@ export default function TextModal({
     return (
         <div
             onClick={close}
-            className="flex justify-center items-center bg-black/20 absolute top-0 w-full h-screen z-50"
+            className="flex justify-center items-center bg-slate-500/50 absolute top-0 w-full h-screen z-50"
         >
             <div
-                className={`bg-white p-4 rounded-md space-y-5 text-sm md:text-base w-60 md:w-72 h-fit flex flex-col items-center`}
+                className={`bg-white dark:bg-zinc-900 p-4 rounded-md space-y-5 text-sm md:text-base w-60 md:w-72 h-fit flex flex-col items-center`}
                 onKeyDown={(e) => {
                     if (e.key === "Enter") confirm();
                     if (e.key === "Escape") close();
@@ -66,7 +66,7 @@ export default function TextModal({
                     type="text"
                     value={text}
                     onChange={(e) => setText(e.target.value)}
-                    className="border border-slate-300 px-4 py-2 outline-none"
+                    className="px-4 py-2 outline-none w-full bg-slate-200/75"
                 />
                 <div className="flex justify-end gap-x-4 mt-2">
                     <button

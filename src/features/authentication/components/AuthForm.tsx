@@ -42,10 +42,10 @@ AuthForm.PasswordInput = ({
             >
                 {title}
             </label>
-            <div className="flex items-center p-2 bg-slate-100 gap-x-2 rounded-sm">
+            <div className="flex items-center p-2 bg-slate-200/75 gap-x-2 rounded-sm">
                 <input
                     id={`form-inp_${title.toLowerCase()}`}
-                    className="outline-none bg-transparent w-full"
+                    className="outline-none bg-transparent w-full overflow-hidden"
                     value={value}
                     onChange={(event) => {
                         setValue(event.target.value);
@@ -93,10 +93,10 @@ AuthForm.Input = ({
             >
                 {title}
             </label>
-            <div className="flex items-center gap-x-2 bg-slate-100 p-2 w-full rounded-sm">
+            <div className="flex items-center gap-x-2 bg-slate-200/75 p-2 w-full rounded-sm">
                 <input
                     id={`form-inp_${title.toLowerCase}`}
-                    className="outline-none flex-grow bg-transparent "
+                    className="outline-none w-full bg-transparent overflow-hidden"
                     value={value}
                     onChange={(event) => {
                         setValue(event.target.value);

@@ -48,6 +48,7 @@ const SearchInput = () => {
                     : typeFilter[typeFilterIndex][0]
             ),
         enabled: false,
+        refetchOnWindowFocus: false,
     });
 
     function changeType() {
