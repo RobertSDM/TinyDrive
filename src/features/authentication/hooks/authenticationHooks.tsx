@@ -19,7 +19,8 @@ export function useRegister() {
         onSuccess: () => {
             notify({
                 level: NotifyLevel.INFO,
-                message: "Conta registrada com sucesso. Agora realize o login",
+                message:
+                    "Conta registrada com sucesso. Para realizar o login, você precisará confirmar seu email.",
                 type: "popup",
             });
 
