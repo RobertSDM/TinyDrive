@@ -15,7 +15,8 @@ import DragAndDrop from "./DragAndDropModal.tsx";
 
 const filterOrder = [
     { title: "Nome", value: "name" },
-    { title: "Data atualização", value: "updated.at" },
+    { title: "Atualização", value: "updated.at" },
+    { title: "Tamanho", value: "size" },
 ];
 
 function useBubbleFolders(files: File[]) {
@@ -54,13 +55,19 @@ const FileList = ({ parentid }: ItemsViewProps) => {
     const [selectedRange, setSelectedRange] = useState<Set<File>>(new Set());
     const selectionPivot = useRef<number>(-1);
 
+    const filterRefetchTimeout = useRef<number>(0);
+
     const { account, isLoading } = useAccountContext();
     const { openModal } = useModalContext();
     const { files: filesDrive, update } = useDriveItemsContext();
 
     const filesOrdered = useBubbleFolders(filesDrive);
 
-    const { data: files, isFetching } = useQuery({
+    const {
+        data: files,
+        isFetching,
+        refetch,
+    } = useQuery({
         queryKey: ["fileList", parentid],
         queryFn: () =>
             filesInFolder(
@@ -152,10 +159,17 @@ const FileList = ({ parentid }: ItemsViewProps) => {
             <div className="flex justify-end md:justify-start items-center">
                 <span className="mr-2 text-sm md:text-base">Filtro</span>
                 <button
-                    className="px-4 border text-center select-none h-8 text-sm md:text-base"
+                    className="px-4 bg-purple-200/75 text-center select-none h-8 text-sm md:text-base"
                     onClick={() => {
                         if (filter === filterOrder.length - 1) setFilter(0);
                         else setFilter((prev) => prev + 1);
+
+                        clearTimeout(filterRefetchTimeout.current);
+                        filterRefetchTimeout.current = window.setTimeout(() => {
+                            currentPage.current = 0;
+                            setSelectedRange(new Set());
+                            refetch();
+                        }, 200);
                     }}
                 >
                     {filterOrder[filter].title}
@@ -175,8 +189,10 @@ const FileList = ({ parentid }: ItemsViewProps) => {
                                     file,
                                 });
                             }}
+                            isDisabled={isFetching || isLoading}
                             onclick={(e: MouseEvent) => {
                                 e.preventDefault();
+                                if (isFetching || isLoading) return;
 
                                 if (!e.shiftKey) {
                                     selectionRange(index);
@@ -213,9 +229,16 @@ type ItemRowProps = {
     isSelected: boolean;
     onclick: (e: MouseEvent) => void;
     previewFile: (file: File) => void;
+    isDisabled: boolean;
 };
 
-function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
+function FileRow({
+    file,
+    onclick,
+    isSelected,
+    previewFile,
+    isDisabled,
+}: ItemRowProps) {
     const navigate = useNavigate();
 
     return (
@@ -227,8 +250,11 @@ function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
 
                 previewFile(file);
             }}
-            className={`border-b border-purple-300 text-sm md:text-base hover:bg-purple-100 hover:border-none flex items-center h-12 p-4 cursor-default select-none justify-between gap-x-4 ${
+            className={`border-b  border-purple-300 ${
+                isDisabled ? "" : "hover:bg-purple-100"
+            } text-sm md:text-base  hover:border-none flex items-center h-12 p-4 cursor-default select-none justify-between gap-x-4 ${
                 isSelected &&
+                !isDisabled &&
                 "bg-purple-300 hover:bg-purple-400 border-none text-white"
             }`}
         >
@@ -237,15 +263,15 @@ function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
             >
                 {file.is_dir ? (
                     <FaFolderClosed
-                        className={` mr-2 min-h-4 min-w-4 text-slate-500 ${
-                            isSelected && "text-white"
-                        }`}
+                        className={`mr-2 min-h-4 min-w-4 ${
+                            isDisabled ? "text-slate-300" : "text-slate-500"
+                        } ${isSelected && !isDisabled && "text-white"}`}
                     />
                 ) : (
                     <FaFile
-                        className={`mr-2 min-h-4 min-w-4 text-slate-500 ${
-                            isSelected && "text-white"
-                        }`}
+                        className={`mr-2 min-h-4 min-w-4 ${
+                            isDisabled ? "text-slate-300" : "text-slate-500"
+                        } ${isSelected && !isDisabled && "text-white"}`}
                     />
                 )}
                 <span
@@ -256,7 +282,9 @@ function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
 
                         navigate(`/drive/${file.id}`);
                     }}
-                    className={`whitespace-nowrap text-ellipsis overflow-hidden 
+                    className={`whitespace-nowrap text-ellipsis overflow-hidden ${
+                        isDisabled ? "text-slate-500" : "text-black"
+                    }
                         ${file.is_dir && "cursor-pointer"} ${
                         file.extension === "" && "mr-2"
                     }`}
@@ -264,15 +292,21 @@ function FileRow({ file, onclick, isSelected, previewFile }: ItemRowProps) {
                     {`${file.filename}`}
                 </span>
                 {!file.is_dir && (
-                    <span className="text-nowrap">
+                    <span
+                        className={`text-nowrap ${
+                            isDisabled ? "text-slate-500" : "text-black"
+                        }`}
+                    >
                         {`${file.extension} - ${file.size} ${file.size_prefix}`}
                     </span>
                 )}
             </div>
 
             <div
-                className={`text-slate-500 hidden md:block text-nowrap ${
-                    isSelected && "text-white"
+                className={`${
+                    isDisabled ? "text-slate-300" : "text-slate-500"
+                } hidden md:block text-nowrap ${
+                    isSelected && !isDisabled && "text-white"
                 }`}
             >
                 {`Ultima atualização: ${new Date(file.updated_at)
