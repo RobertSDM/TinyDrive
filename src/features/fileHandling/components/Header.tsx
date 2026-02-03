@@ -25,14 +25,14 @@ export default () => {
             </Link>
             <SearchInput />
             <div
-                className="relative border border-slate-300 group w-32 rounded-sm hover:rounded-b-none cursor-pointer select-none"
+                className="relative bg-slate-200/75 dark:bg-slate-200 group w-32 rounded-sm cursor-pointer select-none py-1 px-2 hover:rounded-b-none"
                 onClick={() => setIsDrawerOpen((prev) => !prev)}
             >
-                <p className="font-semibold text-center w-full whitespace-nowrap text-ellipsis overflow-hidden px-2">
+                <p className="text-center w-full whitespace-nowrap text-ellipsis overflow-hidden px-2">
                     {account.username}
                 </p>
                 {isDrawerOpen && (
-                    <div className="absolute top-full scale-0 group-hover:scale-100 p-2 w-full bg-white border-slate-300 border rounded-b-md">
+                    <div className="absolute top-full scale-0 group-hover:scale-100 left-0 p-2 w-full bg-white border-slate-300 border rounded-b-md">
                         <button
                             className="p-1 w-full rounded-sm text-red-500 font-semibold bg-red-200 hover:bg-red-500 hover:text-white text-sm"
                             onClick={logout}

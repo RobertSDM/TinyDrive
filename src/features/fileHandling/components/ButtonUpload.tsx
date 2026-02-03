@@ -17,7 +17,7 @@ export default function ButtonUpload({ parentid }: ButtonUploadProps) {
 
     return (
         <div
-            className={`inline w-fit relative select-none`}
+            className={`inline w-fit relative select-none `}
             onClick={() =>
                 isDropdownOpen
                     ? setIsDropdownOpen(false)
@@ -26,7 +26,7 @@ export default function ButtonUpload({ parentid }: ButtonUploadProps) {
         >
             <span
                 className={
-                    "items-center gap-x-2 text-black border hover:bg-purple-500 hover:border-purple-500 w-32 min-w-32 max-w-32 hover:text-white flex cursor-pointer justify-center p-2 rounded-sm"
+                    " text-black  bg-purple-200/75 dark:bg-purple-200/75  active:bg-purple-500 w-32 active:text-white cursor-pointer flex items-center gap-x-2  justify-center p-2 rounded-sm"
                 }
             >
                 <p>{"+ Novo"}</p>
