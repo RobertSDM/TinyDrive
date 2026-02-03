@@ -6,6 +6,7 @@ import { useAccountContext } from "@/context/useContext.tsx";
 import { useDownloadFile } from "../hooks/fileServices.tsx";
 import { MdDownload } from "react-icons/md";
 import SimpleButton from "./SimpleButton.tsx";
+import { SupportedImagePreviewTypes } from "@/constants.ts";
 
 type PreviewProps = {
     file: File;
@@ -79,10 +80,14 @@ export default function Preview({ file, isOpen, close }: PreviewProps) {
                 />
             </header>
 
-            {file.content_type.startsWith("image") ? (
+            {SupportedImagePreviewTypes.includes(file.content_type) ? (
                 <ImagePreview fileid={file.id!} userid={account!.id} />
             ) : (
-                <p className="font-semibold text-slate-400">Em breve</p>
+                <div className="flex justify-center items-center flex-1">
+                    <p className="text-lg font-semibold text-slate-400">
+                        EM BREVE
+                    </p>
+                </div>
             )}
         </div>
     );
@@ -101,7 +106,13 @@ function ImagePreview({ fileid, userid }: ImagePreviewProps) {
     });
 
     if (isFetching)
-        return <p className="font-semibold text-slate-400">carregando...</p>;
+        return (
+            <div className="flex justify-center items-center flex-1">
+                <p className="text-lg font-semibold text-slate-400">
+                    Carregando...
+                </p>
+            </div>
+        );
 
     return (
         <section className="flex-1 flex items-center justify-center">

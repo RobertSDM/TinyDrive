@@ -6,5 +6,11 @@ export const Mode: "prod" | "dev" = import.meta.env.VITE_MODE;
 
 export const MaxDirDepth = 3;
 export const MaxFileSize = 15 * 1024 * 1024; // 15Mbs
-export const DelayToSearchContent = 150;
-export const PaginationItemPerPage = 10;
+
+export const SupportedImagePreviewTypes = [
+    "image/png",
+    "image/jpg",
+    "image/jpeg",
+    "image/webp",
+    "image/tiff",
+];
