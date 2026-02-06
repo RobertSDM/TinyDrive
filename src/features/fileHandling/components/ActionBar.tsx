@@ -1,4 +1,4 @@
-import { useModalContext } from "@/context/useContext.tsx";
+import { useFilesContext, useModalContext } from "@/context/useContext.tsx";
 
 import { File } from "@/types.ts";
 import useUpdateName, {
@@ -15,12 +15,14 @@ type ActionBarProps = {
 };
 export default function ActionBar({ selectedRange }: ActionBarProps) {
     const { openModal } = useModalContext();
+    const { files } = useFilesContext();
 
     const downloadFileMut = useDownloadFile();
     const deleteFileMut = useDeleteFile();
     const updateFileMut = useUpdateName(selectedRange[0]?.id ?? "");
 
-    if (selectedRange.length === 0) return <div className={"h-10 p-1"}></div>;
+    if (selectedRange.length === 0 || files.length === 0)
+        return <div className={"h-10 p-1"}></div>;
 
     return (
         <div

@@ -10,19 +10,15 @@ type context = {
         file: File;
     }>;
 };
-export const DriveFilesContext = createContext<context>({} as context);
+export const FilesContext = createContext<context>({} as context);
 
-export function DriveFilesProvider({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
+export function FilesProvider({ children }: { children: React.ReactNode }) {
     const [files, update] = useReducer(filesReducer, [] as File[]);
 
     return (
-        <DriveFilesContext.Provider value={{ files, update }}>
+        <FilesContext.Provider value={{ files, update }}>
             {children}
-        </DriveFilesContext.Provider>
+        </FilesContext.Provider>
     );
 }
 

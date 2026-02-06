@@ -1,5 +1,5 @@
 import {
-    useDriveItemsContext,
+    useFilesContext,
     useModalContext,
     useAccountContext,
 } from "@/context/useContext.tsx";
@@ -59,7 +59,7 @@ const FileList = ({ parentid }: ItemsViewProps) => {
 
     const { account, isLoading } = useAccountContext();
     const { openModal } = useModalContext();
-    const { files: filesDrive, update } = useDriveItemsContext();
+    const { files: filesDrive, update } = useFilesContext();
 
     const filesOrdered = useBubbleFolders(filesDrive);
 
@@ -283,8 +283,8 @@ function FileRow({
                         navigate(`/drive/${file.id}`);
                     }}
                     className={`whitespace-nowrap text-ellipsis overflow-hidden ${
-                        isDisabled ? "text-slate-500" : "text-black"
-                    }
+                        isSelected && !isDisabled && "text-white"
+                    }${isDisabled ? "text-slate-500" : "text-black"}
                         ${file.is_dir && "cursor-pointer"} ${
                         file.extension === "" && "mr-2"
                     }`}
@@ -294,8 +294,8 @@ function FileRow({
                 {!file.is_dir && (
                     <span
                         className={`text-nowrap ${
-                            isDisabled ? "text-slate-500" : "text-black"
-                        }`}
+                            isSelected && !isDisabled && "text-white"
+                        }${isDisabled ? "text-slate-500" : "text-black"}`}
                     >
                         {`${file.extension} - ${file.size} ${file.size_prefix}`}
                     </span>

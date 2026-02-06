@@ -1,5 +1,5 @@
 import {
-    useDriveItemsContext,
+    useFilesContext,
     useNotifyContext,
     useAccountContext,
 } from "@/context/useContext.tsx";
@@ -16,7 +16,7 @@ import { File, FilenameRequest, NotifyLevel } from "@/types.ts";
 function useRequiredContext() {
     const { account } = useAccountContext();
     const notify = useNotifyContext();
-    const { update } = useDriveItemsContext();
+    const { update } = useFilesContext();
 
     return { account, notify, update };
 }

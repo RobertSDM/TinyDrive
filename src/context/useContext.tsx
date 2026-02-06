@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { NotifyContext } from "../features/notification/context/NotifyContext.tsx";
-import { DriveFilesContext } from "@/features/fileHandling/context/DriveItemsContext.tsx";
+import { FilesContext } from "@/features/fileHandling/context/FilesContext.tsx";
 import { AccountContext } from "@/features/authentication/context/AccountContext.tsx";
 import { ModalContext } from "@/features/modal/context/modalContext.tsx";
 
@@ -9,5 +9,5 @@ export const useNotifyContext = () => {
     return notify;
 };
 export const useAccountContext = () => useContext(AccountContext);
-export const useDriveItemsContext = () => useContext(DriveFilesContext);
+export const useFilesContext = () => useContext(FilesContext);
 export const useModalContext = () => useContext(ModalContext);

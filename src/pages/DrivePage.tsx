@@ -1,11 +1,11 @@
-import { DriveFilesProvider } from "@fileHandling/context/DriveItemsContext.tsx";
+import { FilesProvider } from "@/features/fileHandling/context/FilesContext.tsx";
 import Drive from "@fileHandling/Drive.tsx";
 
 type DriveLayoutProps = {};
 export default function DriveLayout({}: DriveLayoutProps) {
     return (
-        <DriveFilesProvider>
+        <FilesProvider>
             <Drive />
-        </DriveFilesProvider>
+        </FilesProvider>
     );
 }

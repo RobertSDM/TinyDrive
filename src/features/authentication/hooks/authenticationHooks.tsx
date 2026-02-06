@@ -4,7 +4,7 @@ import { account, logout, login, register } from "../requests/AuthRequests.ts";
 import { useNavigate } from "react-router-dom";
 import {
     useAccountContext,
-    useDriveItemsContext,
+    useFilesContext,
     useNotifyContext,
 } from "@/context/useContext.tsx";
 import { AxiosError } from "axios";
@@ -62,7 +62,7 @@ export function useLogin() {
 }
 
 export function useLogout() {
-    const { update } = useDriveItemsContext();
+    const { update } = useFilesContext();
     const navigate = useNavigate();
     const { logout: logoutAccount } = useAccountContext();
 
