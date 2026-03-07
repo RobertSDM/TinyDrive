@@ -24,8 +24,6 @@ export default function Preview({ file, isOpen, close }: PreviewProps) {
     useEffect(() => {
         document.body.style.overflow = "hidden";
         window.onpopstate = close;
-
-        console.log(file.content_type);
         
         return () => {
             document.body.style.overflow = "auto";
