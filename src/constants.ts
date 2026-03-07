@@ -14,3 +14,12 @@ export const SupportedImagePreviewTypes = [
     "image/webp",
     "image/tiff",
 ];
+
+export const SupportedTextPreviewTypes = [
+    "text/plain",
+    "text/html",
+    "text/css",
+    "text/javascript",
+    "application/json",
+    "application/xml",
+];

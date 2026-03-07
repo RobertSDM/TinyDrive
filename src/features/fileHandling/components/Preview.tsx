@@ -6,7 +6,10 @@ import { useAccountContext } from "@/context/useContext.tsx";
 import { useDownloadFile } from "../hooks/fileServices.tsx";
 import { MdDownload } from "react-icons/md";
 import SimpleButton from "./SimpleButton.tsx";
-import { SupportedImagePreviewTypes } from "@/constants.ts";
+import {
+    SupportedImagePreviewTypes,
+    SupportedTextPreviewTypes,
+} from "@/constants.ts";
 
 type PreviewProps = {
     file: File;
@@ -22,10 +25,13 @@ export default function Preview({ file, isOpen, close }: PreviewProps) {
         document.body.style.overflow = "hidden";
         window.onpopstate = close;
 
+        console.log(file.content_type);
+        
         return () => {
             document.body.style.overflow = "auto";
         };
     }, []);
+    
 
     return (
         <div
@@ -66,7 +72,7 @@ export default function Preview({ file, isOpen, close }: PreviewProps) {
                 <SimpleButton
                     classname="bg-black ml-2 group"
                     onclick={(
-                        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                        e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
                     ) => {
                         e.stopPropagation();
                         downloadFileMut.mutate([file.id!]);
@@ -80,7 +86,8 @@ export default function Preview({ file, isOpen, close }: PreviewProps) {
                 />
             </header>
 
-            {SupportedImagePreviewTypes.includes(file.content_type) ? (
+            {SupportedImagePreviewTypes.includes(file.content_type) ||
+            SupportedTextPreviewTypes.includes(file.content_type) ? (
                 <ImagePreview fileid={file.id!} userid={account!.id} />
             ) : (
                 <div className="flex justify-center items-center flex-1">
