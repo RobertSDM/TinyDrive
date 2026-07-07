@@ -18,7 +18,7 @@ Senha: 12345678
 
 # Run locally
 
-First of all, to run this project you will need the server part which is in this [repository](https://github.com/RobertSDM/be-tiny-drive)
+First of all, to run this project you will need the server part which is in this [repository](https://github.com/RobertSDM/tiny-drive-backend)
 
 Clone this repo and move to the folder:
 
