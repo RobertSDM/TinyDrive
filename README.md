@@ -7,15 +7,6 @@
 TinyDrive is a personal project inspired by the Google's Drive. \
 This project repository contains the interface is your window to access TinyDrive's your file storage.
 
-**Running project [link](https://tiny-drive.vercel.app/)**
-
-To test it you can use this login:
-
-```
-Email: tiny.test.drive@gmail.com
-Senha: 12345678
-```
-
 # Run locally
 
 First of all, to run this project you will need the server part which is in this [repository](https://github.com/RobertSDM/tiny-drive-backend)
